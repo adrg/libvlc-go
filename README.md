@@ -1,8 +1,9 @@
 libvlc-go
 =========
+[![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/adrg/libvlc-go)
 [![License: MIT](http://img.shields.io/badge/license-MIT-red.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
-Implements golang bindings for libvlc version 2.X. This is a work in progress
+Provides golang bindings for libvlc version 2.X. This is a work in progress
 and it is not safe for use in a production environment. The current
 implementation contains only a small portion of libvlc's functionality.
 
