@@ -73,7 +73,7 @@ func main() {
 ```
 
 ## References
-For more information see [libvlc](http://videolan.org)
+For more information see [libvlc](http://videolan.org).
 
 ## License
 Copyright (c) 2015 Adrian-George Bostan.
