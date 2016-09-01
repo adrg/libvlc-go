@@ -153,3 +153,12 @@ func (p *Player) GetLength() (int, error) {
 	}
 	return int(C.libvlc_media_player_get_length(p.player)), getError()
 }
+
+// GetPosition returns media position float.
+// Position as percentage between 0.0 and 1.0.
+func (p *Player) GetPosition() (float32, error) {
+	if p.player == nil {
+		return 0, errors.New("A player must first be initialized")
+	}
+	return float32(C.libvlc_media_player_get_position(p.player)), getError()
+}
