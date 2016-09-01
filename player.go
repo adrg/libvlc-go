@@ -137,3 +137,19 @@ func (p *Player) SetAudioOutput(output string) error {
 
 	return nil
 }
+
+// GetTime returns media time in milliseconds
+func (p *Player) GetTime() (int, error) {
+	if p.player == nil {
+		return 0, errors.New("A player must first be initialized")
+	}
+	return int(C.libvlc_media_player_get_time(p.player)), getError()
+}
+
+// GetLength returns media length in milliseconds.
+func (p *Player) GetLength() (int, error) {
+	if p.player == nil {
+		return 0, errors.New("A player must first be initialized")
+	}
+	return int(C.libvlc_media_player_get_length(p.player)), getError()
+}
