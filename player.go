@@ -162,3 +162,23 @@ func (p *Player) GetPosition() (float32, error) {
 	}
 	return float32(C.libvlc_media_player_get_position(p.player)), getError()
 }
+
+// SetPosition sets media position.
+// Some formats and protocols do not support this.
+func (p *Player) SetPosition(pos float32) error {
+	if p.player == nil {
+		return errors.New("A player must first be initialized")
+	}
+	C.libvlc_media_player_set_position(p.player, C.float(pos))
+	return getError()
+}
+
+// SetTime sets the media time in milliseconds.
+// Some formats and protocals do not support this.
+func (p *Player) SetTime(t int) error {
+	if p.player == nil {
+		return errors.New("A player must first be initialized")
+	}
+	C.libvlc_media_player_set_time(p.player, C.libvlc_time_t(int64(t)))
+	return getError()
+}
