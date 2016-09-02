@@ -26,7 +26,7 @@ go get github.com/adrg/libvlc-go
 package main
 
 import (
-	"fmt"
+	"log"
 	"time"
 
 	vlc "github.com/adrg/libvlc-go"
@@ -36,16 +36,14 @@ func main() {
 	// Initialize libvlc. Additional command line arguments can be passed in
 	// to libvlc by specifying them in the Init function.
 	if err := vlc.Init("--no-video", "--quiet"); err != nil {
-		fmt.Println(err)
-		return
+		log.Fatal(err)
 	}
 	defer vlc.Release()
 
 	// Create a new player
 	player, err := vlc.NewPlayer()
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatal(err)
 	}
 	defer func() {
 		player.Stop()
@@ -57,18 +55,26 @@ func main() {
 	// err = player.SetMedia("localPath/test.mp4", true)
 	err = player.SetMedia("http://stream-uk1.radioparadise.com/mp3-32", false)
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatal(err)
 	}
 
 	// Play
 	err = player.Play()
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatal(err)
 	}
 
-	time.Sleep(30 * time.Second)
+	// Wait some amount of time for the media to start playing
+	// TODO: Implement proper callbacks for getting the state of the media
+	time.Sleep(1 * time.Second)
+
+	// If the media played is a live stream the length will be 0
+	length, err := player.GetLength()
+	if err != nil || length == 0 {
+		length = 1000 * 60
+	}
+
+	time.Sleep(time.Duration(length) * time.Millisecond)
 }
 ```
 
