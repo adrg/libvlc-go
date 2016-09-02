@@ -193,7 +193,7 @@ func (p *Player) SetTime(t int) error {
 // 5=STOPPING, 6=ENDED, 7=ERROR
 func (p *Player) GetState() (int, error) {
 	if p.player == nil {
-		return 0, errors.New("A player must first be initilialized")
+		return 0, errors.New("A player must first be initialized")
 	}
 
 	return int(C.libvlc_media_player_get_state(p.player)), getError()
