@@ -187,3 +187,14 @@ func (p *Player) SetTime(t int) error {
 	C.libvlc_media_player_set_time(p.player, C.libvlc_time_t(int64(t)))
 	return getError()
 }
+
+// GetState returns the current media state in int.
+// 0=IDLE/CLOSE, 1=OPENING, 3=PLAYING, 4=PAUSED,
+// 5=STOPPING, 6=ENDED, 7=ERROR
+func (p *Player) GetState() (int, error) {
+	if p.player == nil {
+		return 0, errors.New("A player must first be initialized")
+	}
+
+	return int(C.libvlc_media_player_get_state(p.player)), getError()
+}
