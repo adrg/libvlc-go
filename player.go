@@ -82,7 +82,7 @@ func (p *Player) Pause(pause bool) error {
 	return getError()
 }
 
-func (p *Player) GetVolume() (int, error) {
+func (p *Player) Volume() (int, error) {
 	if p.player == nil {
 		return 0, errors.New("A player must first be initialized")
 	}
@@ -138,17 +138,8 @@ func (p *Player) SetAudioOutput(output string) error {
 	return nil
 }
 
-// GetTime returns media time in milliseconds.
-func (p *Player) GetTime() (int, error) {
-	if p.player == nil {
-		return 0, errors.New("A player must first be initialized")
-	}
-
-	return int(C.libvlc_media_player_get_time(p.player)), getError()
-}
-
 // GetLength returns media length in milliseconds.
-func (p *Player) GetLength() (int, error) {
+func (p *Player) MediaLength() (int, error) {
 	if p.player == nil {
 		return 0, errors.New("A player must first be initialized")
 	}
@@ -156,9 +147,19 @@ func (p *Player) GetLength() (int, error) {
 	return int(C.libvlc_media_player_get_length(p.player)), getError()
 }
 
+// MediaState returns the state of the current media.
+func (p *Player) MediaState() (MediaState, error) {
+	if p.player == nil {
+		return 0, errors.New("A player must first be initialized")
+	}
+
+	state := int(C.libvlc_media_player_get_state(p.player))
+	return MediaState(state), getError()
+}
+
 // GetPosition returns media position as a
 // float percentage between 0.0 and 1.0.
-func (p *Player) GetPosition() (float32, error) {
+func (p *Player) MediaPosition() (float32, error) {
 	if p.player == nil {
 		return 0, errors.New("A player must first be initialized")
 	}
@@ -168,7 +169,7 @@ func (p *Player) GetPosition() (float32, error) {
 
 // SetPosition sets media position as percentage between 0.0 and 1.0.
 // Some formats and protocols do not support this.
-func (p *Player) SetPosition(pos float32) error {
+func (p *Player) SetMediaPosition(pos float32) error {
 	if p.player == nil {
 		return errors.New("A player must first be initialized")
 	}
@@ -177,24 +178,22 @@ func (p *Player) SetPosition(pos float32) error {
 	return getError()
 }
 
+// GetTime returns media time in milliseconds.
+func (p *Player) MediaTime() (int, error) {
+	if p.player == nil {
+		return 0, errors.New("A player must first be initialized")
+	}
+
+	return int(C.libvlc_media_player_get_time(p.player)), getError()
+}
+
 // SetTime sets the media time in milliseconds.
 // Some formats and protocals do not support this.
-func (p *Player) SetTime(t int) error {
+func (p *Player) SetMediaTime(t int) error {
 	if p.player == nil {
 		return errors.New("A player must first be initialized")
 	}
 
 	C.libvlc_media_player_set_time(p.player, C.libvlc_time_t(int64(t)))
 	return getError()
-}
-
-// GetState returns the current media state in int.
-// 0=IDLE/CLOSE, 1=OPENING, 3=PLAYING, 4=PAUSED,
-// 5=STOPPING, 6=ENDED, 7=ERROR
-func (p *Player) GetState() (int, error) {
-	if p.player == nil {
-		return 0, errors.New("A player must first be initialized")
-	}
-
-	return int(C.libvlc_media_player_get_state(p.player)), getError()
 }

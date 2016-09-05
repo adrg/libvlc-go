@@ -57,7 +57,7 @@ func NewPlayer() (*Player, error) {
 	return nil, getError()
 }
 
-func GetAudioOutputList() ([]*AudioOutput, error) {
+func AudioOutputList() ([]*AudioOutput, error) {
 	if instance == nil {
 		return nil, errors.New("Module must be first initialized")
 	}

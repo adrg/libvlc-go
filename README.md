@@ -69,7 +69,7 @@ func main() {
 	time.Sleep(1 * time.Second)
 
 	// If the media played is a live stream the length will be 0
-	length, err := player.GetLength()
+	length, err := player.MediaLength()
 	if err != nil || length == 0 {
 		length = 1000 * 60
 	}

@@ -4,6 +4,19 @@ package vlc
 // #include <vlc/vlc.h>
 import "C"
 
+type MediaState int
+
+const (
+	MediaIdle MediaState = iota
+	MediaOpening
+	MediaBuffering
+	MediaPlaying
+	MediaPaused
+	MediaStopped
+	MediaEnded
+	MediaError
+)
+
 type Media struct {
 	media *C.libvlc_media_t
 }
