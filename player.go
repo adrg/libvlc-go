@@ -138,7 +138,7 @@ func (p *Player) SetAudioOutput(output string) error {
 	return nil
 }
 
-// GetLength returns media length in milliseconds.
+// MediaLength returns media length in milliseconds.
 func (p *Player) MediaLength() (int, error) {
 	if p.player == nil {
 		return 0, errors.New("A player must first be initialized")
@@ -157,7 +157,7 @@ func (p *Player) MediaState() (MediaState, error) {
 	return MediaState(state), getError()
 }
 
-// GetPosition returns media position as a
+// MediaPosition returns media position as a
 // float percentage between 0.0 and 1.0.
 func (p *Player) MediaPosition() (float32, error) {
 	if p.player == nil {
@@ -167,7 +167,7 @@ func (p *Player) MediaPosition() (float32, error) {
 	return float32(C.libvlc_media_player_get_position(p.player)), getError()
 }
 
-// SetPosition sets media position as percentage between 0.0 and 1.0.
+// SetMediaPosition sets media position as percentage between 0.0 and 1.0.
 // Some formats and protocols do not support this.
 func (p *Player) SetMediaPosition(pos float32) error {
 	if p.player == nil {
@@ -178,7 +178,7 @@ func (p *Player) SetMediaPosition(pos float32) error {
 	return getError()
 }
 
-// GetTime returns media time in milliseconds.
+// MediaTime returns media time in milliseconds.
 func (p *Player) MediaTime() (int, error) {
 	if p.player == nil {
 		return 0, errors.New("A player must first be initialized")
@@ -187,7 +187,7 @@ func (p *Player) MediaTime() (int, error) {
 	return int(C.libvlc_media_player_get_time(p.player)), getError()
 }
 
-// SetTime sets the media time in milliseconds.
+// SetMediaTime sets the media time in milliseconds.
 // Some formats and protocals do not support this.
 func (p *Player) SetMediaTime(t int) error {
 	if p.player == nil {
