@@ -110,6 +110,7 @@ func (p *Player) SetVolume(volume int) error {
 	return getError()
 }
 
+// SetMedia sets Media by path, pass true if path is local.
 func (p *Player) SetMedia(path string, local bool) error {
 	if p.player == nil {
 		return errors.New("A player must first be initialized")
