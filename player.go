@@ -68,6 +68,7 @@ func (p *Player) Stop() error {
 	return getError()
 }
 
+// Pause pauses player if passed true and plays if passed false.
 func (p *Player) Pause(pause bool) error {
 	if p.player == nil {
 		return errors.New("A player must first be initialized")
