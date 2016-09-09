@@ -197,3 +197,12 @@ func (p *Player) SetMediaTime(t int) error {
 	C.libvlc_media_player_set_time(p.player, C.libvlc_time_t(int64(t)))
 	return getError()
 }
+
+// WillPlay returns true if player is able to play.
+func (p *Player) WillPlay() bool {
+	if p.player == nil {
+		return false
+	}
+
+	return C.libvlc_media_player_will_play(p.player) != 0
+}
