@@ -82,6 +82,16 @@ func (p *Player) Pause(pause bool) error {
 	return getError()
 }
 
+// TogglePause has no effect if there is no media.
+func (p *Player) TogglePause() error {
+	if p.player == nil {
+		return errors.New("A player must first be initialized")
+	}
+
+	C.libvlc_media_player_pause(p.player)
+	return getError()
+}
+
 func (p *Player) Volume() (int, error) {
 	if p.player == nil {
 		return 0, errors.New("A player must first be initialized")
