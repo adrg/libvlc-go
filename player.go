@@ -68,8 +68,9 @@ func (p *Player) Stop() error {
 	return getError()
 }
 
-// Pause pauses player if passed true and plays if passed false.
-func (p *Player) Pause(pause bool) error {
+// SetPause sets the pause state of the media player.
+// Pass in true to pause the current media, or false to resume it.
+func (p *Player) SetPause(pause bool) error {
 	if p.player == nil {
 		return errors.New("A player must first be initialized")
 	}
@@ -83,7 +84,8 @@ func (p *Player) Pause(pause bool) error {
 	return getError()
 }
 
-// TogglePause has no effect if there is no media.
+// TogglePause pauses/resumes the player.
+// Calling this method has no effect if there is no media.
 func (p *Player) TogglePause() error {
 	if p.player == nil {
 		return errors.New("A player must first be initialized")
@@ -110,7 +112,9 @@ func (p *Player) SetVolume(volume int) error {
 	return getError()
 }
 
-// SetMedia sets Media by path, pass true if path is local.
+// SetMedia sets the path of the media that will be used by the player.
+// If the specified path is a local one, pass in true as the second
+// parameter, otherwise false.
 func (p *Player) SetMedia(path string, local bool) error {
 	if p.player == nil {
 		return errors.New("A player must first be initialized")
@@ -210,7 +214,8 @@ func (p *Player) SetMediaTime(t int) error {
 	return getError()
 }
 
-// WillPlay returns true if player is able to play.
+// WillPlay returns true if the current media is not in a
+// finished or error state.
 func (p *Player) WillPlay() bool {
 	if p.player == nil {
 		return false
