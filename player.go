@@ -68,6 +68,7 @@ func (p *Player) Stop() error {
 	return getError()
 }
 
+// Pause pauses player if passed true and plays if passed false.
 func (p *Player) Pause(pause bool) error {
 	if p.player == nil {
 		return errors.New("A player must first be initialized")
@@ -79,6 +80,16 @@ func (p *Player) Pause(pause bool) error {
 	}
 
 	C.libvlc_media_player_set_pause(p.player, C.int(toggle))
+	return getError()
+}
+
+// TogglePause has no effect if there is no media.
+func (p *Player) TogglePause() error {
+	if p.player == nil {
+		return errors.New("A player must first be initialized")
+	}
+
+	C.libvlc_media_player_pause(p.player)
 	return getError()
 }
 
@@ -99,6 +110,7 @@ func (p *Player) SetVolume(volume int) error {
 	return getError()
 }
 
+// SetMedia sets Media by path, pass true if path is local.
 func (p *Player) SetMedia(path string, local bool) error {
 	if p.player == nil {
 		return errors.New("A player must first be initialized")
@@ -196,4 +208,13 @@ func (p *Player) SetMediaTime(t int) error {
 
 	C.libvlc_media_player_set_time(p.player, C.libvlc_time_t(int64(t)))
 	return getError()
+}
+
+// WillPlay returns true if player is able to play.
+func (p *Player) WillPlay() bool {
+	if p.player == nil {
+		return false
+	}
+
+	return C.libvlc_media_player_will_play(p.player) != 0
 }
