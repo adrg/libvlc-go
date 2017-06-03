@@ -41,11 +41,6 @@ func (l *MediaList) Retain() error {
 	return getError()
 }
 
-func (l *MediaList) SetMedia(m *Media) error {
-
-	return getError()
-}
-
 // AddMedia adds a Media instance to the list.
 // Lock() the media while performing this operation
 func (l *MediaList) AddMedia(m *Media) error {

@@ -29,3 +29,37 @@ func (m *Media) Release() error {
 	C.libvlc_media_release(m.media)
 	return getError()
 }
+
+func NewMediaFromPath(path string) (*Media, error) {
+	if instance == nil {
+		return nil, errors.New("Module must be first initialized")
+	}
+
+	cPath := C.CString(path)
+	defer C.free(unsafe.Pointer(cPath))
+
+	var media *C.libvlc_media_t = nil
+	media = C.libvlc_media_new_path(instance, cPath)
+	if media == nil {
+		return nil, getError()
+	}
+
+	return &Media{media: media}, nil
+}
+
+func NewMediaFromUrl(path string) (*Media, error) {
+	if instance == nil {
+		return nil, errors.New("Module must be first initialized")
+	}
+
+	cPath := C.CString(path)
+	defer C.free(unsafe.Pointer(cPath))
+
+	var media *C.libvlc_media_t = nil
+	media = C.libvlc_media_new_location(instance, cPath)
+	if media == nil {
+		return nil, getError()
+	}
+
+	return &Media{media: media}, nil
+}

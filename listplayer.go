@@ -98,11 +98,6 @@ func (p *ListPlayer) TogglePause() error {
 	return getError()
 }
 
-func (p *ListPlayer) SetMediaFromPath(path string) error {
-
-	return nil
-}
-
 func (p *ListPlayer) SetMediaList(l *MediaList) error {
 	if p.player == nil || l.list == nil {
 		return errors.New("A MediaList and ListPlayer must first be initialized")
