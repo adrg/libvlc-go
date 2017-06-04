@@ -132,31 +132,16 @@ func (p *Player) SetVolume(volume int) error {
 	return getError()
 }
 
-// SetMedia sets the path of the media that will be used by the player.
-// If the specified path is a local one, pass in true as the second
-// parameter, otherwise false.
-func (p *Player) SetMedia(path string, local bool) error {
-	if p.player == nil {
-		return errors.New("A player must be initialized first")
-	}
+// SetMediaFromPath loads the media from the specified path
+// and adds it as the current media of the player.
+func (p *Player) SetMediaFromPath(path string) error {
+	return p.setMedia(path, true)
+}
 
-	if p.media != nil {
-		if err := p.media.Release(); err != nil {
-			return err
-		}
-
-		p.media = nil
-	}
-
-	media, err := newMedia(path, local)
-	if err != nil {
-		return err
-	}
-
-	p.media = media
-	C.libvlc_media_player_set_media(p.player, media.media)
-
-	return getError()
+// SetMediaFromURL loads the media from the specified URL
+// and adds it as the current media of the player.
+func (p *Player) SetMediaFromURL(url string) error {
+	return p.setMedia(url, false)
 }
 
 // SetAudioOutput selects an audio output module.
@@ -245,4 +230,28 @@ func (p *Player) WillPlay() bool {
 	}
 
 	return C.libvlc_media_player_will_play(p.player) != 0
+}
+
+func (p *Player) setMedia(path string, local bool) error {
+	if p.player == nil {
+		return errors.New("A player must be initialized first")
+	}
+
+	if p.media != nil {
+		if err := p.media.Release(); err != nil {
+			return err
+		}
+
+		p.media = nil
+	}
+
+	media, err := newMedia(path, local)
+	if err != nil {
+		return err
+	}
+
+	p.media = media
+	C.libvlc_media_player_set_media(p.player, media.media)
+
+	return getError()
 }
