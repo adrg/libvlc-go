@@ -33,14 +33,6 @@ func (p *Player) Release() error {
 		return nil
 	}
 
-	if p.media != nil {
-		if err := p.media.Release(); err != nil {
-			return err
-		}
-
-		p.media = nil
-	}
-
 	C.libvlc_media_player_release(p.player)
 	p.player = nil
 
@@ -132,37 +124,26 @@ func (p *Player) SetVolume(volume int) error {
 	return getError()
 }
 
+// Media returns the current media of the player, if one exists
+func (p *Player) Media() *Media {
+	return p.media
+}
+
 // SetMedia sets the provided media as the current media of the player
-// The previous player media, if it exists, is automatically released when
-// calling this method.
 func (p *Player) SetMedia(m *Media) error {
 	return p.setMedia(m)
 }
 
-// SetMediaFromPath loads the media from the specified path and adds it as the
+// LoadMediaFromPath loads the media from the specified path and adds it as the
 // current media of the player.
-// The previous player media, if it exists, is automatically released when
-// calling this method.
-func (p *Player) SetMediaFromPath(path string) error {
-	m, err := newMedia(path, true)
-	if err != nil {
-		return err
-	}
-
-	return p.setMedia(m)
+func (p *Player) LoadMediaFromPath(path string) (*Media, error) {
+	return p.loadMedia(path, true)
 }
 
-// SetMediaFromURL loads the media from the specified URL and adds it as the
+// LoadMediaFromURL loads the media from the specified URL and adds it as the
 // current media of the player.
-// The previous player media, if it exists, is automatically released when
-// calling this method.
-func (p *Player) SetMediaFromURL(url string) error {
-	m, err := newMedia(url, false)
-	if err != nil {
-		return err
-	}
-
-	return p.setMedia(m)
+func (p *Player) LoadMediaFromURL(url string) (*Media, error) {
+	return p.loadMedia(url, false)
 }
 
 // SetAudioOutput selects an audio output module.
@@ -253,20 +234,26 @@ func (p *Player) WillPlay() bool {
 	return C.libvlc_media_player_will_play(p.player) != 0
 }
 
+func (p *Player) loadMedia(path string, local bool) (*Media, error) {
+	m, err := newMedia(path, local)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = p.setMedia(m); err != nil {
+		m.Release()
+		return nil, err
+	}
+
+	return m, nil
+}
+
 func (p *Player) setMedia(m *Media) error {
 	if p.player == nil {
 		return errors.New("A player must be initialized first")
 	}
 	if m.media == nil {
 		return errors.New("The media must be initialized first")
-	}
-
-	if p.media != nil {
-		if err := p.media.Release(); err != nil {
-			return err
-		}
-
-		p.media = nil
 	}
 
 	p.media = m
