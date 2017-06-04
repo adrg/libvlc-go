@@ -47,3 +47,25 @@ func (ml *MediaList) AddMedia(m *Media) error {
 	C.libvlc_media_list_add_media(ml.list, m.media)
 	return getError()
 }
+
+// AddMediaFromPath loads a media file from path and adds it
+// to the the media list.
+func (ml *MediaList) AddMediaFromPath(path string) error {
+	media, err := NewMediaFromPath(path)
+	if err != nil {
+		return err
+	}
+
+	return ml.AddMedia(media)
+}
+
+// AddMediaFromURL loads a media file from url and adds it
+// to the the media list.
+func (ml *MediaList) AddMediaFromURL(url string) error {
+	media, err := NewMediaFromURL(url)
+	if err != nil {
+		return err
+	}
+
+	return ml.AddMedia(media)
+}
