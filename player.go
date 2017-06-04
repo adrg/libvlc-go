@@ -132,16 +132,37 @@ func (p *Player) SetVolume(volume int) error {
 	return getError()
 }
 
-// SetMediaFromPath loads the media from the specified path
-// and adds it as the current media of the player.
-func (p *Player) SetMediaFromPath(path string) error {
-	return p.setMedia(path, true)
+// SetMedia sets the provided media as the current media of the player
+// The previous player media, if it exists, is automatically released when
+// calling this method.
+func (p *Player) SetMedia(m *Media) error {
+	return p.setMedia(m)
 }
 
-// SetMediaFromURL loads the media from the specified URL
-// and adds it as the current media of the player.
+// SetMediaFromPath loads the media from the specified path and adds it as the
+// current media of the player.
+// The previous player media, if it exists, is automatically released when
+// calling this method.
+func (p *Player) SetMediaFromPath(path string) error {
+	m, err := newMedia(path, true)
+	if err != nil {
+		return err
+	}
+
+	return p.setMedia(m)
+}
+
+// SetMediaFromURL loads the media from the specified URL and adds it as the
+// current media of the player.
+// The previous player media, if it exists, is automatically released when
+// calling this method.
 func (p *Player) SetMediaFromURL(url string) error {
-	return p.setMedia(url, false)
+	m, err := newMedia(url, false)
+	if err != nil {
+		return err
+	}
+
+	return p.setMedia(m)
 }
 
 // SetAudioOutput selects an audio output module.
@@ -232,9 +253,12 @@ func (p *Player) WillPlay() bool {
 	return C.libvlc_media_player_will_play(p.player) != 0
 }
 
-func (p *Player) setMedia(path string, local bool) error {
+func (p *Player) setMedia(m *Media) error {
 	if p.player == nil {
 		return errors.New("A player must be initialized first")
+	}
+	if m.media == nil {
+		return errors.New("The media must be initialized first")
 	}
 
 	if p.media != nil {
@@ -245,13 +269,8 @@ func (p *Player) setMedia(path string, local bool) error {
 		p.media = nil
 	}
 
-	media, err := newMedia(path, local)
-	if err != nil {
-		return err
-	}
-
-	p.media = media
-	C.libvlc_media_player_set_media(p.player, media.media)
+	p.media = m
+	C.libvlc_media_player_set_media(p.player, m.media)
 
 	return getError()
 }
