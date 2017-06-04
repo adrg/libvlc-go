@@ -50,10 +50,11 @@ func main() {
 		player.Release()
 	}()
 
-	// Set player media. The second parameter of the method specifies if
-	// the media resource is local or remote.
-	// err = player.SetMedia("localPath/test.mp4", true)
-	err = player.SetMedia("http://stream-uk1.radioparadise.com/mp3-32", false)
+	// Add a media file from path or from URL.
+	// Set player media from path:
+	// err = player.SetMediaFromPath("localPath/test.mp4")
+	// Set player media from URL:
+	err = player.SetMediaFromURL("http://stream-uk1.radioparadise.com/mp3-32")
 	if err != nil {
 		log.Fatal(err)
 	}
