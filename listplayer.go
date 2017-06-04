@@ -13,9 +13,10 @@ type ListPlayer struct {
 	media  *MediaList
 }
 
+// NewPlayer creates an instance of a multi-media player.
 func NewListPlayer() (*ListPlayer, error) {
 	if instance == nil {
-		return nil, errors.New("Module must be first initialized")
+		return nil, errors.New("Module must be initialized first")
 	}
 
 	if player := C.libvlc_media_list_player_new(instance); player != nil {
@@ -25,84 +26,93 @@ func NewListPlayer() (*ListPlayer, error) {
 	return nil, getError()
 }
 
-func (p *ListPlayer) Release() error {
-	if p.player == nil {
+// Release destroys the media player instance.
+func (lp *ListPlayer) Release() error {
+	if lp.player == nil {
 		return nil
 	}
 
-	if p.media != nil {
-		if err := p.media.Release(); err != nil {
+	if lp.media != nil {
+		if err := lp.media.Release(); err != nil {
 			return err
 		}
 
-		p.media = nil
+		lp.media = nil
 	}
 
-	C.libvlc_media_list_player_release(p.player)
+	C.libvlc_media_list_player_release(lp.player)
+	lp.player = nil
+
 	return getError()
 }
 
-func (p *ListPlayer) Play() error {
-	if p.player == nil {
-		return errors.New("A list player must first be initialized")
+// Play plays the current media list.
+func (lp *ListPlayer) Play() error {
+	if lp.player == nil {
+		return errors.New("A list player must be initialized first")
 	}
-
-	if p.IsPlaying() {
+	if lp.IsPlaying() {
 		return nil
 	}
 
-	C.libvlc_media_list_player_play(p.player)
-	return nil
+	C.libvlc_media_list_player_play(lp.player)
+	return getError()
 }
 
-func (p *ListPlayer) IsPlaying() bool {
-	if p.player == nil {
+// IsPlaying returns a boolean value specifying if the player is currently
+// playing.
+func (lp *ListPlayer) IsPlaying() bool {
+	if lp.player == nil {
 		return false
 	}
 
-	return C.libvlc_media_list_player_is_playing(p.player) != 0
+	return C.libvlc_media_list_player_is_playing(lp.player) != 0
 }
 
-func (p *ListPlayer) Stop() error {
-	if p.player == nil {
-		return errors.New("A player must first be initialized")
+// Stop cancels the currently playing media list, if there is one.
+func (lp *ListPlayer) Stop() error {
+	if lp.player == nil {
+		return errors.New("A list player must be initialized first")
 	}
-
-	if !p.IsPlaying() {
+	if !lp.IsPlaying() {
 		return nil
 	}
 
-	C.libvlc_media_list_player_stop(p.player)
+	C.libvlc_media_list_player_stop(lp.player)
 	return getError()
 }
 
 // SetPause sets the pause state of the media player.
 // Pass in true to pause the current media, or false to resume it.
-func (p *ListPlayer) Pause() error {
-	if p.player == nil {
-		return errors.New("A player must first be initialized")
+func (lp *ListPlayer) Pause() error {
+	if lp.player == nil {
+		return errors.New("A list player must be initialized first")
 	}
 
-	C.libvlc_media_list_player_pause(p.player)
+	C.libvlc_media_list_player_pause(lp.player)
 	return getError()
 }
 
 // TogglePause pauses/resumes the player.
 // Calling this method has no effect if there is no media.
-func (p *ListPlayer) TogglePause() error {
-	if p.player == nil {
-		return errors.New("A list player must first be initialized")
+func (lp *ListPlayer) TogglePause() error {
+	if lp.player == nil {
+		return errors.New("A list player must be initialized first")
 	}
 
-	C.libvlc_media_list_player_pause(p.player)
+	C.libvlc_media_list_player_pause(lp.player)
 	return getError()
 }
 
-func (p *ListPlayer) SetMediaList(l *MediaList) error {
-	if p.player == nil || l.list == nil {
-		return errors.New("A MediaList and ListPlayer must first be initialized")
+// SetMediaList sets the media list to be played.
+func (lp *ListPlayer) SetMediaList(ml *MediaList) error {
+	if lp.player == nil {
+		return errors.New("A list player must be initialized first")
+	}
+	if ml.list == nil {
+		return errors.New("A media list must be initialized first")
 	}
 
-	C.libvlc_media_list_player_set_media_list(p.player, l.list)
+	C.libvlc_media_list_player_set_media_list(lp.player, ml.list)
 	return getError()
 }

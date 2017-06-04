@@ -11,6 +11,9 @@ import (
 
 var instance *C.libvlc_instance_t
 
+// Init creates an instance of the VLC module.
+// Must be called only once and the module instance must be released using
+// the Release function.
 func Init(args ...string) error {
 	if instance != nil {
 		return nil
@@ -36,71 +39,16 @@ func Init(args ...string) error {
 	return nil
 }
 
+// Release destroys the instance created by the Init function.
 func Release() error {
 	if instance == nil {
 		return nil
 	}
 
 	C.libvlc_release(instance)
+	instance = nil
+
 	return getError()
-}
-
-func NewPlayer() (*Player, error) {
-	if instance == nil {
-		return nil, errors.New("Module must be first initialized")
-	}
-
-	if player := C.libvlc_media_player_new(instance); player != nil {
-		return &Player{player: player}, nil
-	}
-
-	return nil, getError()
-}
-
-func AudioOutputList() ([]*AudioOutput, error) {
-	if instance == nil {
-		return nil, errors.New("Module must be first initialized")
-	}
-
-	outputs := C.libvlc_audio_output_list_get(instance)
-	if outputs == nil {
-		return nil, getError()
-	}
-	defer C.libvlc_audio_output_list_release(outputs)
-
-	audioOutputs := []*AudioOutput{}
-	for p := outputs; p != nil; p = (*C.libvlc_audio_output_t)(p.p_next) {
-		audioOutput := &AudioOutput{
-			Name:        C.GoString(p.psz_name),
-			Description: C.GoString(p.psz_description),
-		}
-
-		audioOutputs = append(audioOutputs, audioOutput)
-	}
-
-	return audioOutputs, getError()
-}
-
-func newMedia(path string, local bool) (*Media, error) {
-	if instance == nil {
-		return nil, errors.New("Module must be first initialized")
-	}
-
-	cPath := C.CString(path)
-	defer C.free(unsafe.Pointer(cPath))
-
-	var media *C.libvlc_media_t = nil
-	if local {
-		media = C.libvlc_media_new_path(instance, cPath)
-	} else {
-		media = C.libvlc_media_new_location(instance, cPath)
-	}
-
-	if media == nil {
-		return nil, getError()
-	}
-
-	return &Media{media: media}, nil
 }
 
 func getError() error {

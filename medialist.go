@@ -9,45 +9,41 @@ type MediaList struct {
 	list *C.libvlc_media_list_t
 }
 
+// NewMediaList creates an empty media list.
 func NewMediaList() (*MediaList, error) {
 	if instance == nil {
-		return nil, errors.New("Module must be first initialized")
+		return nil, errors.New("Module must be initialized first")
 	}
 
-	var list *C.libvlc_media_list_t = nil
-	list = C.libvlc_media_list_new(instance)
-	if list == nil {
+	var list *C.libvlc_media_list_t
+	if list = C.libvlc_media_list_new(instance); list == nil {
 		return nil, getError()
 	}
 
 	return &MediaList{list: list}, nil
 }
 
-func (l *MediaList) Release() error {
-	if l.list == nil {
+// Release destroys the media list instance.
+func (ml *MediaList) Release() error {
+	if ml.list == nil {
 		return nil
 	}
 
-	C.libvlc_media_list_release(l.list)
+	C.libvlc_media_list_release(ml.list)
+	ml.list = nil
+
 	return getError()
 }
 
-func (l *MediaList) Retain() error {
-	if l.list == nil {
-		return nil
+// AddMedia adds a Media instance to the media list.
+func (ml *MediaList) AddMedia(m *Media) error {
+	if ml.list == nil {
+		return errors.New("Media list must be initialized first")
+	}
+	if m.media == nil {
+		return errors.New("Media must be initialized first")
 	}
 
-	C.libvlc_media_list_retain(l.list)
-	return getError()
-}
-
-// AddMedia adds a Media instance to the list.
-// Lock() the media while performing this operation
-func (l *MediaList) AddMedia(m *Media) error {
-	if l.list == nil || m.media == nil {
-		return errors.New("Media must first be initialized")
-	}
-
-	C.libvlc_media_list_add_media(l.list, m.media)
+	C.libvlc_media_list_add_media(ml.list, m.media)
 	return getError()
 }

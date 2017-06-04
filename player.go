@@ -14,6 +14,20 @@ type Player struct {
 	media  *Media
 }
 
+// NewPlayer creates an instance of a single-media player.
+func NewPlayer() (*Player, error) {
+	if instance == nil {
+		return nil, errors.New("Module must be initialized first")
+	}
+
+	if player := C.libvlc_media_player_new(instance); player != nil {
+		return &Player{player: player}, nil
+	}
+
+	return nil, getError()
+}
+
+// Release destroys the media player instance.
 func (p *Player) Release() error {
 	if p.player == nil {
 		return nil
@@ -28,14 +42,16 @@ func (p *Player) Release() error {
 	}
 
 	C.libvlc_media_player_release(p.player)
+	p.player = nil
+
 	return getError()
 }
 
+// Play plays the current media.
 func (p *Player) Play() error {
 	if p.player == nil {
-		return errors.New("A player must first be initialized")
+		return errors.New("A player must be initialized first")
 	}
-
 	if p.IsPlaying() {
 		return nil
 	}
@@ -47,6 +63,8 @@ func (p *Player) Play() error {
 	return nil
 }
 
+// IsPlaying returns a boolean value specifying if the player is currently
+// playing.
 func (p *Player) IsPlaying() bool {
 	if p.player == nil {
 		return false
@@ -55,11 +73,11 @@ func (p *Player) IsPlaying() bool {
 	return C.libvlc_media_player_is_playing(p.player) != 0
 }
 
+// Stop cancels the currently playing media, if there is one.
 func (p *Player) Stop() error {
 	if p.player == nil {
-		return errors.New("A player must first be initialized")
+		return errors.New("A player must be initialized first")
 	}
-
 	if !p.IsPlaying() {
 		return nil
 	}
@@ -72,7 +90,7 @@ func (p *Player) Stop() error {
 // Pass in true to pause the current media, or false to resume it.
 func (p *Player) SetPause(pause bool) error {
 	if p.player == nil {
-		return errors.New("A player must first be initialized")
+		return errors.New("A player must be initialized first")
 	}
 
 	toggle := 0
@@ -88,24 +106,26 @@ func (p *Player) SetPause(pause bool) error {
 // Calling this method has no effect if there is no media.
 func (p *Player) TogglePause() error {
 	if p.player == nil {
-		return errors.New("A player must first be initialized")
+		return errors.New("A player must be initialized first")
 	}
 
 	C.libvlc_media_player_pause(p.player)
 	return getError()
 }
 
+// Volume returns the volume of the player.
 func (p *Player) Volume() (int, error) {
 	if p.player == nil {
-		return 0, errors.New("A player must first be initialized")
+		return 0, errors.New("A player must be initialized first")
 	}
 
 	return int(C.libvlc_audio_get_volume(p.player)), getError()
 }
 
+// SetVolume sets the volume of the player.
 func (p *Player) SetVolume(volume int) error {
 	if p.player == nil {
-		return errors.New("A player must first be initialized")
+		return errors.New("A player must be initialized first")
 	}
 
 	C.libvlc_audio_set_volume(p.player, C.int(volume))
@@ -117,7 +137,7 @@ func (p *Player) SetVolume(volume int) error {
 // parameter, otherwise false.
 func (p *Player) SetMedia(path string, local bool) error {
 	if p.player == nil {
-		return errors.New("A player must first be initialized")
+		return errors.New("A player must be initialized first")
 	}
 
 	if p.media != nil {
@@ -139,9 +159,12 @@ func (p *Player) SetMedia(path string, local bool) error {
 	return getError()
 }
 
+// SetAudioOutput selects an audio output module.
+// Any change will take be effect only after playback is stopped and restarted.
+// Audio output cannot be changed while playing.
 func (p *Player) SetAudioOutput(output string) error {
 	if p.player == nil {
-		return errors.New("A player must first be initialized")
+		return errors.New("A player must be initialized first")
 	}
 
 	cOutput := C.CString(output)
@@ -157,7 +180,7 @@ func (p *Player) SetAudioOutput(output string) error {
 // MediaLength returns media length in milliseconds.
 func (p *Player) MediaLength() (int, error) {
 	if p.player == nil {
-		return 0, errors.New("A player must first be initialized")
+		return 0, errors.New("A player must be initialized first")
 	}
 
 	return int(C.libvlc_media_player_get_length(p.player)), getError()
@@ -166,7 +189,7 @@ func (p *Player) MediaLength() (int, error) {
 // MediaState returns the state of the current media.
 func (p *Player) MediaState() (MediaState, error) {
 	if p.player == nil {
-		return 0, errors.New("A player must first be initialized")
+		return 0, errors.New("A player must be initialized first")
 	}
 
 	state := int(C.libvlc_media_player_get_state(p.player))
@@ -177,7 +200,7 @@ func (p *Player) MediaState() (MediaState, error) {
 // float percentage between 0.0 and 1.0.
 func (p *Player) MediaPosition() (float32, error) {
 	if p.player == nil {
-		return 0, errors.New("A player must first be initialized")
+		return 0, errors.New("A player must be initialized first")
 	}
 
 	return float32(C.libvlc_media_player_get_position(p.player)), getError()
@@ -187,7 +210,7 @@ func (p *Player) MediaPosition() (float32, error) {
 // Some formats and protocols do not support this.
 func (p *Player) SetMediaPosition(pos float32) error {
 	if p.player == nil {
-		return errors.New("A player must first be initialized")
+		return errors.New("A player must be initialized first")
 	}
 
 	C.libvlc_media_player_set_position(p.player, C.float(pos))
@@ -197,7 +220,7 @@ func (p *Player) SetMediaPosition(pos float32) error {
 // MediaTime returns media time in milliseconds.
 func (p *Player) MediaTime() (int, error) {
 	if p.player == nil {
-		return 0, errors.New("A player must first be initialized")
+		return 0, errors.New("A player must be initialized first")
 	}
 
 	return int(C.libvlc_media_player_get_time(p.player)), getError()
@@ -207,7 +230,7 @@ func (p *Player) MediaTime() (int, error) {
 // Some formats and protocals do not support this.
 func (p *Player) SetMediaTime(t int) error {
 	if p.player == nil {
-		return errors.New("A player must first be initialized")
+		return errors.New("A player must be initialized first")
 	}
 
 	C.libvlc_media_player_set_time(p.player, C.libvlc_time_t(int64(t)))

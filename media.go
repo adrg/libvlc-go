@@ -26,42 +26,43 @@ type Media struct {
 	media *C.libvlc_media_t
 }
 
+// NewMediaFromPath create a Media instance from the provided path.
+func NewMediaFromPath(path string) (*Media, error) {
+	return newMedia(path, true)
+}
+
+// NewMediaFromPath create a Media instance from the provided URL.
+func NewMediaFromURL(url string) (*Media, error) {
+	return newMedia(url, false)
+}
+
+// Release destroys the media instance.
 func (m *Media) Release() error {
 	if m.media == nil {
 		return nil
 	}
 
 	C.libvlc_media_release(m.media)
+	m.media = nil
+
 	return getError()
 }
 
-func NewMediaFromPath(path string) (*Media, error) {
+func newMedia(path string, local bool) (*Media, error) {
 	if instance == nil {
-		return nil, errors.New("Module must be first initialized")
+		return nil, errors.New("Module must be initialized first")
 	}
 
 	cPath := C.CString(path)
 	defer C.free(unsafe.Pointer(cPath))
 
-	var media *C.libvlc_media_t = nil
-	media = C.libvlc_media_new_path(instance, cPath)
-	if media == nil {
-		return nil, getError()
+	var media *C.libvlc_media_t
+	if local {
+		media = C.libvlc_media_new_path(instance, cPath)
+	} else {
+		media = C.libvlc_media_new_location(instance, cPath)
 	}
 
-	return &Media{media: media}, nil
-}
-
-func NewMediaFromUrl(path string) (*Media, error) {
-	if instance == nil {
-		return nil, errors.New("Module must be first initialized")
-	}
-
-	cPath := C.CString(path)
-	defer C.free(unsafe.Pointer(cPath))
-
-	var media *C.libvlc_media_t = nil
-	media = C.libvlc_media_new_location(instance, cPath)
 	if media == nil {
 		return nil, getError()
 	}
