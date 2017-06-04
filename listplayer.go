@@ -10,7 +10,7 @@ import (
 
 type ListPlayer struct {
 	player *C.libvlc_media_list_player_t
-	media  *MediaList
+	list   *MediaList
 }
 
 // NewPlayer creates an instance of a multi-media player.
@@ -30,14 +30,6 @@ func NewListPlayer() (*ListPlayer, error) {
 func (lp *ListPlayer) Release() error {
 	if lp.player == nil {
 		return nil
-	}
-
-	if lp.media != nil {
-		if err := lp.media.Release(); err != nil {
-			return err
-		}
-
-		lp.media = nil
 	}
 
 	C.libvlc_media_list_player_release(lp.player)
@@ -104,6 +96,11 @@ func (lp *ListPlayer) TogglePause() error {
 	return getError()
 }
 
+// MediaList returns the current media list of the player, if one exists
+func (lp *ListPlayer) MediaList() *MediaList {
+	return lp.list
+}
+
 // SetMediaList sets the media list to be played.
 func (lp *ListPlayer) SetMediaList(ml *MediaList) error {
 	if lp.player == nil {
@@ -113,6 +110,8 @@ func (lp *ListPlayer) SetMediaList(ml *MediaList) error {
 		return errors.New("A media list must be initialized first")
 	}
 
+	lp.list = ml
 	C.libvlc_media_list_player_set_media_list(lp.player, ml.list)
+
 	return getError()
 }
