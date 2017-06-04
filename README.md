@@ -3,8 +3,8 @@ libvlc-go
 [![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/adrg/libvlc-go)
 [![License: MIT](http://img.shields.io/badge/license-MIT-red.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
-Provides golang bindings for libvlc version 2.X. This is a work in progress
-and it is not safe for use in a production environment. The current
+Provides golang bindings for libvlc version 2.X/3.X. This is a work in
+progress and it is not safe for use in a production environment. The current
 implementation contains only a small portion of libvlc's functionality.
 
 Full documentation can be found at: http://godoc.org/github.com/adrg/libvlc-go
@@ -68,8 +68,10 @@ func main() {
         log.Fatal(err)
     }
 
-    // Wait some amount of time for the media to start playing
-    // TODO: Implement proper callbacks for getting the state of the media
+    // Wait some amount of time for the media to start playing.
+    // Depends on the version of libvlc. From my tests, libvlc 3.X does not
+    // need this delay.
+    // TODO: Implement proper callbacks for getting the state of the media.
     time.Sleep(1 * time.Second)
 
     // If the media played is a live stream the length will be 0
@@ -141,13 +143,19 @@ func main() {
         log.Fatal(err)
     }
 
+    // Wait some amount of time for the media to start playing.
+    // Depends on the version of libvlc. From my tests, libvlc 3.X does not
+    // need this delay.
+    // TODO: Implement proper callbacks for getting the state of the media.
+    time.Sleep(1 * time.Second)
+
     // Play
     err = player.Play()
     if err != nil {
         log.Fatal(err)
     }
 
-    time.Sleep(1000 * time.Second)
+    time.Sleep(60 * 1000 * time.Millisecond)
 }
 ```
 
