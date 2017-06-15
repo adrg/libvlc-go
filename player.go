@@ -105,6 +105,42 @@ func (p *Player) TogglePause() error {
 	return getError()
 }
 
+// ToggleFullScreen toggles fullscreen status on non-embedded video outputs.
+func (p *Player) ToggleFullScreen() error {
+	if p.player == nil {
+		return errors.New("A player must be initialized first")
+	}
+
+	C.libvlc_toggle_fullscreen(p.player)
+
+	return getError()
+}
+
+// SetFullScreen enables or disables fullscreen.
+func (p *Player) SetFullScreen(fullscreen bool) error {
+	if p.player == nil {
+		return errors.New("A player must be initialized first")
+	}
+
+	if fullscreen {
+		C.libvlc_set_fullscreen(p.player, C.int(1))
+	} else {
+		C.libvlc_set_fullscreen(p.player, C.int(0))
+	}
+
+	return getError()
+}
+
+// IsFullscreen gets current fullscreen status.
+func (p *Player) IsFullScreen() (bool, error) {
+
+	if p.player == nil {
+		return false, errors.New("A player must be initialized first")
+	}
+
+	return (C.libvlc_get_fullscreen(p.player) != C.int(0)), getError()
+}
+
 // Volume returns the volume of the player.
 func (p *Player) Volume() (int, error) {
 	if p.player == nil {
