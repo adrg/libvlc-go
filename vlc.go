@@ -4,10 +4,7 @@ package vlc
 // #include <vlc/vlc.h>
 // #include <stdlib.h>
 import "C"
-import (
-	"errors"
-	"unsafe"
-)
+import "unsafe"
 
 var instance *C.libvlc_instance_t
 
@@ -49,13 +46,4 @@ func Release() error {
 	instance = nil
 
 	return getError()
-}
-
-func getError() error {
-	msg := C.libvlc_errmsg()
-	if msg != nil {
-		return errors.New(C.GoString(msg))
-	}
-
-	return nil
 }

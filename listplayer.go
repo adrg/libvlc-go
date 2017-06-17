@@ -74,17 +74,6 @@ func (lp *ListPlayer) Stop() error {
 	return getError()
 }
 
-// SetPause sets the pause state of the media player.
-// Pass in true to pause the current media, or false to resume it.
-func (lp *ListPlayer) Pause() error {
-	if lp.player == nil {
-		return errors.New("A list player must be initialized first")
-	}
-
-	C.libvlc_media_list_player_pause(lp.player)
-	return getError()
-}
-
 // TogglePause pauses/resumes the player.
 // Calling this method has no effect if there is no media.
 func (lp *ListPlayer) TogglePause() error {
