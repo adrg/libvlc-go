@@ -122,7 +122,7 @@ func (p *Player) ToggleFullScreen() error {
 	return getError()
 }
 
-// IsFullscreen gets the fullscreen status of the current player.
+// IsFullScreen gets the fullscreen status of the current player.
 func (p *Player) IsFullScreen() (bool, error) {
 	if p.player == nil {
 		return false, errors.New("A player must be initialized first")

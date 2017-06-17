@@ -13,7 +13,7 @@ type ListPlayer struct {
 	list   *MediaList
 }
 
-// NewPlayer creates an instance of a multi-media player.
+// NewListPlayer creates an instance of a multi-media player.
 func NewListPlayer() (*ListPlayer, error) {
 	if instance == nil {
 		return nil, errors.New("Module must be initialized first")
