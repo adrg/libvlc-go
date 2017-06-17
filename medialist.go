@@ -40,8 +40,16 @@ func (ml *MediaList) AddMedia(m *Media) error {
 	if ml.list == nil {
 		return errors.New("Media list must be initialized first")
 	}
+	err := ml.Lock()
+	if err != nil {
+		return err
+	}
 	if m.media == nil {
 		return errors.New("Media must be initialized first")
+	}
+	err = ml.Unlock()
+	if err != nil {
+		return err
 	}
 
 	C.libvlc_media_list_add_media(ml.list, m.media)
@@ -68,4 +76,22 @@ func (ml *MediaList) AddMediaFromURL(url string) error {
 	}
 
 	return ml.AddMedia(media)
+}
+
+func (ml *MediaList) Lock() error {
+	if ml.list == nil {
+		return errors.New("Media list must be initialized first")
+	}
+
+	C.libvlc_media_list_lock(ml.list)
+	return getError()
+}
+
+func (ml *MediaList) Unlock() error {
+	if ml.list == nil {
+		return errors.New("Media list must be initialized first")
+	}
+
+	C.libvlc_media_list_unlock(ml.list)
+	return getError()
 }
