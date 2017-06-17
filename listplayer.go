@@ -133,7 +133,7 @@ func (lp *ListPlayer) Pause() error {
 	return getError()
 }
 
-// MediaState returns the state of the current media.
+// GetMediaState returns the state of the current media.
 func (lp *ListPlayer) GetMediaState() (MediaState, error) {
 	if lp.player == nil {
 		return 0, errors.New("A list player must be initialized first")
