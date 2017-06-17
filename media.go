@@ -26,12 +26,12 @@ type Media struct {
 	media *C.libvlc_media_t
 }
 
-// NewMediaFromPath create a Media instance from the provided path.
+// NewMediaFromPath creates a Media instance from the provided path.
 func NewMediaFromPath(path string) (*Media, error) {
 	return newMedia(path, true)
 }
 
-// NewMediaFromPath create a Media instance from the provided URL.
+// NewMediaFromURL creates a Media instance from the provided URL.
 func NewMediaFromURL(url string) (*Media, error) {
 	return newMedia(url, false)
 }

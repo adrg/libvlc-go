@@ -21,7 +21,7 @@ type ListPlayer struct {
 	list   *MediaList
 }
 
-// NewPlayer creates an instance of a multi-media player.
+// NewListPlayer creates an instance of a multi-media player.
 func NewListPlayer() (*ListPlayer, error) {
 	if instance == nil {
 		return nil, errors.New("Module must be initialized first")
@@ -59,6 +59,47 @@ func (lp *ListPlayer) Play() error {
 	return getError()
 }
 
+// PlayNext plays the next media in the current media list.
+func (lp *ListPlayer) PlayNext() error {
+	if lp.player == nil {
+		return errors.New("A list player must be initialized first")
+	}
+
+	if C.libvlc_media_list_player_next(lp.player) < 0 {
+		return getError()
+	}
+
+	return nil
+}
+
+// PlayPrevious plays the previous media in the current media list.
+func (lp *ListPlayer) PlayPrevious() error {
+	if lp.player == nil {
+		return errors.New("A list player must be initialized first")
+	}
+
+	if C.libvlc_media_list_player_previous(lp.player) < 0 {
+		return getError()
+	}
+
+	return nil
+}
+
+// PlayAtIndex plays the media at the specified index from the
+// current media list.
+func (lp ListPlayer) PlayAtIndex(index uint) error {
+	if lp.player == nil {
+		return errors.New("A list player must be initialized first")
+	}
+
+	idx := C.int(index)
+	if C.libvlc_media_list_player_play_item_at_index(lp.player, idx) < 0 {
+		return getError()
+	}
+
+	return nil
+}
+
 // IsPlaying returns a boolean value specifying if the player is currently
 // playing.
 func (lp *ListPlayer) IsPlaying() bool {
@@ -90,6 +131,16 @@ func (lp *ListPlayer) Pause() error {
 
 	C.libvlc_media_list_player_pause(lp.player)
 	return getError()
+}
+
+// MediaState returns the state of the current media.
+func (lp *ListPlayer) GetMediaState() (MediaState, error) {
+	if lp.player == nil {
+		return 0, errors.New("A list player must be initialized first")
+	}
+
+	state := int(C.libvlc_media_list_player_get_state(lp.player))
+	return MediaState(state), getError()
 }
 
 // Previous plays previous item from media list.

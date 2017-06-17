@@ -165,7 +165,8 @@ Contributions in the form of pull requests, issues or just general feedback,
 are always welcome.
 
 **Contributors**:
-[adrg](https://github.com/adrg), [fenimore](https://github.com/fenimore)
+[adrg](https://github.com/adrg), [fenimore](https://github.com/fenimore),
+[tarrsalah](https://github.com/tarrsalah)
 
 ## References
 For more information see [libvlc](http://videolan.org).
