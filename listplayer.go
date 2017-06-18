@@ -8,6 +8,14 @@ import (
 	"errors"
 )
 
+type PlaybackMode int
+
+const (
+	Default PlaybackMode = iota
+	Loop
+	Repeat
+)
+
 type ListPlayer struct {
 	player *C.libvlc_media_list_player_t
 	list   *MediaList
@@ -123,6 +131,18 @@ func (lp *ListPlayer) TogglePause() error {
 	}
 
 	C.libvlc_media_list_player_pause(lp.player)
+	return getError()
+}
+
+// SetPlaybackMode sets the player playback mode for the media list.
+// By default, it plays the media list once and then stops.
+func (lp *ListPlayer) SetPlaybackMode(mode PlaybackMode) error {
+	if lp.player == nil {
+		return errors.New("A list player must be initialized first")
+	}
+
+	m := C.libvlc_playback_mode_t(mode)
+	C.libvlc_media_list_player_set_playback_mode(lp.player, m)
 	return getError()
 }
 
