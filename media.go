@@ -9,7 +9,7 @@ import (
 	"unsafe"
 )
 
-type MediaState int
+type MediaState uint8
 
 const (
 	MediaIdle MediaState = iota
