@@ -1,5 +1,14 @@
 package vlc
 
+// #cgo LDFLAGS: -lvlc
+// #include <vlc/vlc.h>
+// #include <stdlib.h>
+import "C"
+import (
+	"bytes"
+	"encoding/binary"
+)
+
 type EventType uint16
 
 // Event types
@@ -70,7 +79,7 @@ const (
 const (
 
 	// Deprected
-	MediaDiscovererStarted = iota + ox500
+	MediaDiscovererStarted = iota + 0x500
 	MediaDiscovererEnded
 
 	RendererDiscovererItemAdded
@@ -78,7 +87,7 @@ const (
 )
 
 const (
-	VlmMediaAdded = iota + ox600
+	VlmMediaAdded = iota + 0x600
 	VlmMediaRemoved
 	VlmMediaChanged
 	VlmMediaInstanceStarted
@@ -90,3 +99,27 @@ const (
 	VlmMediaInstanceStatusEnd
 	VlmMediaInstanceStatusError
 )
+
+type Event struct {
+	Type   EventType     // Event type
+	target interface{}   // object emitting the event
+	desc   *bytes.Buffer // event descriptor
+}
+
+func (event *Event) MediaPlayerStopped() MediaState {
+	var i uint8
+	if err := binary.Write(event.desc, binary.LittleEndian, i); err != nil {
+		panic(err)
+	}
+
+	return MediaState(i)
+}
+
+func (event *Event) MediaPlayerPaused() MediaState {
+	var i uint8
+	if err := binary.Write(event.desc, binary.LittleEndian, i); err != nil {
+		panic(err)
+	}
+
+	return MediaState(i)
+}
