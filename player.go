@@ -11,7 +11,6 @@ import (
 
 type Player struct {
 	player *C.libvlc_media_player_t
-	media  *Media
 }
 
 // NewPlayer creates an instance of a single-media player.
@@ -151,8 +150,21 @@ func (p *Player) SetVolume(volume int) error {
 }
 
 // Media returns the current media of the player, if one exists
-func (p *Player) Media() *Media {
-	return p.media
+func (p *Player) Media() (*Media, error) {
+	if p.player == nil {
+		return nil, errors.New("A player must be initialized first")
+	}
+
+	media := C.libvlc_media_player_get_media(p.player)
+	if media == nil {
+		return nil, nil
+	}
+
+	// This call will not release the media. Instead, it will decrement
+	// the reference count increased by libvlc_media_player_get_media.
+	C.libvlc_media_release(media)
+
+	return &Media{media}, nil
 }
 
 // SetMedia sets the provided media as the current media of the player
@@ -282,8 +294,6 @@ func (p *Player) setMedia(m *Media) error {
 		return errors.New("The media must be initialized first")
 	}
 
-	p.media = m
 	C.libvlc_media_player_set_media(p.player, m.media)
-
 	return getError()
 }
