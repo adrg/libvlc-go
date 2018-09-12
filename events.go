@@ -87,6 +87,12 @@ const (
 	MediaListPlayerStopped
 )
 
+// Deprecated events
+const (
+	MediaDiscovererStarted Event = 0x500
+	MediaDiscovererEnded
+)
+
 // Renderer events
 const (
 	// A new renderer item was found by a renderer discoverer.
