@@ -8,7 +8,7 @@ import (
 	"errors"
 )
 
-type PlaybackMode int
+type PlaybackMode uint
 
 const (
 	Default PlaybackMode = iota
