@@ -49,6 +49,24 @@ func (lp *ListPlayer) Release() error {
 	return getError()
 }
 
+// MediaPlayer returns the underlying Player instance of the ListPlayer.
+func (lp *ListPlayer) MediaPlayer() (*Player, error) {
+	if lp.player == nil {
+		return nil, errors.New("A list player must be initialized first")
+	}
+
+	player := C.libvlc_media_list_player_get_media_player(lp.player)
+	if player == nil {
+		return nil, getError()
+	}
+
+	// This call will not release the player. Instead, it will decrement the
+	// reference count increased by libvlc_media_list_player_get_media_player.
+	C.libvlc_media_player_release(player)
+
+	return &Player{player: player}, nil
+}
+
 // Play plays the current media list.
 func (lp *ListPlayer) Play() error {
 	if lp.player == nil {
@@ -177,17 +195,4 @@ func (lp *ListPlayer) SetMediaList(ml *MediaList) error {
 	C.libvlc_media_list_player_set_media_list(lp.player, ml.list)
 
 	return getError()
-}
-
-// GetMediaPlayer returns the media player of the media list player instance
-func (lp *ListPlayer) GetMediaPlayer() (*Player, error) {
-	if lp.player == nil {
-		return nil, errors.New("A list player must be initialized first")
-	}
-
-	if player := C.libvlc_media_list_player_get_media_player(lp.player); player != nil {
-		return &Player{player: player}, nil
-	}
-
-	return nil, getError()
 }
