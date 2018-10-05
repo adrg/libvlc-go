@@ -49,8 +49,8 @@ func (lp *ListPlayer) Release() error {
 	return getError()
 }
 
-// MediaPlayer returns the underlying Player instance of the ListPlayer.
-func (lp *ListPlayer) MediaPlayer() (*Player, error) {
+// Player returns the underlying Player instance of the ListPlayer.
+func (lp *ListPlayer) Player() (*Player, error) {
 	if lp.player == nil {
 		return nil, errors.New("A list player must be initialized first")
 	}
