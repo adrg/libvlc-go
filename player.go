@@ -151,7 +151,7 @@ func (p *Player) SetVolume(volume int) error {
 	return getError()
 }
 
-// Media returns the current media of the player, if one exists
+// Media returns the current media of the player, if one exists.
 func (p *Player) Media() (*Media, error) {
 	if p.player == nil {
 		return nil, errors.New("A player must be initialized first")
@@ -169,7 +169,7 @@ func (p *Player) Media() (*Media, error) {
 	return &Media{media}, nil
 }
 
-// SetMedia sets the provided media as the current media of the player
+// SetMedia sets the provided media as the current media of the player.
 func (p *Player) SetMedia(m *Media) error {
 	return p.setMedia(m)
 }
