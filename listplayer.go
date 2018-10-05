@@ -67,6 +67,22 @@ func (lp *ListPlayer) Player() (*Player, error) {
 	return &Player{player: player}, nil
 }
 
+// SetPlayer sets the underlying Player instance of the ListPlayer.
+func (lp *ListPlayer) SetPlayer(player *Player) error {
+	if lp.player == nil {
+		return errors.New("A list player must be initialized first")
+	}
+	if player == nil {
+		return errors.New("Provided player cannot be nil")
+	}
+	if player.player == nil {
+		return errors.New("Provided player must be initialized first")
+	}
+
+	C.libvlc_media_list_player_set_media_player(lp.player, player.player)
+	return getError()
+}
+
 // Play plays the current media list.
 func (lp *ListPlayer) Play() error {
 	if lp.player == nil {
