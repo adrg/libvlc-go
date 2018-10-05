@@ -178,3 +178,16 @@ func (lp *ListPlayer) SetMediaList(ml *MediaList) error {
 
 	return getError()
 }
+
+// GetMediaPlayer returns the media player of the media list player instance
+func (lp *ListPlayer) GetMediaPlayer() (*Player, error) {
+	if lp.player == nil {
+		return nil, errors.New("A list player must be initialized first")
+	}
+
+	if player := C.libvlc_media_list_player_get_media_player(lp.player); player != nil {
+		return &Player{player: player}, nil
+	}
+
+	return nil, getError()
+}
