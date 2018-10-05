@@ -9,6 +9,8 @@ import (
 	"unsafe"
 )
 
+// Player is a media player used to play a single media file.
+// For playing media lists (playlists) use ListPlayer instead.
 type Player struct {
 	player *C.libvlc_media_player_t
 }

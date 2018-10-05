@@ -13,7 +13,7 @@ Initialization
 
 
 Player example
-	// Create a new player
+	// Create a new player.
 	player, err := vlc.NewPlayer()
 	if err != nil {
 		log.Fatal(err)
@@ -33,7 +33,7 @@ Player example
 	}
 	defer media.Release()
 
-	// Play
+	// Start playing the media.
 	err = player.Play()
 	if err != nil {
 		log.Fatal(err)
@@ -45,7 +45,7 @@ Player example
 	// TODO: Implement proper callbacks for getting the state of the media.
 	time.Sleep(1 * time.Second)
 
-	// If the media played is a live stream the length will be 0
+	// If the media played is a live stream the length will be 0.
 	length, err := player.MediaLength()
 	if err != nil || length == 0 {
 		length = 1000 * 60
@@ -54,7 +54,7 @@ Player example
 	time.Sleep(time.Duration(length) * time.Millisecond)
 
 List player example
-    // Create a new list player
+    // Create a new list player.
     player, err := vlc.NewListPlayer()
     if err != nil {
         log.Fatal(err)
@@ -64,7 +64,7 @@ List player example
         player.Release()
     }()
 
-    // Create a new media list
+    // Create a new media list.
     list, err := vlc.NewMediaList()
     if err != nil {
         log.Fatal(err)
@@ -81,7 +81,7 @@ List player example
         log.Fatal(err)
     }
 
-    // Set player media list
+    // Set player media list.
     err = player.SetMediaList(list)
     if err != nil {
         log.Fatal(err)
@@ -100,7 +100,7 @@ List player example
     // TODO: Implement proper callbacks for getting the state of the media.
     time.Sleep(1 * time.Second)
 
-    // Play
+    // Start playing the media list.
     err = player.Play()
     if err != nil {
         log.Fatal(err)

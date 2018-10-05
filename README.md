@@ -42,7 +42,7 @@ func main() {
     }
     defer vlc.Release()
 
-    // Create a new player
+    // Create a new player.
     player, err := vlc.NewPlayer()
     if err != nil {
         log.Fatal(err)
@@ -62,7 +62,7 @@ func main() {
     }
     defer media.Release()
 
-    // Play
+    // Start playing the media.
     err = player.Play()
     if err != nil {
         log.Fatal(err)
@@ -74,7 +74,7 @@ func main() {
     // TODO: Implement proper callbacks for getting the state of the media.
     time.Sleep(1 * time.Second)
 
-    // If the media played is a live stream the length will be 0
+    // If the media played is a live stream the length will be 0.
     length, err := player.MediaLength()
     if err != nil || length == 0 {
         length = 1000 * 60
@@ -103,7 +103,7 @@ func main() {
     }
     defer vlc.Release()
 
-    // Create a new list player
+    // Create a new list player.
     player, err := vlc.NewListPlayer()
     if err != nil {
         log.Fatal(err)
@@ -113,7 +113,7 @@ func main() {
         player.Release()
     }()
 
-    // Create a new media list
+    // Create a new media list.
     list, err := vlc.NewMediaList()
     if err != nil {
         log.Fatal(err)
@@ -130,7 +130,7 @@ func main() {
         log.Fatal(err)
     }
 
-    // Set player media list
+    // Set player media list.
     err = player.SetMediaList(list)
     if err != nil {
         log.Fatal(err)
@@ -149,7 +149,7 @@ func main() {
     // TODO: Implement proper callbacks for getting the state of the media.
     time.Sleep(1 * time.Second)
 
-    // Play
+    // Start playing the media list.
     err = player.Play()
     if err != nil {
         log.Fatal(err)

@@ -1,32 +1,36 @@
 package vlc
 
+// Event represents an event that can occur inside libvlc.
 type Event uint
 
-// Media events
+// Media events.
 const (
-	// Metadata of a media item changed.
+	// MediaMetaChanged is triggered when the metadata of a media item changes.
 	MediaMetaChanged Event = iota
 
-	// Subitem was added to a media item.
+	// MediaSubItemAdded is triggered when a Subitem is added to a media item.
 	MediaSubItemAdded
 
-	// Duration of a media item changed.
+	// MediaDurationChanged is triggered when the duration
+	// of a media item changes.
 	MediaDurationChanged
 
-	// Parsing state of a media item changed.
+	// MediaParsedChanged is triggered when the parsing state
+	// of a media item changes.
 	MediaParsedChanged
 
-	// A media item was freed.
+	// MediaFreed is triggered when a media item is freed.
 	MediaFreed
 
-	// State of the media item changed.
+	// MediaStateChanged is triggered when the state of the media item changes.
 	MediaStateChanged
 
-	// Subitem tree was added to a media item.
+	// MediaSubItemTreeAdded is triggered when a Subitem tree is
+	// added to a media item.
 	MediaSubItemTreeAdded
 )
 
-// Player events
+// Player events.
 const (
 	MediaPlayerMediaChanged Event = 0x100
 	MediaPlayerIdle
@@ -60,51 +64,58 @@ const (
 	MediaPlayerChapterChanged
 )
 
-// Media list events
+// Media list events.
 const (
-	// A media item was added to a media list.
+	// MediaListItemAdded is triggered when a media item is added to a media list.
 	MediaListItemAdded Event = 0x200
 
-	// A media item is about to get added to a media list.
+	// MediaListWillAddItem is triggered when a media item is about to get
+	// added to a media list.
 	MediaListWillAddItem
 
-	// A media item was deleted from a media list.
+	// MediaListItemDeleted is triggered when a media item is deleted
+	// from a media list.
 	MediaListItemDeleted
 
-	// A media item is about to get deleted from a media list.
+	// MediaListWillDeleteItem is triggered when a media item is about to get
+	// deleted from a media list.
 	MediaListWillDeleteItem
 
-	// A media list has reached the end.
+	// MediaListEndReached is triggered when a media list has reached the end.
 	MediaListEndReached
 
-	// Playback of a media list player has started.
+	// MediaListPlayerPlayed is triggered when Playback
+	// of a media list player has started.
 	MediaListPlayerPlayed = 0x400
 
-	// The current item of a media list player has changed to a different item.
+	// MediaListPlayerNextItemSet is triggered when the current item
+	// of a media list player has changed to a different item.
 	MediaListPlayerNextItemSet
 
-	// Playback of a media list player has stopped.
+	// MediaListPlayerStopped is triggered when Playback
+	// of a media list player has stopped.
 	MediaListPlayerStopped
 )
 
-// Deprecated events
+// Deprecated events.
 const (
 	MediaDiscovererStarted Event = 0x500
 	MediaDiscovererEnded
 )
 
-// Renderer events
+// Renderer events.
 const (
-	// A new renderer item was found by a renderer discoverer.
-	// The renderer item is valid until deleted.
+	// RendererDiscovererItemAdded is triggered when a new renderer item is
+	// found by a renderer discoverer. The renderer item is valid until deleted.
 	RendererDiscovererItemAdded Event = 0x502
 
-	// A previously discovered renderer item was deleted by a renderer
-	// discoverer. The renderer item is no longer valid.
+	// RendererDiscovererItemDeleted is triggered when a previously discovered
+	// renderer item was deleted by a renderer discoverer. The renderer item
+	// is no longer valid.
 	RendererDiscovererItemDeleted
 )
 
-// VideoLAN Manager events
+// VideoLAN Manager events.
 const (
 	VlmMediaAdded Event = 0x600
 	VlmMediaRemoved

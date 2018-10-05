@@ -8,14 +8,17 @@ import (
 	"errors"
 )
 
+// PlaybackMode defines playback modes for a media list.
 type PlaybackMode uint
 
+// Playback modes.
 const (
 	Default PlaybackMode = iota
 	Loop
 	Repeat
 )
 
+// ListPlayer is an enhanced media player used to play media lists.
 type ListPlayer struct {
 	player *C.libvlc_media_list_player_t
 	list   *MediaList

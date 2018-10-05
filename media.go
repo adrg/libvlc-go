@@ -9,8 +9,10 @@ import (
 	"unsafe"
 )
 
+// MediaState represents the state of a media file.
 type MediaState uint
 
+// Media states.
 const (
 	MediaIdle MediaState = iota
 	MediaOpening
@@ -22,6 +24,7 @@ const (
 	MediaError
 )
 
+// Media is an abstract representation of a playable media file.
 type Media struct {
 	media *C.libvlc_media_t
 }

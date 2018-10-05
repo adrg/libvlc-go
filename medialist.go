@@ -5,6 +5,7 @@ package vlc
 import "C"
 import "errors"
 
+// MediaList represents a collection of media files.
 type MediaList struct {
 	list *C.libvlc_media_list_t
 }

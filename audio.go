@@ -6,6 +6,8 @@ package vlc
 import "C"
 import "errors"
 
+// AudioOutput is an abstraction for rendering decoded (or pass-through)
+// audio samples.
 type AudioOutput struct {
 	Name        string
 	Description string
