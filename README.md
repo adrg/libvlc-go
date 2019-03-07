@@ -168,7 +168,8 @@ are always welcome.
 [adrg](https://github.com/adrg),
 [fenimore](https://github.com/fenimore),
 [tarrsalah](https://github.com/tarrsalah),
-[danielpellon](https://github.com/danielpellon)
+[danielpellon](https://github.com/danielpellon),
+[patknight](https://github.com/patknight)
 
 ## References
 For more information see [libvlc](http://videolan.org).
