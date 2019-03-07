@@ -299,3 +299,13 @@ func (p *Player) setMedia(m *Media) error {
 	C.libvlc_media_player_set_media(p.player, m.media)
 	return getError()
 }
+
+// SetXWindow sets the X window to play on.
+func (p *Player) SetXWindow(windowID uint32) error {
+	if p.player == nil {
+		return errors.New("A player must be initialized first")
+	}
+	
+	C.libvlc_media_player_set_xwindow(p.player, C.uint(windowID))
+	return getError()
+}
