@@ -300,7 +300,7 @@ func (p *Player) setMedia(m *Media) error {
 	return getError()
 }
 
-func (p *Player) setXWindow(uint32 XID) error {
+func (p *Player) setXWindow(XID uint32) error {
 	if p.player == nil {
 		return errors.New("A player must be initialized first")
 	}
