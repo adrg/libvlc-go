@@ -304,6 +304,6 @@ func (p *Player) setXWindow(XID uint32) error {
 	if p.player == nil {
 		return errors.New("A player must be initialized first")
 	}
-	C.libvlc_media_player_set_xwindow(XID)
+	C.libvlc_media_player_set_xwindow(p.player, C.int(XID))
 	return getError()
 }
