@@ -299,3 +299,11 @@ func (p *Player) setMedia(m *Media) error {
 	C.libvlc_media_player_set_media(p.player, m.media)
 	return getError()
 }
+
+func (p *Player) setXWindow(uint32 XID) error {
+	if p.player == nil {
+		return errors.New("A player must be initialized first")
+	}
+	C.libvlc_media_player_set_xwindow(XID)
+	return getError()
+}
