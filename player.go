@@ -284,6 +284,19 @@ func (p *Player) SetXWindow(windowID uint32) error {
 	return getError()
 }
 
+// EventManager gets the event manager from which the player sends events.
+func (p *Player) EventManager() *EventManager {
+	if p.player == nil {
+		return nil
+	}
+
+	manager := C.libvlc_media_player_event_manager(p.player)
+	if manager == nil {
+		return nil
+	}
+	return NewEventManager(manager)
+}
+
 func (p *Player) loadMedia(path string, local bool) (*Media, error) {
 	m, err := newMedia(path, local)
 	if err != nil {
