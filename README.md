@@ -21,6 +21,12 @@ sudo apt-get install libvlc-dev
 go get github.com/adrg/libvlc-go
 ```
 
+## Build for libvlc < v3.0.0
+
+```
+go build -tags legacy
+```
+
 ## Usage
 
 ### Player usage
