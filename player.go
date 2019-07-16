@@ -71,9 +71,6 @@ func (p *Player) Stop() error {
 	if p.player == nil {
 		return errors.New("A player must be initialized first")
 	}
-	if !p.IsPlaying() {
-		return nil
-	}
 
 	C.libvlc_media_player_stop(p.player)
 	return getError()

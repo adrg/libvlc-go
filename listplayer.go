@@ -154,9 +154,6 @@ func (lp *ListPlayer) Stop() error {
 	if lp.player == nil {
 		return errors.New("A list player must be initialized first")
 	}
-	if !lp.IsPlaying() {
-		return nil
-	}
 
 	C.libvlc_media_list_player_stop(lp.player)
 	return getError()
