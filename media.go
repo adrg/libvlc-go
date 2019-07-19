@@ -14,7 +14,7 @@ type MediaState uint
 
 // Media states.
 const (
-	MediaIdle MediaState = iota
+	MediaNothingSpecial MediaState = iota
 	MediaOpening
 	MediaBuffering
 	MediaPlaying

@@ -53,8 +53,8 @@ func (em *EventManager) Detach(eventID EventID) {
 	if !ok {
 		return
 	}
-	inst.events.remove(eventID)
 
+	inst.events.remove(eventID)
 	C.eventDetach(em.manager, C.libvlc_event_type_t(ctx.event), C.ulong(eventID))
 }
 
