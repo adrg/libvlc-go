@@ -52,8 +52,8 @@ func (m *Media) Release() error {
 }
 
 func newMedia(path string, local bool) (*Media, error) {
-	if instance == nil {
-		return nil, errors.New("Module must be initialized first")
+	if inst == nil {
+		return nil, errors.New("module must be initialized first")
 	}
 
 	cPath := C.CString(path)
@@ -61,9 +61,9 @@ func newMedia(path string, local bool) (*Media, error) {
 
 	var media *C.libvlc_media_t
 	if local {
-		media = C.libvlc_media_new_path(instance, cPath)
+		media = C.libvlc_media_new_path(inst.handle, cPath)
 	} else {
-		media = C.libvlc_media_new_location(instance, cPath)
+		media = C.libvlc_media_new_location(inst.handle, cPath)
 	}
 
 	if media == nil {

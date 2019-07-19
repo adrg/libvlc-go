@@ -6,13 +6,18 @@ package vlc
 import "C"
 import "unsafe"
 
-var instance *C.libvlc_instance_t
+type instance struct {
+	handle *C.libvlc_instance_t
+	events *eventRegistry
+}
+
+var inst *instance
 
 // Init creates an instance of the VLC module.
 // Must be called only once and the module instance must be released using
 // the Release function.
 func Init(args ...string) error {
-	if instance != nil {
+	if inst != nil {
 		return nil
 	}
 
@@ -28,9 +33,14 @@ func Init(args ...string) error {
 		}
 	}()
 
-	instance = C.libvlc_new(C.int(argc), *(***C.char)(unsafe.Pointer(&argv)))
-	if instance == nil {
+	handle := C.libvlc_new(C.int(argc), *(***C.char)(unsafe.Pointer(&argv)))
+	if handle == nil {
 		return getError()
+	}
+
+	inst = &instance{
+		handle: handle,
+		events: newEventRegistry(),
 	}
 
 	return nil
@@ -38,12 +48,12 @@ func Init(args ...string) error {
 
 // Release destroys the instance created by the Init function.
 func Release() error {
-	if instance == nil {
+	if inst == nil {
 		return nil
 	}
 
-	C.libvlc_release(instance)
-	instance = nil
+	C.libvlc_release(inst.handle)
+	inst = nil
 
 	return getError()
 }

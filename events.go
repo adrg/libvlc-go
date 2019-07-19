@@ -88,6 +88,14 @@ const (
 	MediaListEndReached
 )
 
+// Deprecated events.
+const (
+	MediaListViewItemAdded = 0x300 + iota
+	MediaListViewWillAddItem
+	MediaListViewItemDeleted
+	MediaListViewWillDeleteItem
+)
+
 const (
 	// MediaListPlayerPlayed is triggered when Playback
 	// of a media list player has started.
