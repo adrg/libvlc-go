@@ -1,7 +1,7 @@
 package vlc
 
 // Event represents an event that can occur inside libvlc.
-type Event uint
+type Event int
 
 // Media events.
 const (
@@ -28,12 +28,15 @@ const (
 	// MediaSubItemTreeAdded is triggered when a Subitem tree is
 	// added to a media item.
 	MediaSubItemTreeAdded
+
+	// MediaThumbnailGenerated is triggered when a thumbnail generation is completed.
+	MediaThumbnailGenerated
 )
 
 // Player events.
 const (
-	MediaPlayerMediaChanged Event = 0x100
-	MediaPlayerIdle
+	MediaPlayerMediaChanged Event = 0x100 + iota
+	MediaPlayerNothingSpecial
 	MediaPlayerOpening
 	MediaPlayerBuffering
 	MediaPlayerPlaying
@@ -67,7 +70,7 @@ const (
 // Media list events.
 const (
 	// MediaListItemAdded is triggered when a media item is added to a media list.
-	MediaListItemAdded Event = 0x200
+	MediaListItemAdded Event = 0x200 + iota
 
 	// MediaListWillAddItem is triggered when a media item is about to get
 	// added to a media list.
@@ -83,10 +86,20 @@ const (
 
 	// MediaListEndReached is triggered when a media list has reached the end.
 	MediaListEndReached
+)
 
+// Deprecated events.
+const (
+	MediaListViewItemAdded = 0x300 + iota
+	MediaListViewWillAddItem
+	MediaListViewItemDeleted
+	MediaListViewWillDeleteItem
+)
+
+const (
 	// MediaListPlayerPlayed is triggered when Playback
 	// of a media list player has started.
-	MediaListPlayerPlayed = 0x400
+	MediaListPlayerPlayed = 0x400 + iota
 
 	// MediaListPlayerNextItemSet is triggered when the current item
 	// of a media list player has changed to a different item.
@@ -99,7 +112,7 @@ const (
 
 // Deprecated events.
 const (
-	MediaDiscovererStarted Event = 0x500
+	MediaDiscovererStarted Event = 0x500 + iota
 	MediaDiscovererEnded
 )
 
@@ -107,7 +120,7 @@ const (
 const (
 	// RendererDiscovererItemAdded is triggered when a new renderer item is
 	// found by a renderer discoverer. The renderer item is valid until deleted.
-	RendererDiscovererItemAdded Event = 0x502
+	RendererDiscovererItemAdded Event = 0x502 + iota
 
 	// RendererDiscovererItemDeleted is triggered when a previously discovered
 	// renderer item was deleted by a renderer discoverer. The renderer item
@@ -117,7 +130,7 @@ const (
 
 // VideoLAN Manager events.
 const (
-	VlmMediaAdded Event = 0x600
+	VlmMediaAdded Event = 0x600 + iota
 	VlmMediaRemoved
 	VlmMediaChanged
 	VlmMediaInstanceStarted

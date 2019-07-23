@@ -35,7 +35,6 @@ package main
 
 import (
     "log"
-    "time"
 
     vlc "github.com/adrg/libvlc-go"
 )
@@ -74,19 +73,25 @@ func main() {
         log.Fatal(err)
     }
 
-    // Wait some amount of time for the media to start playing.
-    // Depends on the version of libvlc. From my tests, libvlc 3.X does not
-    // need this delay.
-    // TODO: Implement proper callbacks for getting the state of the media.
-    time.Sleep(1 * time.Second)
-
-    // If the media played is a live stream the length will be 0.
-    length, err := player.MediaLength()
-    if err != nil || length == 0 {
-        length = 1000 * 60
+    // Retrieve player event manager.
+    manager, err := player.EventManager()
+    if err != nil {
+        log.Fatal(err)
     }
 
-    time.Sleep(time.Duration(length) * time.Millisecond)
+    // Register the media end reached event with the event manager.
+    quit := make(chan struct{})
+    eventCallback := func(event vlc.Event, userData interface{}) {
+        close(quit)
+    }
+
+    eventID, err := manager.Attach(vlc.MediaPlayerEndReached, eventCallback, nil)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer manager.Detach(eventID)
+
+    <-quit
 }
 ```
 
@@ -96,7 +101,6 @@ package main
 
 import (
     "log"
-    "time"
 
     vlc "github.com/adrg/libvlc-go"
 )
@@ -149,19 +153,25 @@ func main() {
         log.Fatal(err)
     }
 
-    // Wait some amount of time for the media to start playing.
-    // Depends on the version of libvlc. From my tests, libvlc 3.X does not
-    // need this delay.
-    // TODO: Implement proper callbacks for getting the state of the media.
-    time.Sleep(1 * time.Second)
-
-    // Start playing the media list.
-    err = player.Play()
+    // Retrieve player event manager.
+    manager, err := player.EventManager()
     if err != nil {
         log.Fatal(err)
     }
 
-    time.Sleep(60 * 1000 * time.Millisecond)
+    // Register the media end reached event with the event manager.
+    quit := make(chan struct{})
+    eventCallback := func(event vlc.Event, userData interface{}) {
+        close(quit)
+    }
+
+    eventID, err := manager.Attach(vlc.MediaPlayerEndReached, eventCallback, nil)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer manager.Detach(eventID)
+
+    <-quit
 }
 ```
 

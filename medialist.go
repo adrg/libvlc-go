@@ -12,12 +12,12 @@ type MediaList struct {
 
 // NewMediaList creates an empty media list.
 func NewMediaList() (*MediaList, error) {
-	if instance == nil {
-		return nil, errors.New("Module must be initialized first")
+	if inst == nil {
+		return nil, errors.New("module must be initialized first")
 	}
 
 	var list *C.libvlc_media_list_t
-	if list = C.libvlc_media_list_new(instance); list == nil {
+	if list = C.libvlc_media_list_new(inst.handle); list == nil {
 		return nil, getError()
 	}
 
@@ -39,10 +39,10 @@ func (ml *MediaList) Release() error {
 // AddMedia adds a Media instance to the media list.
 func (ml *MediaList) AddMedia(m *Media) error {
 	if ml.list == nil {
-		return errors.New("Media list must be initialized first")
+		return errors.New("media list must be initialized first")
 	}
 	if m.media == nil {
-		return errors.New("Media must be initialized first")
+		return errors.New("media must be initialized first")
 	}
 
 	C.libvlc_media_list_add_media(ml.list, m.media)
@@ -74,7 +74,7 @@ func (ml *MediaList) AddMediaFromURL(url string) error {
 // Lock makes the caller the current owner of the media list.
 func (ml *MediaList) Lock() error {
 	if ml.list == nil {
-		return errors.New("Media list must be initialized first")
+		return errors.New("media list must be initialized first")
 	}
 
 	C.libvlc_media_list_lock(ml.list)
@@ -84,9 +84,24 @@ func (ml *MediaList) Lock() error {
 // Unlock releases ownership of the media list.
 func (ml *MediaList) Unlock() error {
 	if ml.list == nil {
-		return errors.New("Media list must be initialized first")
+		return errors.New("media list must be initialized first")
 	}
 
 	C.libvlc_media_list_unlock(ml.list)
 	return getError()
+}
+
+// EventManager returns the event manager responsible for the media list.
+func (ml *MediaList) EventManager() (*EventManager, error) {
+	if ml.list == nil {
+		return nil, errors.New("media list must be initialized first")
+	}
+
+	manager := C.libvlc_media_list_event_manager(ml.list)
+
+	if manager == nil {
+		return nil, errors.New("could not retrieve media list event manager")
+	}
+
+	return newEventManager(manager), nil
 }

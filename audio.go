@@ -16,11 +16,11 @@ type AudioOutput struct {
 // AudioOutputList returns a list of audio output devices that can be used
 // with an instance of a player.
 func AudioOutputList() ([]*AudioOutput, error) {
-	if instance == nil {
-		return nil, errors.New("Module must be initialized first")
+	if inst == nil {
+		return nil, errors.New("module must be initialized first")
 	}
 
-	outputs := C.libvlc_audio_output_list_get(instance)
+	outputs := C.libvlc_audio_output_list_get(inst.handle)
 	if outputs == nil {
 		return nil, getError()
 	}
