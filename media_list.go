@@ -98,7 +98,6 @@ func (ml *MediaList) EventManager() (*EventManager, error) {
 	}
 
 	manager := C.libvlc_media_list_event_manager(ml.list)
-
 	if manager == nil {
 		return nil, errors.New("could not retrieve media list event manager")
 	}
