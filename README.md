@@ -1,13 +1,14 @@
 libvlc-go
 =========
-[![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/adrg/libvlc-go)
-[![License: MIT](http://img.shields.io/badge/license-MIT-red.svg?style=flat-square)](http://opensource.org/licenses/MIT)
+[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/adrg/libvlc-go)
+[![License: MIT](https://img.shields.io/badge/license-MIT-red.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Go Report Card](https://goreportcard.com/badge/github.com/adrg/libvlc-go)](https://goreportcard.com/report/github.com/adrg/libvlc-go)
 
 Provides golang bindings for libvlc version 2.X/3.X/4.X. This is a work in
 progress and it is not safe for use in a production environment. The current
 implementation contains only a small portion of libvlc's functionality.
 
-Full documentation can be found at: http://godoc.org/github.com/adrg/libvlc-go
+Full documentation can be found at: https://godoc.org/github.com/adrg/libvlc-go
 
 ## Prerequisites
 In order to use this project you need to have libvlc-dev installed. On Debian
@@ -61,7 +62,7 @@ func main() {
     // Set player media from path:
     // media, err := player.LoadMediaFromPath("localpath/test.mp4")
     // Set player media from URL:
-    media, err := player.LoadMediaFromURL("http://stream-uk1.radioparadise.com/mp3-32")
+    media, err := player.LoadMediaFromURL("https://stream-uk1.radioparadise.com/mp3-32")
     if err != nil {
         log.Fatal(err)
     }
@@ -135,7 +136,7 @@ func main() {
         log.Fatal(err)
     }
 
-    err = list.AddMediaFromURL("http://example.com")
+    err = list.AddMediaFromURL("https://example.com")
     if err != nil {
         log.Fatal(err)
     }
@@ -188,9 +189,9 @@ are always welcome.
 [patknight](https://github.com/patknight)
 
 ## References
-For more information see [libvlc](http://videolan.org).
+For more information see [libvlc](https://videolan.org).
 
 ## License
 Copyright (c) 2018 Adrian-George Bostan.
 
-This project is licensed under the [MIT license](http://opensource.org/licenses/MIT). See LICENSE for more details.
+This project is licensed under the [MIT license](https://opensource.org/licenses/MIT). See LICENSE for more details.
