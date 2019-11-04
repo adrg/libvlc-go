@@ -11,10 +11,21 @@ implementation contains only a small portion of libvlc's functionality.
 Full documentation can be found at: https://godoc.org/github.com/adrg/libvlc-go
 
 ## Prerequisites
+
+### On  Debian based distributions
 In order to use this project you need to have libvlc-dev installed. On Debian
 based distributions it can be installed using apt.
 ```sh
 sudo apt-get install libvlc-dev
+```
+
+### On Windows Platform
+In order to use this project you need to have libvlc-sdk installed && Mingw32 gcc
+get it [libvlc-sdk-3.0.8-win32.7z](http://download.videolan.org/pub/videolan/vlc/3.0.8/win32/vlc-3.0.8-win32.7z),extract it to <strong>C:\vlc-sdk</strong>
+then make you change to [build.cmd](/build.cmd)
+```sh
+set CGO_CFLAGS=-IF:\vlc-sdk\vlc-3.0.8\sdk\include
+set CGO_LDFLAGS=-LF:\vlc-sdk\vlc-3.0.8
 ```
 
 ## Installation
