@@ -21,6 +21,7 @@ sudo apt-get install libvlc-dev
 
 ### On Windows Platform
 In order to use this project you need to have libvlc-sdk installed && Mingw32 gcc
+
 get it [libvlc-sdk-3.0.8-win32.7z](http://download.videolan.org/pub/videolan/vlc/3.0.8/win32/vlc-3.0.8-win32.7z),extract it to <strong>C:\vlc-sdk</strong>
 then make you change to [build.cmd](/build.cmd)
 ```sh
