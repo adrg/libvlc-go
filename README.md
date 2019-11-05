@@ -4,9 +4,9 @@ libvlc-go
 [![License: MIT](https://img.shields.io/badge/license-MIT-red.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Go Report Card](https://goreportcard.com/badge/github.com/adrg/libvlc-go)](https://goreportcard.com/report/github.com/adrg/libvlc-go)
 
-Provides golang bindings for libvlc version 2.X/3.X/4.X. This is a work in
-progress and it is not safe for use in a production environment. The current
-implementation contains only a small portion of libvlc's functionality.
+Implements Golang bindings for libVLC version 2.X/3.X/4.X. The package can
+be useful for adding multimedia capabilities to applications through the
+provided player interfaces.
 
 Full documentation can be found at: https://godoc.org/github.com/adrg/libvlc-go
 
@@ -180,6 +180,7 @@ func main() {
 
 Contributions in the form of pull requests, issues or just general feedback,
 are always welcome.
+See [CONTRIBUTING.MD](https://github.com/adrg/libvlc-go/blob/master/CONTRIBUTING.md).
 
 **Contributors**:
 [adrg](https://github.com/adrg),
@@ -194,4 +195,5 @@ For more information see [libvlc](https://videolan.org).
 ## License
 Copyright (c) 2018 Adrian-George Bostan.
 
-This project is licensed under the [MIT license](https://opensource.org/licenses/MIT). See LICENSE for more details.
+This project is licensed under the [MIT license](https://opensource.org/licenses/MIT).
+See [LICENSE](https://github.com/adrg/libvlc-go/blob/master/LICENSE) for more details.
