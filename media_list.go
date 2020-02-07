@@ -3,7 +3,6 @@ package vlc
 // #cgo LDFLAGS: -lvlc
 // #include <vlc/vlc.h>
 import "C"
-import "errors"
 
 // MediaList represents a collection of media files.
 type MediaList struct {
@@ -13,7 +12,7 @@ type MediaList struct {
 // NewMediaList creates an empty media list.
 func NewMediaList() (*MediaList, error) {
 	if inst == nil {
-		return nil, errors.New("module must be initialized first")
+		return nil, ErrModuleNotInitialized
 	}
 
 	var list *C.libvlc_media_list_t
@@ -39,10 +38,10 @@ func (ml *MediaList) Release() error {
 // AddMedia adds a Media instance to the media list.
 func (ml *MediaList) AddMedia(m *Media) error {
 	if ml.list == nil {
-		return errors.New("media list must be initialized first")
+		return ErrMediaListNotInitialized
 	}
-	if m.media == nil {
-		return errors.New("media must be initialized first")
+	if m == nil || m.media == nil {
+		return ErrMediaNotInitialized
 	}
 
 	C.libvlc_media_list_add_media(ml.list, m.media)
@@ -74,7 +73,7 @@ func (ml *MediaList) AddMediaFromURL(url string) error {
 // Lock makes the caller the current owner of the media list.
 func (ml *MediaList) Lock() error {
 	if ml.list == nil {
-		return errors.New("media list must be initialized first")
+		return ErrMediaListNotInitialized
 	}
 
 	C.libvlc_media_list_lock(ml.list)
@@ -84,7 +83,7 @@ func (ml *MediaList) Lock() error {
 // Unlock releases ownership of the media list.
 func (ml *MediaList) Unlock() error {
 	if ml.list == nil {
-		return errors.New("media list must be initialized first")
+		return ErrMediaListNotInitialized
 	}
 
 	C.libvlc_media_list_unlock(ml.list)
@@ -94,12 +93,12 @@ func (ml *MediaList) Unlock() error {
 // EventManager returns the event manager responsible for the media list.
 func (ml *MediaList) EventManager() (*EventManager, error) {
 	if ml.list == nil {
-		return nil, errors.New("media list must be initialized first")
+		return nil, ErrMediaListNotInitialized
 	}
 
 	manager := C.libvlc_media_list_event_manager(ml.list)
 	if manager == nil {
-		return nil, errors.New("could not retrieve media list event manager")
+		return nil, ErrMissingEventManager
 	}
 
 	return newEventManager(manager), nil

@@ -17,7 +17,6 @@ static inline int eventDetach(libvlc_event_manager_t* em, libvlc_event_type_t et
 import "C"
 
 import (
-	"errors"
 	"unsafe"
 )
 
@@ -36,7 +35,7 @@ func newEventManager(manager *C.libvlc_event_manager_t) *EventManager {
 // Attach registers a callback for an event notification.
 func (em *EventManager) Attach(event Event, callback EventCallback, userData interface{}) (EventID, error) {
 	if callback == nil {
-		return 0, errors.New("invalid event callback")
+		return 0, ErrInvalidEventCallback
 	}
 
 	id := inst.events.add(event, callback, userData)
