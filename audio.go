@@ -4,7 +4,6 @@ package vlc
 // #include <vlc/vlc.h>
 // #include <stdlib.h>
 import "C"
-import "errors"
 
 // AudioOutput is an abstraction for rendering decoded (or pass-through)
 // audio samples.
@@ -17,7 +16,7 @@ type AudioOutput struct {
 // with an instance of a player.
 func AudioOutputList() ([]*AudioOutput, error) {
 	if inst == nil {
-		return nil, errors.New("module must be initialized first")
+		return nil, ErrModuleNotInitialized
 	}
 
 	outputs := C.libvlc_audio_output_list_get(inst.handle)

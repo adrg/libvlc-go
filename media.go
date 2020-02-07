@@ -5,7 +5,6 @@ package vlc
 // #include <stdlib.h>
 import "C"
 import (
-	"errors"
 	"unsafe"
 )
 
@@ -53,7 +52,7 @@ func (m *Media) Release() error {
 
 func newMedia(path string, local bool) (*Media, error) {
 	if inst == nil {
-		return nil, errors.New("module must be initialized first")
+		return nil, ErrModuleNotInitialized
 	}
 
 	cPath := C.CString(path)
