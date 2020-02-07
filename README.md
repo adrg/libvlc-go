@@ -176,6 +176,10 @@ func main() {
 }
 ```
 
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/adrg/libvlc-go.svg)](https://starchart.cc/adrg/libvlc-go)
+
 ## Contributing
 
 Contributions in the form of pull requests, issues or just general feedback,
