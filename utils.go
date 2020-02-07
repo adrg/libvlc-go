@@ -8,11 +8,13 @@ import "errors"
 
 func getError() error {
 	msg := C.libvlc_errmsg()
-	if msg != nil {
-		return errors.New(C.GoString(msg))
+	if msg == nil {
+		return nil
 	}
 
-	return nil
+	err := errors.New(C.GoString(msg))
+	C.libvlc_clearerr()
+	return err
 }
 
 func boolToInt(value bool) int {
