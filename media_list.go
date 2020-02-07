@@ -37,12 +37,13 @@ func (ml *MediaList) Release() error {
 
 // AddMedia adds a Media instance to the media list.
 func (ml *MediaList) AddMedia(m *Media) error {
-	if ml.list == nil {
-		return ErrMediaListNotInitialized
-	}
 	if m == nil || m.media == nil {
 		return ErrMediaNotInitialized
 	}
+	if err := ml.Lock(); err != nil {
+		return err
+	}
+	defer ml.Unlock()
 
 	C.libvlc_media_list_add_media(ml.list, m.media)
 	return getError()
