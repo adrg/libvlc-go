@@ -192,7 +192,8 @@ See [CONTRIBUTING.MD](https://github.com/adrg/libvlc-go/blob/master/CONTRIBUTING
 [fenimore](https://github.com/fenimore),
 [tarrsalah](https://github.com/tarrsalah),
 [danielpellon](https://github.com/danielpellon),
-[patknight](https://github.com/patknight)
+[patknight](https://github.com/patknight),
+[sndnvaps](https://github.com/sndnvaps).
 
 ## References
 For more information see [libVLC](https://videolan.org).
