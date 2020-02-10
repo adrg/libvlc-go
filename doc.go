@@ -4,8 +4,8 @@ Package vlc provides golang bindings for libVLC version 2.X/3.X/4.X.
 Usage
 
 Initialization
-	// Initialize libvlc. Additional command line arguments can be passed in
-	// to libvlc by specifying them in the Init function.
+	// Initialize libVLC. Additional command line arguments can be passed in
+	// to libVLC by specifying them in the Init function.
 	if err := vlc.Init("--no-video", "--quiet"); err != nil {
 		log.Fatal(err)
 	}

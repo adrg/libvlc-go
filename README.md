@@ -11,18 +11,19 @@ provided player interfaces.
 Full documentation can be found at: https://godoc.org/github.com/adrg/libvlc-go
 
 ## Prerequisites
-In order to use this project you need to have libvlc-dev installed. On Debian
-based distributions it can be installed using apt.
-```sh
-sudo apt-get install libvlc-dev
-```
+
+The package requires the libVLC development files. Instructions for installing
+the VLC SDK can be found on the wiki pages of this project:
+
+- [Install on Linux](https://github.com/adrg/libvlc-go/wiki/Install-on-Linux)
+- [Install on Windows](https://github.com/adrg/libvlc-go/wiki/Install-on-Windows)
 
 ## Installation
 ```
 go get github.com/adrg/libvlc-go
 ```
 
-## Build for libvlc < v3.0.0
+## Build for libVLC < v3.0.0
 
 ```
 go build -tags legacy
@@ -41,8 +42,8 @@ import (
 )
 
 func main() {
-    // Initialize libvlc. Additional command line arguments can be passed in
-    // to libvlc by specifying them in the Init function.
+    // Initialize libVLC. Additional command line arguments can be passed in
+    // to libVLC by specifying them in the Init function.
     if err := vlc.Init("--no-video", "--quiet"); err != nil {
         log.Fatal(err)
     }
@@ -62,7 +63,7 @@ func main() {
     // Set player media from path:
     // media, err := player.LoadMediaFromPath("localpath/test.mp4")
     // Set player media from URL:
-    media, err := player.LoadMediaFromURL("https://stream-uk1.radioparadise.com/mp3-32")
+    media, err := player.LoadMediaFromURL("http://stream-uk1.radioparadise.com/mp3-32")
     if err != nil {
         log.Fatal(err)
     }
@@ -107,8 +108,8 @@ import (
 )
 
 func main() {
-    // Initialize libvlc. Additional command line arguments can be passed in
-    // to libvlc by specifying them in the Init function.
+    // Initialize libVLC. Additional command line arguments can be passed in
+    // to libVLC by specifying them in the Init function.
     if err := vlc.Init("--no-video", "--quiet"); err != nil {
         log.Fatal(err)
     }
@@ -194,7 +195,7 @@ See [CONTRIBUTING.MD](https://github.com/adrg/libvlc-go/blob/master/CONTRIBUTING
 [patknight](https://github.com/patknight)
 
 ## References
-For more information see [libvlc](https://videolan.org).
+For more information see [libVLC](https://videolan.org).
 
 ## License
 Copyright (c) 2018 Adrian-George Bostan.
