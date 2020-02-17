@@ -17,6 +17,14 @@ func getError() error {
 	return err
 }
 
+func errOrDefault(err, defaultErr error) error {
+	if err != nil {
+		return err
+	}
+
+	return defaultErr
+}
+
 func boolToInt(value bool) int {
 	if value {
 		return 1

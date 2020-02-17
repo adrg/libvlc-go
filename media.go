@@ -50,6 +50,35 @@ func (m *Media) Release() error {
 	return getError()
 }
 
+// AddOptions adds the specified options to the media. The specified options
+// determine how a media player reads the media, allowing advanced reading or
+// streaming on a per-media basis.
+func (m *Media) AddOptions(options ...string) error {
+	if m == nil {
+		return ErrMediaNotInitialized
+	}
+
+	for _, option := range options {
+		if err := m.addOption(option); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Media) addOption(option string) error {
+	if option == "" {
+		return nil
+	}
+
+	cOption := C.CString(option)
+	defer C.free(unsafe.Pointer(cOption))
+
+	C.libvlc_media_add_option(m.media, cOption)
+	return getError()
+}
+
 func newMedia(path string, local bool) (*Media, error) {
 	if inst == nil {
 		return nil, ErrModuleNotInitialized
