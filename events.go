@@ -29,7 +29,8 @@ const (
 	// added to a media item.
 	MediaSubItemTreeAdded
 
-	// MediaThumbnailGenerated is triggered when a thumbnail generation is completed.
+	// MediaThumbnailGenerated is triggered when a thumbnail
+	// generation is completed.
 	MediaThumbnailGenerated
 )
 
