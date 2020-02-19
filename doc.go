@@ -81,7 +81,7 @@ List player example
         log.Fatal(err)
     }
 
-    err = list.AddMediaFromURL("http://example.com")
+    err = list.AddMediaFromURL("https://example.com/media.mp4")
     if err != nil {
         log.Fatal(err)
     }
@@ -120,13 +120,6 @@ List player example
     <-quit
 
 Handling multiple events example
-	// Initialize libVLC. Additional command line arguments can be passed in
-	// to libVLC by specifying them in the Init function.
-	if err := vlc.Init("--quiet"); err != nil {
-		log.Fatal(err)
-	}
-	defer vlc.Release()
-
 	// Create a new player.
 	player, err := vlc.NewPlayer()
 	if err != nil {
@@ -138,7 +131,7 @@ Handling multiple events example
 	}()
 
 	// Add player media from path.
-	media, err := player.LoadMediaFromPath("test.mp3")
+	media, err := player.LoadMediaFromPath("localpath/test.mp3")
 	if err != nil {
 		log.Fatal(err)
 	}

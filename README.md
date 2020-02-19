@@ -5,7 +5,7 @@
   libvlc-go
 </h1>
 
-<h3 align="center">Golang bindings for libVLC version 2.X/3.X/4.X.</h3>
+<h3 align="center">Go bindings for libVLC version 2.X/3.X/4.X.</h3>
 
 <p align="center">
     <a href="https://godoc.org/github.com/adrg/libvlc-go" rel="nofollow">
