@@ -54,7 +54,7 @@ func (m *Media) Release() error {
 // determine how a media player reads the media, allowing advanced reading or
 // streaming on a per-media basis.
 func (m *Media) AddOptions(options ...string) error {
-	if m == nil {
+	if m == nil || m.media == nil {
 		return ErrMediaNotInitialized
 	}
 
@@ -65,6 +65,20 @@ func (m *Media) AddOptions(options ...string) error {
 	}
 
 	return nil
+}
+
+// EventManager returns the event manager responsible for the media.
+func (m *Media) EventManager() (*EventManager, error) {
+	if m == nil || m.media == nil {
+		return nil, ErrMediaNotInitialized
+	}
+
+	manager := C.libvlc_media_event_manager(m.media)
+	if manager == nil {
+		return nil, ErrMissingEventManager
+	}
+
+	return newEventManager(manager), nil
 }
 
 func (m *Media) addOption(option string) error {
