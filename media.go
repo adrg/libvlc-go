@@ -23,6 +23,57 @@ const (
 	MediaError
 )
 
+// MediaStats contains playback statistics for a media file.
+type MediaStats struct {
+	// Input statistics.
+	ReadBytes    int     // input bytes read.
+	InputBitRate float64 // input bitrate.
+
+	// Demux statistics.
+	DemuxReadBytes     int     // demux bytes read (demuxed data size).
+	DemuxBitRate       float64 // demux bitrate (content bitrate).
+	DemuxCorrupted     int     // demux corruptions (discarded).
+	DemuxDiscontinuity int     // demux discontinuities (dropped).
+
+	// Video output statistics.
+	DecodedVideo      int // number of decoded video blocks.
+	DisplayedPictures int // number of displayed frames.
+	LostPictures      int // number of lost frames.
+
+	// Audio output statistics.
+	DecodedAudio       int // number of decoded audio blocks.
+	PlayedAudioBuffers int // number of played audio buffers.
+	LostAudioBuffers   int // number of lost audio buffers.
+}
+
+func newMediaStats(st *C.libvlc_media_stats_t) (*MediaStats, error) {
+	if st == nil {
+		return nil, ErrInvalidMediaStats
+	}
+
+	return &MediaStats{
+		// Input statistics.
+		ReadBytes:    int(st.i_read_bytes),
+		InputBitRate: float64(st.f_input_bitrate),
+
+		// Demux statistics.
+		DemuxReadBytes:     int(st.i_demux_read_bytes),
+		DemuxBitRate:       float64(st.f_demux_bitrate),
+		DemuxCorrupted:     int(st.i_demux_corrupted),
+		DemuxDiscontinuity: int(st.i_demux_discontinuity),
+
+		// Video output statistics.
+		DecodedVideo:      int(st.i_decoded_video),
+		DisplayedPictures: int(st.i_displayed_pictures),
+		LostPictures:      int(st.i_lost_pictures),
+
+		// Audio output statistics.
+		DecodedAudio:       int(st.i_decoded_audio),
+		PlayedAudioBuffers: int(st.i_played_abuffers),
+		LostAudioBuffers:   int(st.i_lost_abuffers),
+	}, nil
+}
+
 // Media is an abstract representation of a playable media file.
 type Media struct {
 	media *C.libvlc_media_t
@@ -65,6 +116,20 @@ func (m *Media) AddOptions(options ...string) error {
 	}
 
 	return nil
+}
+
+// Stats returns playback statistics for the media.
+func (m *Media) Stats() (*MediaStats, error) {
+	if m == nil || m.media == nil {
+		return nil, ErrMediaNotInitialized
+	}
+
+	var stats C.libvlc_media_stats_t
+	if int(C.libvlc_media_get_stats(m.media, &stats)) != 1 {
+		return nil, errOrDefault(getError(), ErrMissingMediaStats)
+	}
+
+	return newMediaStats(&stats)
 }
 
 // EventManager returns the event manager responsible for the media.
