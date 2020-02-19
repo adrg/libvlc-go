@@ -97,7 +97,7 @@ const (
 )
 
 const (
-	// MediaListPlayerPlayed is triggered when Playback
+	// MediaListPlayerPlayed is triggered when playback
 	// of a media list player has started.
 	MediaListPlayerPlayed = 0x400 + iota
 
@@ -105,7 +105,7 @@ const (
 	// of a media list player has changed to a different item.
 	MediaListPlayerNextItemSet
 
-	// MediaListPlayerStopped is triggered when Playback
+	// MediaListPlayerStopped is triggered when playback
 	// of a media list player has stopped.
 	MediaListPlayerStopped
 )

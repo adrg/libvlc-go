@@ -280,7 +280,7 @@ func (p *Player) SetXWindow(windowID uint32) error {
 	return getError()
 }
 
-// EventManager returns the event manager responsible for the media list.
+// EventManager returns the event manager responsible for the media player.
 func (p *Player) EventManager() (*EventManager, error) {
 	if p.player == nil {
 		return nil, ErrPlayerNotInitialized
@@ -312,7 +312,7 @@ func (p *Player) setMedia(m *Media) error {
 	if p.player == nil {
 		return ErrPlayerNotInitialized
 	}
-	if m.media == nil {
+	if m == nil || m.media == nil {
 		return ErrMediaNotInitialized
 	}
 
