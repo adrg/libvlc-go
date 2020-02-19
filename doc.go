@@ -179,7 +179,7 @@ Handling multiple events example
 		}
 	}
 
-	// Register events with the event manager of the player.
+	// Register events with the event manager.
 	events := []vlc.Event{
 		vlc.MediaPlayerTimeChanged,
 		vlc.MediaPlayerEndReached,

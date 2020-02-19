@@ -1,19 +1,32 @@
-libvlc-go
-=========
-[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/adrg/libvlc-go)
-[![License: MIT](https://img.shields.io/badge/license-MIT-red.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Go Report Card](https://goreportcard.com/badge/github.com/adrg/libvlc-go)](https://goreportcard.com/report/github.com/adrg/libvlc-go)
+<h1 align="center">
+  <div>
+    <img src="https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/libvlc-go-logo.jpg" width="150px" alt="libvlc-go logo"/>
+  </div>
+  libvlc-go
+</h1>
 
-Implements Golang bindings for libVLC version 2.X/3.X/4.X. The package can
-be useful for adding multimedia capabilities to applications through the
-provided player interfaces.
+<h3 align="center">Golang bindings for libVLC version 2.X/3.X/4.X.</h3>
 
+<p align="center">
+    <a href="https://godoc.org/github.com/adrg/libvlc-go" rel="nofollow">
+        <img src="https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square" alt="GoDoc" />
+    </a>
+    <a href="https://opensource.org/licenses/MIT" rel="nofollow">
+        <img src="https://img.shields.io/badge/license-MIT-red.svg?style=flat-square" alt="License: MIT" />
+    </a>
+    <a href="https://goreportcard.com/report/github.com/adrg/libvlc-go" rel="nofollow">
+        <img src="https://goreportcard.com/badge/github.com/adrg/libvlc-go" alt="Go Report Card" />
+    </a>
+</p>
+
+The package can be useful for adding multimedia capabilities to applications through the provided player
+interfaces.  
 Full documentation can be found at: https://godoc.org/github.com/adrg/libvlc-go
 
 ## Prerequisites
 
-The package requires the libVLC development files. Instructions for installing
-the VLC SDK can be found on the wiki pages of this project:
+The libVLC development files are required. Instructions for installing the
+VLC SDK on multiple operating systems can be found on the wiki pages of this project.
 
 - [Install on Linux](https://github.com/adrg/libvlc-go/wiki/Install-on-Linux)
 - [Install on Windows](https://github.com/adrg/libvlc-go/wiki/Install-on-Windows)
@@ -23,7 +36,7 @@ the VLC SDK can be found on the wiki pages of this project:
 go get github.com/adrg/libvlc-go
 ```
 
-## Build for libVLC < v3.0.0
+Build for libVLC < v3.0.0.
 
 ```
 go build -tags legacy
@@ -31,7 +44,6 @@ go build -tags legacy
 
 ## Usage
 
-### Player usage
 ```go
 package main
 
@@ -97,85 +109,11 @@ func main() {
 }
 ```
 
-### List player usage
-```go
-package main
+## Examples
 
-import (
-    "log"
-
-    vlc "github.com/adrg/libvlc-go"
-)
-
-func main() {
-    // Initialize libVLC. Additional command line arguments can be passed in
-    // to libVLC by specifying them in the Init function.
-    if err := vlc.Init("--no-video", "--quiet"); err != nil {
-        log.Fatal(err)
-    }
-    defer vlc.Release()
-
-    // Create a new list player.
-    player, err := vlc.NewListPlayer()
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer func() {
-        player.Stop()
-        player.Release()
-    }()
-
-    // Create a new media list.
-    list, err := vlc.NewMediaList()
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer list.Release()
-
-    err = list.AddMediaFromPath("localpath/example1.mp3")
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    err = list.AddMediaFromURL("https://example.com")
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    // Set player media list.
-    err = player.SetMediaList(list)
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    // Media files can be added to the list after the list has been added
-    // to the player. The player will play these files as well.
-    err = list.AddMediaFromPath("localpath/example2.mp3")
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    // Retrieve player event manager.
-    manager, err := player.EventManager()
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    // Register the media end reached event with the event manager.
-    quit := make(chan struct{})
-    eventCallback := func(event vlc.Event, userData interface{}) {
-        close(quit)
-    }
-
-    eventID, err := manager.Attach(vlc.MediaPlayerEndReached, eventCallback, nil)
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer manager.Detach(eventID)
-
-    <-quit
-}
-```
+* [Player usage](https://github.com/adrg/libvlc-go/blob/master/examples/player.go)
+* [List player usage](https://github.com/adrg/libvlc-go/blob/master/examples/list_player.go)
+* [Handling events](https://github.com/adrg/libvlc-go/blob/master/examples/event_handling.go)
 
 ## Stargazers over time
 
@@ -196,7 +134,8 @@ See [CONTRIBUTING.MD](https://github.com/adrg/libvlc-go/blob/master/CONTRIBUTING
 [sndnvaps](https://github.com/sndnvaps).
 
 ## References
-For more information see [libVLC](https://videolan.org).
+For more information see the
+[libVLC](https://www.videolan.org/developers/vlc/doc/doxygen/html/group__libvlc.html) documentation.
 
 ## License
 Copyright (c) 2018 Adrian-George Bostan.
