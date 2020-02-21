@@ -182,7 +182,7 @@ func newMedia(path string, local bool) (*Media, error) {
 	}
 
 	if media == nil {
-		return nil, getError()
+		return nil, errOrDefault(getError(), ErrMediaCreate)
 	}
 
 	return &Media{media: media}, nil

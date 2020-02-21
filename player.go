@@ -20,11 +20,12 @@ func NewPlayer() (*Player, error) {
 		return nil, err
 	}
 
-	if player := C.libvlc_media_player_new(inst.handle); player != nil {
-		return &Player{player: player}, nil
+	player := C.libvlc_media_player_new(inst.handle)
+	if player == nil {
+		return nil, errOrDefault(getError(), ErrPlayerCreate)
 	}
 
-	return nil, getError()
+	return &Player{player: player}, nil
 }
 
 // Release destroys the media player instance.

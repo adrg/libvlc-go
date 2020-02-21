@@ -17,7 +17,7 @@ func NewMediaList() (*MediaList, error) {
 
 	var list *C.libvlc_media_list_t
 	if list = C.libvlc_media_list_new(inst.handle); list == nil {
-		return nil, getError()
+		return nil, errOrDefault(getError(), ErrMediaListCreate)
 	}
 
 	return &MediaList{list: list}, nil

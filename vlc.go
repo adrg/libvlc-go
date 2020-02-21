@@ -43,7 +43,7 @@ func Init(args ...string) error {
 
 	handle := C.libvlc_new(C.int(argc), *(***C.char)(unsafe.Pointer(&argv)))
 	if handle == nil {
-		return errOrDefault(getError(), ErrModuleNotInitialized)
+		return errOrDefault(getError(), ErrModuleInitialize)
 	}
 
 	inst = &instance{
