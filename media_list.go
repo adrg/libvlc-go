@@ -37,8 +37,8 @@ func (ml *MediaList) Release() error {
 
 // AddMedia adds the provided Media instance at the end of the media list.
 func (ml *MediaList) AddMedia(m *Media) error {
-	if m == nil || m.media == nil {
-		return ErrMediaNotInitialized
+	if err := m.assertInit(); err != nil {
+		return err
 	}
 	if err := ml.Lock(); err != nil {
 		return err
@@ -74,8 +74,8 @@ func (ml *MediaList) AddMediaFromURL(url string) error {
 // InsertMedia inserts the provided Media instance in the list,
 // at the specified index.
 func (ml *MediaList) InsertMedia(m *Media, index uint) error {
-	if m == nil || m.media == nil {
-		return ErrMediaNotInitialized
+	if err := m.assertInit(); err != nil {
+		return err
 	}
 	if err := ml.Lock(); err != nil {
 		return err

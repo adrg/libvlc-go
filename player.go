@@ -312,8 +312,8 @@ func (p *Player) setMedia(m *Media) error {
 	if err := p.assertInit(); err != nil {
 		return err
 	}
-	if m == nil || m.media == nil {
-		return ErrMediaNotInitialized
+	if err := m.assertInit(); err != nil {
+		return err
 	}
 
 	C.libvlc_media_player_set_media(p.player, m.media)
