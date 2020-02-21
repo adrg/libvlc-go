@@ -38,7 +38,7 @@ func NewListPlayer() (*ListPlayer, error) {
 
 // Release destroys the media player instance.
 func (lp *ListPlayer) Release() error {
-	if lp.player == nil {
+	if err := lp.assertInit(); err != nil {
 		return nil
 	}
 
@@ -50,8 +50,8 @@ func (lp *ListPlayer) Release() error {
 
 // Player returns the underlying Player instance of the ListPlayer.
 func (lp *ListPlayer) Player() (*Player, error) {
-	if lp.player == nil {
-		return nil, ErrListPlayerNotInitialized
+	if err := lp.assertInit(); err != nil {
+		return nil, err
 	}
 
 	player := C.libvlc_media_list_player_get_media_player(lp.player)
@@ -68,8 +68,8 @@ func (lp *ListPlayer) Player() (*Player, error) {
 
 // SetPlayer sets the underlying Player instance of the ListPlayer.
 func (lp *ListPlayer) SetPlayer(player *Player) error {
-	if lp.player == nil {
-		return ErrListPlayerNotInitialized
+	if err := lp.assertInit(); err != nil {
+		return err
 	}
 	if err := player.assertInit(); err != nil {
 		return err
@@ -81,8 +81,8 @@ func (lp *ListPlayer) SetPlayer(player *Player) error {
 
 // Play plays the current media list.
 func (lp *ListPlayer) Play() error {
-	if lp.player == nil {
-		return ErrListPlayerNotInitialized
+	if err := lp.assertInit(); err != nil {
+		return err
 	}
 	if lp.IsPlaying() {
 		return nil
@@ -94,8 +94,8 @@ func (lp *ListPlayer) Play() error {
 
 // PlayNext plays the next media in the current media list.
 func (lp *ListPlayer) PlayNext() error {
-	if lp.player == nil {
-		return ErrListPlayerNotInitialized
+	if err := lp.assertInit(); err != nil {
+		return err
 	}
 
 	if C.libvlc_media_list_player_next(lp.player) < 0 {
@@ -107,8 +107,8 @@ func (lp *ListPlayer) PlayNext() error {
 
 // PlayPrevious plays the previous media in the current media list.
 func (lp *ListPlayer) PlayPrevious() error {
-	if lp.player == nil {
-		return ErrListPlayerNotInitialized
+	if err := lp.assertInit(); err != nil {
+		return err
 	}
 
 	if C.libvlc_media_list_player_previous(lp.player) < 0 {
@@ -121,8 +121,8 @@ func (lp *ListPlayer) PlayPrevious() error {
 // PlayAtIndex plays the media at the specified index from the
 // current media list.
 func (lp ListPlayer) PlayAtIndex(index uint) error {
-	if lp.player == nil {
-		return ErrListPlayerNotInitialized
+	if err := lp.assertInit(); err != nil {
+		return err
 	}
 
 	idx := C.int(index)
@@ -136,7 +136,7 @@ func (lp ListPlayer) PlayAtIndex(index uint) error {
 // IsPlaying returns a boolean value specifying if the player is currently
 // playing.
 func (lp *ListPlayer) IsPlaying() bool {
-	if lp.player == nil {
+	if err := lp.assertInit(); err != nil {
 		return false
 	}
 
@@ -145,8 +145,8 @@ func (lp *ListPlayer) IsPlaying() bool {
 
 // Stop cancels the currently playing media list, if there is one.
 func (lp *ListPlayer) Stop() error {
-	if lp.player == nil {
-		return ErrListPlayerNotInitialized
+	if err := lp.assertInit(); err != nil {
+		return err
 	}
 
 	C.libvlc_media_list_player_stop(lp.player)
@@ -156,8 +156,8 @@ func (lp *ListPlayer) Stop() error {
 // TogglePause pauses/resumes the player.
 // Calling this method has no effect if there is no media.
 func (lp *ListPlayer) TogglePause() error {
-	if lp.player == nil {
-		return ErrListPlayerNotInitialized
+	if err := lp.assertInit(); err != nil {
+		return err
 	}
 
 	C.libvlc_media_list_player_pause(lp.player)
@@ -167,8 +167,8 @@ func (lp *ListPlayer) TogglePause() error {
 // SetPlaybackMode sets the player playback mode for the media list.
 // By default, it plays the media list once and then stops.
 func (lp *ListPlayer) SetPlaybackMode(mode PlaybackMode) error {
-	if lp.player == nil {
-		return ErrListPlayerNotInitialized
+	if err := lp.assertInit(); err != nil {
+		return err
 	}
 
 	m := C.libvlc_playback_mode_t(mode)
@@ -178,8 +178,8 @@ func (lp *ListPlayer) SetPlaybackMode(mode PlaybackMode) error {
 
 // MediaState returns the state of the current media.
 func (lp *ListPlayer) MediaState() (MediaState, error) {
-	if lp.player == nil {
-		return 0, ErrListPlayerNotInitialized
+	if err := lp.assertInit(); err != nil {
+		return 0, err
 	}
 
 	state := int(C.libvlc_media_list_player_get_state(lp.player))
@@ -193,8 +193,8 @@ func (lp *ListPlayer) MediaList() *MediaList {
 
 // SetMediaList sets the media list to be played.
 func (lp *ListPlayer) SetMediaList(ml *MediaList) error {
-	if lp.player == nil {
-		return ErrListPlayerNotInitialized
+	if err := lp.assertInit(); err != nil {
+		return err
 	}
 	if ml.list == nil {
 		return ErrMediaListNotInitialized
@@ -208,8 +208,8 @@ func (lp *ListPlayer) SetMediaList(ml *MediaList) error {
 
 // EventManager returns the event manager responsible for the list player.
 func (lp *ListPlayer) EventManager() (*EventManager, error) {
-	if lp.player == nil {
-		return nil, ErrListPlayerNotInitialized
+	if err := lp.assertInit(); err != nil {
+		return nil, err
 	}
 
 	manager := C.libvlc_media_list_player_event_manager(lp.player)
@@ -218,4 +218,12 @@ func (lp *ListPlayer) EventManager() (*EventManager, error) {
 	}
 
 	return newEventManager(manager), nil
+}
+
+func (lp *ListPlayer) assertInit() error {
+	if lp == nil || lp.player == nil {
+		return ErrListPlayerNotInitialized
+	}
+
+	return nil
 }
