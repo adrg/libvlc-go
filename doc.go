@@ -33,8 +33,7 @@ Player example
 	defer media.Release()
 
 	// Start playing the media.
-	err = player.Play()
-	if err != nil {
+	if err = player.Play(); err != nil {
 		log.Fatal(err)
 	}
 
@@ -86,11 +85,15 @@ List player example
         log.Fatal(err)
     }
 
-    // Set player media list.
-    err = player.SetMediaList(list)
-    if err != nil {
-        log.Fatal(err)
-    }
+	// Set player media list.
+	if err = player.SetMediaList(list); err != nil {
+		log.Fatal(err)
+	}
+
+	// Start playing the media list.
+	if err = player.Play(); err != nil {
+		log.Fatal(err)
+	}
 
     // Media files can be added to the list after the list has been added
     // to the player. The player will play these files as well.
@@ -138,8 +141,7 @@ Handling multiple events example
 	defer media.Release()
 
 	// Start playing the media.
-	err = player.Play()
-	if err != nil {
+	if err = player.Play(); err != nil {
 		log.Fatal(err)
 	}
 
