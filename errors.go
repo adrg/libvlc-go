@@ -31,3 +31,8 @@ var (
 	ErrMissingEventManager  = errors.New("could not get event manager instance")
 	ErrInvalidEventCallback = errors.New("invalid event callback")
 )
+
+// Audio errors.
+var (
+	ErrAudioOutputListMissing = errors.New("could not get audio output list")
+)
