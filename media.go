@@ -5,6 +5,7 @@ package vlc
 // #include <stdlib.h>
 import "C"
 import (
+	"os"
 	"unsafe"
 )
 
@@ -176,6 +177,10 @@ func newMedia(path string, local bool) (*Media, error) {
 
 	var media *C.libvlc_media_t
 	if local {
+		if _, err := os.Stat(path); err != nil {
+			return nil, err
+		}
+
 		media = C.libvlc_media_new_path(inst.handle, cPath)
 	} else {
 		media = C.libvlc_media_new_location(inst.handle, cPath)
