@@ -35,8 +35,7 @@ func main() {
 	defer media.Release()
 
 	// Start playing the media.
-	err = player.Play()
-	if err != nil {
+	if err = player.Play(); err != nil {
 		log.Fatal(err)
 	}
 

@@ -42,8 +42,12 @@ func main() {
 	}
 
 	// Set player media list.
-	err = player.SetMediaList(list)
-	if err != nil {
+	if err = player.SetMediaList(list); err != nil {
+		log.Fatal(err)
+	}
+
+	// Start playing the media list.
+	if err = player.Play(); err != nil {
 		log.Fatal(err)
 	}
 

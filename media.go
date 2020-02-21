@@ -5,6 +5,7 @@ package vlc
 // #include <stdlib.h>
 import "C"
 import (
+	"os"
 	"unsafe"
 )
 
@@ -91,7 +92,7 @@ func NewMediaFromURL(url string) (*Media, error) {
 
 // Release destroys the media instance.
 func (m *Media) Release() error {
-	if m.media == nil {
+	if err := m.assertInit(); err != nil {
 		return nil
 	}
 
@@ -105,8 +106,8 @@ func (m *Media) Release() error {
 // determine how a media player reads the media, allowing advanced reading or
 // streaming on a per-media basis.
 func (m *Media) AddOptions(options ...string) error {
-	if m == nil || m.media == nil {
-		return ErrMediaNotInitialized
+	if err := m.assertInit(); err != nil {
+		return err
 	}
 
 	for _, option := range options {
@@ -120,8 +121,8 @@ func (m *Media) AddOptions(options ...string) error {
 
 // Stats returns playback statistics for the media.
 func (m *Media) Stats() (*MediaStats, error) {
-	if m == nil || m.media == nil {
-		return nil, ErrMediaNotInitialized
+	if err := m.assertInit(); err != nil {
+		return nil, err
 	}
 
 	var stats C.libvlc_media_stats_t
@@ -134,8 +135,8 @@ func (m *Media) Stats() (*MediaStats, error) {
 
 // EventManager returns the event manager responsible for the media.
 func (m *Media) EventManager() (*EventManager, error) {
-	if m == nil || m.media == nil {
-		return nil, ErrMediaNotInitialized
+	if err := m.assertInit(); err != nil {
+		return nil, err
 	}
 
 	manager := C.libvlc_media_event_manager(m.media)
@@ -158,9 +159,17 @@ func (m *Media) addOption(option string) error {
 	return getError()
 }
 
+func (m *Media) assertInit() error {
+	if m == nil || m.media == nil {
+		return ErrMediaNotInitialized
+	}
+
+	return nil
+}
+
 func newMedia(path string, local bool) (*Media, error) {
-	if inst == nil {
-		return nil, ErrModuleNotInitialized
+	if err := inst.assertInit(); err != nil {
+		return nil, err
 	}
 
 	cPath := C.CString(path)
@@ -168,13 +177,17 @@ func newMedia(path string, local bool) (*Media, error) {
 
 	var media *C.libvlc_media_t
 	if local {
+		if _, err := os.Stat(path); err != nil {
+			return nil, err
+		}
+
 		media = C.libvlc_media_new_path(inst.handle, cPath)
 	} else {
 		media = C.libvlc_media_new_location(inst.handle, cPath)
 	}
 
 	if media == nil {
-		return nil, getError()
+		return nil, errOrDefault(getError(), ErrMediaCreate)
 	}
 
 	return &Media{media: media}, nil
