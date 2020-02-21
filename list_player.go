@@ -196,8 +196,8 @@ func (lp *ListPlayer) SetMediaList(ml *MediaList) error {
 	if err := lp.assertInit(); err != nil {
 		return err
 	}
-	if ml.list == nil {
-		return ErrMediaListNotInitialized
+	if err := ml.assertInit(); err != nil {
+		return err
 	}
 
 	lp.list = ml

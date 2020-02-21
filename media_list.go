@@ -25,7 +25,7 @@ func NewMediaList() (*MediaList, error) {
 
 // Release destroys the media list instance.
 func (ml *MediaList) Release() error {
-	if ml.list == nil {
+	if err := ml.assertInit(); err != nil {
 		return nil
 	}
 
@@ -151,8 +151,8 @@ func (ml *MediaList) Count() (int, error) {
 
 // IsReadOnly specifies if the media list can be modified.
 func (ml *MediaList) IsReadOnly() (bool, error) {
-	if ml.list == nil {
-		return false, ErrMediaListNotInitialized
+	if err := ml.assertInit(); err != nil {
+		return false, err
 	}
 
 	return (C.libvlc_media_list_is_readonly(ml.list) != C.int(0)), getError()
@@ -160,8 +160,8 @@ func (ml *MediaList) IsReadOnly() (bool, error) {
 
 // Lock makes the caller the current owner of the media list.
 func (ml *MediaList) Lock() error {
-	if ml.list == nil {
-		return ErrMediaListNotInitialized
+	if err := ml.assertInit(); err != nil {
+		return err
 	}
 
 	C.libvlc_media_list_lock(ml.list)
@@ -170,8 +170,8 @@ func (ml *MediaList) Lock() error {
 
 // Unlock releases ownership of the media list.
 func (ml *MediaList) Unlock() error {
-	if ml.list == nil {
-		return ErrMediaListNotInitialized
+	if err := ml.assertInit(); err != nil {
+		return err
 	}
 
 	C.libvlc_media_list_unlock(ml.list)
@@ -180,8 +180,8 @@ func (ml *MediaList) Unlock() error {
 
 // EventManager returns the event manager responsible for the media list.
 func (ml *MediaList) EventManager() (*EventManager, error) {
-	if ml.list == nil {
-		return nil, ErrMediaListNotInitialized
+	if err := ml.assertInit(); err != nil {
+		return nil, err
 	}
 
 	manager := C.libvlc_media_list_event_manager(ml.list)
@@ -190,4 +190,12 @@ func (ml *MediaList) EventManager() (*EventManager, error) {
 	}
 
 	return newEventManager(manager), nil
+}
+
+func (ml *MediaList) assertInit() error {
+	if ml == nil || ml.list == nil {
+		return ErrMediaListNotInitialized
+	}
+
+	return nil
 }
