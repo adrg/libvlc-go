@@ -58,35 +58,42 @@ Player example
 	<-quit
 
 List player example
-    // Create a new list player.
-    player, err := vlc.NewListPlayer()
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer func() {
-        player.Stop()
-        player.Release()
-    }()
+	// Create a new list player.
+	player, err := vlc.NewListPlayer()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func() {
+		player.Stop()
+		player.Release()
+	}()
 
-    // Create a new media list.
-    list, err := vlc.NewMediaList()
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer list.Release()
+	// Create a new media list.
+	list, err := vlc.NewMediaList()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer list.Release()
 
-    err = list.AddMediaFromPath("localpath/example1.mp3")
-    if err != nil {
-        log.Fatal(err)
-    }
+	err = list.AddMediaFromPath("localpath/example1.mp3")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    err = list.AddMediaFromURL("https://example.com/media.mp4")
-    if err != nil {
-        log.Fatal(err)
-    }
+	err = list.AddMediaFromURL("https://example.com/media.mp4")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Set player media list.
 	if err = player.SetMediaList(list); err != nil {
+		log.Fatal(err)
+	}
+
+	// Media files can be added to the list after the list has been added
+	// to the player. The player will play these files as well.
+	err = list.AddMediaFromPath("localpath/example2.mp3")
+	if err != nil {
 		log.Fatal(err)
 	}
 
@@ -95,32 +102,25 @@ List player example
 		log.Fatal(err)
 	}
 
-    // Media files can be added to the list after the list has been added
-    // to the player. The player will play these files as well.
-    err = list.AddMediaFromPath("localpath/example2.mp3")
-    if err != nil {
-        log.Fatal(err)
-    }
+	// Retrieve player event manager.
+	manager, err := player.EventManager()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    // Retrieve player event manager.
-    manager, err := player.EventManager()
-    if err != nil {
-        log.Fatal(err)
-    }
+	// Register the media end reached event with the event manager.
+	quit := make(chan struct{})
+	eventCallback := func(event vlc.Event, userData interface{}) {
+		close(quit)
+	}
 
-    // Register the media end reached event with the event manager.
-    quit := make(chan struct{})
-    eventCallback := func(event vlc.Event, userData interface{}) {
-        close(quit)
-    }
+	eventID, err := manager.Attach(vlc.MediaPlayerEndReached, eventCallback, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer manager.Detach(eventID)
 
-    eventID, err := manager.Attach(vlc.MediaPlayerEndReached, eventCallback, nil)
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer manager.Detach(eventID)
-
-    <-quit
+	<-quit
 
 Handling multiple events example
 	// Create a new player.
