@@ -121,7 +121,7 @@ func (lp *ListPlayer) PlayPrevious() error {
 
 // PlayAtIndex plays the media at the specified index from the
 // current media list.
-func (lp ListPlayer) PlayAtIndex(index uint) error {
+func (lp *ListPlayer) PlayAtIndex(index uint) error {
 	if err := lp.assertInit(); err != nil {
 		return err
 	}
