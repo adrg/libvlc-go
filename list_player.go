@@ -71,8 +71,8 @@ func (lp *ListPlayer) SetPlayer(player *Player) error {
 	if lp.player == nil {
 		return ErrListPlayerNotInitialized
 	}
-	if player == nil || player.player == nil {
-		return ErrPlayerNotInitialized
+	if err := player.assertInit(); err != nil {
+		return err
 	}
 
 	C.libvlc_media_list_player_set_media_player(lp.player, player.player)

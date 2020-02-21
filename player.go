@@ -29,7 +29,7 @@ func NewPlayer() (*Player, error) {
 
 // Release destroys the media player instance.
 func (p *Player) Release() error {
-	if p.player == nil {
+	if err := p.assertInit(); err != nil {
 		return nil
 	}
 
@@ -41,8 +41,8 @@ func (p *Player) Release() error {
 
 // Play plays the current media.
 func (p *Player) Play() error {
-	if p.player == nil {
-		return ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return err
 	}
 	if p.IsPlaying() {
 		return nil
@@ -58,7 +58,7 @@ func (p *Player) Play() error {
 // IsPlaying returns a boolean value specifying if the player is currently
 // playing.
 func (p *Player) IsPlaying() bool {
-	if p.player == nil {
+	if err := p.assertInit(); err != nil {
 		return false
 	}
 
@@ -67,8 +67,8 @@ func (p *Player) IsPlaying() bool {
 
 // Stop cancels the currently playing media, if there is one.
 func (p *Player) Stop() error {
-	if p.player == nil {
-		return ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return err
 	}
 
 	C.libvlc_media_player_stop(p.player)
@@ -78,8 +78,8 @@ func (p *Player) Stop() error {
 // SetPause sets the pause state of the media player.
 // Pass in true to pause the current media, or false to resume it.
 func (p *Player) SetPause(pause bool) error {
-	if p.player == nil {
-		return ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return err
 	}
 
 	C.libvlc_media_player_set_pause(p.player, C.int(boolToInt(pause)))
@@ -89,8 +89,8 @@ func (p *Player) SetPause(pause bool) error {
 // TogglePause pauses/resumes the player.
 // Calling this method has no effect if there is no media.
 func (p *Player) TogglePause() error {
-	if p.player == nil {
-		return ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return err
 	}
 
 	C.libvlc_media_player_pause(p.player)
@@ -100,8 +100,8 @@ func (p *Player) TogglePause() error {
 // SetFullScreen sets the fullscreen state of the media player.
 // Pass in true to enable fullscreen, or false to disable it.
 func (p *Player) SetFullScreen(fullscreen bool) error {
-	if p.player == nil {
-		return ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return err
 	}
 
 	C.libvlc_set_fullscreen(p.player, C.int(boolToInt(fullscreen)))
@@ -111,8 +111,8 @@ func (p *Player) SetFullScreen(fullscreen bool) error {
 // ToggleFullScreen toggles the fullscreen status of the player,
 // on non-embedded video outputs.
 func (p *Player) ToggleFullScreen() error {
-	if p.player == nil {
-		return ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return err
 	}
 
 	C.libvlc_toggle_fullscreen(p.player)
@@ -121,8 +121,8 @@ func (p *Player) ToggleFullScreen() error {
 
 // IsFullScreen gets the fullscreen status of the current player.
 func (p *Player) IsFullScreen() (bool, error) {
-	if p.player == nil {
-		return false, ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return false, err
 	}
 
 	return (C.libvlc_get_fullscreen(p.player) != C.int(0)), getError()
@@ -130,8 +130,8 @@ func (p *Player) IsFullScreen() (bool, error) {
 
 // Volume returns the volume of the player.
 func (p *Player) Volume() (int, error) {
-	if p.player == nil {
-		return 0, ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return 0, err
 	}
 
 	return int(C.libvlc_audio_get_volume(p.player)), getError()
@@ -139,8 +139,8 @@ func (p *Player) Volume() (int, error) {
 
 // SetVolume sets the volume of the player.
 func (p *Player) SetVolume(volume int) error {
-	if p.player == nil {
-		return ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return err
 	}
 
 	C.libvlc_audio_set_volume(p.player, C.int(volume))
@@ -149,8 +149,8 @@ func (p *Player) SetVolume(volume int) error {
 
 // Media returns the current media of the player, if one exists.
 func (p *Player) Media() (*Media, error) {
-	if p.player == nil {
-		return nil, ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return nil, err
 	}
 
 	media := C.libvlc_media_player_get_media(p.player)
@@ -186,8 +186,8 @@ func (p *Player) LoadMediaFromURL(url string) (*Media, error) {
 // Any change will take be effect only after playback is stopped and restarted.
 // Audio output cannot be changed while playing.
 func (p *Player) SetAudioOutput(output string) error {
-	if p.player == nil {
-		return ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return err
 	}
 
 	cOutput := C.CString(output)
@@ -202,8 +202,8 @@ func (p *Player) SetAudioOutput(output string) error {
 
 // MediaLength returns media length in milliseconds.
 func (p *Player) MediaLength() (int, error) {
-	if p.player == nil {
-		return 0, ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return 0, err
 	}
 
 	return int(C.libvlc_media_player_get_length(p.player)), getError()
@@ -211,8 +211,8 @@ func (p *Player) MediaLength() (int, error) {
 
 // MediaState returns the state of the current media.
 func (p *Player) MediaState() (MediaState, error) {
-	if p.player == nil {
-		return 0, ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return 0, err
 	}
 
 	state := int(C.libvlc_media_player_get_state(p.player))
@@ -222,8 +222,8 @@ func (p *Player) MediaState() (MediaState, error) {
 // MediaPosition returns media position as a
 // float percentage between 0.0 and 1.0.
 func (p *Player) MediaPosition() (float32, error) {
-	if p.player == nil {
-		return 0, ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return 0, err
 	}
 
 	return float32(C.libvlc_media_player_get_position(p.player)), getError()
@@ -232,8 +232,8 @@ func (p *Player) MediaPosition() (float32, error) {
 // SetMediaPosition sets media position as percentage between 0.0 and 1.0.
 // Some formats and protocols do not support this.
 func (p *Player) SetMediaPosition(pos float32) error {
-	if p.player == nil {
-		return ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return err
 	}
 
 	C.libvlc_media_player_set_position(p.player, C.float(pos))
@@ -242,8 +242,8 @@ func (p *Player) SetMediaPosition(pos float32) error {
 
 // MediaTime returns media time in milliseconds.
 func (p *Player) MediaTime() (int, error) {
-	if p.player == nil {
-		return 0, ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return 0, err
 	}
 
 	return int(C.libvlc_media_player_get_time(p.player)), getError()
@@ -252,8 +252,8 @@ func (p *Player) MediaTime() (int, error) {
 // SetMediaTime sets the media time in milliseconds.
 // Some formats and protocals do not support this.
 func (p *Player) SetMediaTime(t int) error {
-	if p.player == nil {
-		return ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return err
 	}
 
 	C.libvlc_media_player_set_time(p.player, C.libvlc_time_t(int64(t)))
@@ -263,7 +263,7 @@ func (p *Player) SetMediaTime(t int) error {
 // WillPlay returns true if the current media is not in a
 // finished or error state.
 func (p *Player) WillPlay() bool {
-	if p.player == nil {
+	if err := p.assertInit(); err != nil {
 		return false
 	}
 
@@ -272,8 +272,8 @@ func (p *Player) WillPlay() bool {
 
 // SetXWindow sets the X window to play on.
 func (p *Player) SetXWindow(windowID uint32) error {
-	if p.player == nil {
-		return ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return err
 	}
 
 	C.libvlc_media_player_set_xwindow(p.player, C.uint(windowID))
@@ -282,8 +282,8 @@ func (p *Player) SetXWindow(windowID uint32) error {
 
 // EventManager returns the event manager responsible for the media player.
 func (p *Player) EventManager() (*EventManager, error) {
-	if p.player == nil {
-		return nil, ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return nil, err
 	}
 
 	manager := C.libvlc_media_player_event_manager(p.player)
@@ -309,8 +309,8 @@ func (p *Player) loadMedia(path string, local bool) (*Media, error) {
 }
 
 func (p *Player) setMedia(m *Media) error {
-	if p.player == nil {
-		return ErrPlayerNotInitialized
+	if err := p.assertInit(); err != nil {
+		return err
 	}
 	if m == nil || m.media == nil {
 		return ErrMediaNotInitialized
@@ -318,4 +318,12 @@ func (p *Player) setMedia(m *Media) error {
 
 	C.libvlc_media_player_set_media(p.player, m.media)
 	return getError()
+}
+
+func (p *Player) assertInit() error {
+	if p == nil || p.player == nil {
+		return ErrPlayerNotInitialized
+	}
+
+	return nil
 }
