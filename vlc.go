@@ -11,6 +11,14 @@ type instance struct {
 	events *eventRegistry
 }
 
+func (i *instance) assertInit() error {
+	if i == nil || i.handle == nil {
+		return ErrModuleNotInitialized
+	}
+
+	return nil
+}
+
 var inst *instance
 
 // Init creates an instance of the VLC module.

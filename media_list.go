@@ -11,8 +11,8 @@ type MediaList struct {
 
 // NewMediaList creates an empty media list.
 func NewMediaList() (*MediaList, error) {
-	if inst == nil {
-		return nil, ErrModuleNotInitialized
+	if err := inst.assertInit(); err != nil {
+		return nil, err
 	}
 
 	var list *C.libvlc_media_list_t

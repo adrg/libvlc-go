@@ -16,8 +16,8 @@ type Player struct {
 
 // NewPlayer creates an instance of a single-media player.
 func NewPlayer() (*Player, error) {
-	if inst == nil {
-		return nil, ErrModuleNotInitialized
+	if err := inst.assertInit(); err != nil {
+		return nil, err
 	}
 
 	if player := C.libvlc_media_player_new(inst.handle); player != nil {

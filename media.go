@@ -159,8 +159,8 @@ func (m *Media) addOption(option string) error {
 }
 
 func newMedia(path string, local bool) (*Media, error) {
-	if inst == nil {
-		return nil, ErrModuleNotInitialized
+	if err := inst.assertInit(); err != nil {
+		return nil, err
 	}
 
 	cPath := C.CString(path)

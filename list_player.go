@@ -25,8 +25,8 @@ type ListPlayer struct {
 
 // NewListPlayer creates an instance of a multi-media player.
 func NewListPlayer() (*ListPlayer, error) {
-	if inst == nil {
-		return nil, ErrModuleNotInitialized
+	if err := inst.assertInit(); err != nil {
+		return nil, err
 	}
 
 	if player := C.libvlc_media_list_player_new(inst.handle); player != nil {
