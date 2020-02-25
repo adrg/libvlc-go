@@ -133,6 +133,24 @@ func (m *Media) Stats() (*MediaStats, error) {
 	return newMediaStats(&stats)
 }
 
+// Location returns the media location, which can be either a local path or
+// a URL, depending on how the media was loaded.
+func (m *Media) Location() (string, error) {
+	if err := m.assertInit(); err != nil {
+		return "", err
+	}
+
+	location, err := urlToPath(C.GoString(C.libvlc_media_get_mrl(m.media)))
+	if err != nil {
+		return "", err
+	}
+	if location == "" {
+		return "", ErrMissingMediaLocation
+	}
+
+	return location, nil
+}
+
 // EventManager returns the event manager responsible for the media.
 func (m *Media) EventManager() (*EventManager, error) {
 	if err := m.assertInit(); err != nil {
