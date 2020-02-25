@@ -140,15 +140,13 @@ func (m *Media) Location() (string, error) {
 		return "", err
 	}
 
-	location, err := urlToPath(C.GoString(C.libvlc_media_get_mrl(m.media)))
-	if err != nil {
-		return "", err
-	}
-	if location == "" {
+	mrl := C.libvlc_media_get_mrl(m.media)
+	if mrl == nil {
 		return "", ErrMissingMediaLocation
 	}
+	defer C.free(unsafe.Pointer(mrl))
 
-	return location, nil
+	return urlToPath(C.GoString(mrl))
 }
 
 // EventManager returns the event manager responsible for the media.
