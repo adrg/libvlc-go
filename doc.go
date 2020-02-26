@@ -75,12 +75,12 @@ List player example
 	}
 	defer list.Release()
 
-	err = list.AddMediaFromPath("localpath/example1.mp3")
+	err = list.AddMediaFromPath("localpath/test1.mp3")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = list.AddMediaFromURL("https://example.com/media.mp4")
+	err = list.AddMediaFromURL("https://example.com/test2.mp4")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -92,7 +92,7 @@ List player example
 
 	// Media files can be added to the list after the list has been added
 	// to the player. The player will play these files as well.
-	err = list.AddMediaFromPath("localpath/example2.mp3")
+	err = list.AddMediaFromPath("localpath/test3.mp3")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -114,7 +114,7 @@ List player example
 		close(quit)
 	}
 
-	eventID, err := manager.Attach(vlc.MediaPlayerEndReached, eventCallback, nil)
+	eventID, err := manager.Attach(vlc.MediaListPlayerPlayed,, eventCallback, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
