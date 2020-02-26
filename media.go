@@ -5,6 +5,7 @@ package vlc
 // #include <stdlib.h>
 import "C"
 import (
+	"fmt"
 	"os"
 	"unsafe"
 )
@@ -23,6 +24,48 @@ const (
 	MediaEnded
 	MediaError
 )
+
+// MediaMetaKey uniquely identifies a type of media metadata.
+type MediaMetaKey uint
+
+// Media metadata types.
+const (
+	MediaTitle MediaMetaKey = iota
+	MediaArtist
+	MediaGenre
+	MediaCopyright
+	MediaAlbum
+	MediaTrackNumber
+	MediaDescription
+	MediaRating
+	MediaDate
+	MediaSetting
+	MediaURL
+	MediaLanguage
+	MediaNowPlaying
+	MediaPublisher
+	MediaEncodedBy
+	MediaArtworkURL
+	MediaTrackID
+	MediaTrackTotal
+	MediaDirector
+	MediaSeason
+	MediaEpisode
+	MediaShowName
+	MediaActors
+	MediaAlbumArtist
+	MediaDiscNumber
+	MediaDiscTotal
+)
+
+// Validate checks if the media metadata key is valid.
+func (mt MediaMetaKey) Validate() error {
+	if mt < MediaTitle || mt > MediaDiscTotal {
+		return fmt.Errorf("invalid media meta key: %d", mt)
+	}
+
+	return nil
+}
 
 // MediaStats contains playback statistics for a media file.
 type MediaStats struct {
@@ -147,6 +190,53 @@ func (m *Media) Location() (string, error) {
 	defer C.free(unsafe.Pointer(mrl))
 
 	return urlToPath(C.GoString(mrl))
+}
+
+// Meta reads the value of the specified media metadata key.
+func (m *Media) Meta(key MediaMetaKey) (string, error) {
+	if err := m.assertInit(); err != nil {
+		return "", err
+	}
+	if err := key.Validate(); err != nil {
+		return "", err
+	}
+
+	val := C.libvlc_media_get_meta(m.media, C.libvlc_meta_t(key))
+	if val == nil {
+		return "", nil
+	}
+	defer C.free(unsafe.Pointer(val))
+
+	return C.GoString(val), nil
+}
+
+// SetMeta sets the specified media metadata key to the provided value.
+// In order to save the metadata on the media file, call SaveMeta.
+func (m *Media) SetMeta(key MediaMetaKey, val string) error {
+	if err := m.assertInit(); err != nil {
+		return err
+	}
+	if err := key.Validate(); err != nil {
+		return err
+	}
+
+	cVal := C.CString(val)
+	C.libvlc_media_set_meta(m.media, C.libvlc_meta_t(key), cVal)
+	C.free(unsafe.Pointer(cVal))
+	return nil
+}
+
+// SaveMeta saves the previously set media metadata.
+func (m *Media) SaveMeta() error {
+	if err := m.assertInit(); err != nil {
+		return err
+	}
+
+	if int(C.libvlc_media_save_meta(m.media)) != 1 {
+		return errOrDefault(getError(), ErrMediaMetaSave)
+	}
+
+	return nil
 }
 
 // EventManager returns the event manager responsible for the media.
