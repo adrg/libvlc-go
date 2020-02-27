@@ -8,20 +8,27 @@
 <h3 align="center">Go bindings for libVLC version 2.X/3.X/4.X.</h3>
 
 <p align="center">
-    <a href="https://godoc.org/github.com/adrg/libvlc-go" rel="nofollow">
-        <img src="https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square" alt="GoDoc" />
-    </a>
-    <a href="https://opensource.org/licenses/MIT" rel="nofollow">
-        <img src="https://img.shields.io/badge/license-MIT-red.svg?style=flat-square" alt="License: MIT" />
+    <a href="https://pkg.go.dev/github.com/adrg/libvlc-go/v3@v3.0.0">
+        <img src="https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white">
     </a>
     <a href="https://goreportcard.com/report/github.com/adrg/libvlc-go" rel="nofollow">
         <img src="https://goreportcard.com/badge/github.com/adrg/libvlc-go" alt="Go Report Card" />
     </a>
+    <a href="https://opensource.org/licenses/MIT" rel="nofollow">
+        <img src="https://img.shields.io/badge/license-MIT-red.svg?style=flat-square" alt="License: MIT" />
+    </a>
+    <a href="https://github.com/avelino/awesome-go#video">
+        <img src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg">
+    </a>
 </p>
 
-The package can be useful for adding multimedia capabilities to applications through the provided player
-interfaces.  
-Full documentation can be found at: https://godoc.org/github.com/adrg/libvlc-go
+The package can be useful for adding multimedia capabilities to applications
+through the provided player interfaces. It relies on Go modules in order to
+mirror each supported major version of libVLC.
+
+Full documentation can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v3@v3.0.0):
+- [v3 documentation](https://pkg.go.dev/github.com/adrg/libvlc-go/v3@v3.0.0), which implements bindings for libVLC 3.X.
+- [v2 documentation](https://pkg.go.dev/github.com/adrg/libvlc-go/v2@v2.0.0), which implements bindings for libVLC 2.X.
 
 ## Prerequisites
 
@@ -52,15 +59,8 @@ go get github.com/adrg/libvlc-go/v2
 go build -tags legacy
 ```
 
-The `v0` version of the package is also available for projects which are not
-using Go modules. I plan to remove this option in the future as it does not
-provide flexibility for further development. However, after removing `v0`, the
-`v2` and `v3` versions will be available for codebases which have not opted in
-to modules. Nevertheless, please consider switching to modules.
-
-```bash
-go get github.com/adrg/libvlc-go
-```
+All versions above also work for projects which are not using Go modules.
+However, please consider switching to modules.
 
 ## Usage
 
@@ -132,7 +132,7 @@ func main() {
 ## Examples
 
 * [Player usage](v3/examples/player.go)
-* [List player usage](v3/examples/player.go)
+* [List player usage](v3/examples/list_player.go)
 * [Handling events](v3/examples/event_handling.go)
 * [Media information](v3/examples/media_information.go)
 
