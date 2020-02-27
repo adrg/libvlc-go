@@ -114,6 +114,7 @@ func main() {
 * [Player usage](https://github.com/adrg/libvlc-go/blob/master/examples/player.go)
 * [List player usage](https://github.com/adrg/libvlc-go/blob/master/examples/list_player.go)
 * [Handling events](https://github.com/adrg/libvlc-go/blob/master/examples/event_handling.go)
+* [Media information](https://github.com/adrg/libvlc-go/blob/master/examples/media_information.go)
 
 ## Stargazers over time
 
