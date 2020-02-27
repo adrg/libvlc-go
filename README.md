@@ -32,14 +32,34 @@ VLC SDK on multiple operating systems can be found on the wiki pages of this pro
 - [Install on Windows](https://github.com/adrg/libvlc-go/wiki/Install-on-Windows)
 
 ## Installation
-```
-go get github.com/adrg/libvlc-go
+
+In order to support multiple versions of libVLC, the package contains a Go
+module for each major version of the API. Choose an installation option
+depending on the version of libVLC you want to use.
+
+**libVLC v3.X or later**
+
+```bash
+go get github.com/adrg/libvlc-go/v3
 ```
 
-Build for libVLC < v3.0.0.
+**libVLC v2.X**
 
-```
+```bash
+go get github.com/adrg/libvlc-go/v2
+
+# Build for libVLC < v2.2.0
 go build -tags legacy
+```
+
+The `v0` version of the package is also available for projects which are not
+using Go modules. I plan to remove this option in the future as it does not
+provide flexibility for further development. However, after removing `v0`, the
+`v2` and `v3` versions will be available for codebases which have not opted in
+to modules. Nevertheless, please consider switching to modules.
+
+```bash
+go get github.com/adrg/libvlc-go
 ```
 
 ## Usage
@@ -50,7 +70,7 @@ package main
 import (
     "log"
 
-    vlc "github.com/adrg/libvlc-go"
+    vlc "github.com/adrg/libvlc-go/v3"
 )
 
 func main() {
@@ -111,10 +131,10 @@ func main() {
 
 ## Examples
 
-* [Player usage](https://github.com/adrg/libvlc-go/blob/master/examples/player.go)
-* [List player usage](https://github.com/adrg/libvlc-go/blob/master/examples/list_player.go)
-* [Handling events](https://github.com/adrg/libvlc-go/blob/master/examples/event_handling.go)
-* [Media information](https://github.com/adrg/libvlc-go/blob/master/examples/media_information.go)
+* [Player usage](v3/examples/player.go)
+* [List player usage](v3/examples/player.go)
+* [Handling events](v3/examples/event_handling.go)
+* [Media information](v3/examples/media_information.go)
 
 ## Stargazers over time
 
@@ -124,7 +144,7 @@ func main() {
 
 Contributions in the form of pull requests, issues or just general feedback,
 are always welcome.
-See [CONTRIBUTING.MD](https://github.com/adrg/libvlc-go/blob/master/CONTRIBUTING.md).
+See [CONTRIBUTING.MD](CONTRIBUTING.md).
 
 **Contributors**:
 [adrg](https://github.com/adrg),
@@ -135,11 +155,13 @@ See [CONTRIBUTING.MD](https://github.com/adrg/libvlc-go/blob/master/CONTRIBUTING
 [sndnvaps](https://github.com/sndnvaps).
 
 ## References
+
 For more information see the
 [libVLC](https://www.videolan.org/developers/vlc/doc/doxygen/html/group__libvlc.html) documentation.
 
 ## License
+
 Copyright (c) 2018 Adrian-George Bostan.
 
 This project is licensed under the [MIT license](https://opensource.org/licenses/MIT).
-See [LICENSE](https://github.com/adrg/libvlc-go/blob/master/LICENSE) for more details.
+See [LICENSE](LICENSE) for more details.
