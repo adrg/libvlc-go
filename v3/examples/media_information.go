@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	vlc "github.com/adrg/libvlc-go"
+	vlc "github.com/adrg/libvlc-go/v3"
 )
 
 func main() {

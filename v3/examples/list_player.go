@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	vlc "github.com/adrg/libvlc-go"
+	vlc "github.com/adrg/libvlc-go/v3"
 )
 
 func main() {
@@ -14,8 +14,8 @@ func main() {
 	}
 	defer vlc.Release()
 
-	// Create a new player.
-	player, err := vlc.NewPlayer()
+	// Create a new list player.
+	player, err := vlc.NewListPlayer()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -24,18 +24,37 @@ func main() {
 		player.Release()
 	}()
 
-	// Add a media file from path or from URL.
-	// Set player media from path:
-	// media, err := player.LoadMediaFromPath("localpath/test.mp4")
-	// Set player media from URL:
-	media, err := player.LoadMediaFromURL("http://stream-uk1.radioparadise.com/mp3-32")
+	// Create a new media list.
+	list, err := vlc.NewMediaList()
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer media.Release()
+	defer list.Release()
 
-	// Start playing the media.
+	err = list.AddMediaFromPath("localpath/test1.mp3")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = list.AddMediaFromURL("http://stream-uk1.radioparadise.com/mp3-32")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Set player media list.
+	if err = player.SetMediaList(list); err != nil {
+		log.Fatal(err)
+	}
+
+	// Start playing the media list.
 	if err = player.Play(); err != nil {
+		log.Fatal(err)
+	}
+
+	// Media files can be added to the list after the list has been added
+	// to the player. The player will play these files as well.
+	err = list.AddMediaFromPath("localpath/test2.mp3")
+	if err != nil {
 		log.Fatal(err)
 	}
 
@@ -51,7 +70,7 @@ func main() {
 		close(quit)
 	}
 
-	eventID, err := manager.Attach(vlc.MediaPlayerEndReached, eventCallback, nil)
+	eventID, err := manager.Attach(vlc.MediaListPlayerPlayed, eventCallback, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
