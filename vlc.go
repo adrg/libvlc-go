@@ -2,9 +2,13 @@ package vlc
 
 // #cgo LDFLAGS: -lvlc
 // #include <vlc/vlc.h>
+// #include <vlc/libvlc_version.h>
 // #include <stdlib.h>
 import "C"
-import "unsafe"
+import (
+	"fmt"
+	"unsafe"
+)
 
 type instance struct {
 	handle *C.libvlc_instance_t
@@ -21,7 +25,25 @@ func (i *instance) assertInit() error {
 
 var inst *instance
 
-// Init creates an instance of the VLC module.
+// VersionInfo contains details regarding the version of the libVLC module.
+type VersionInfo struct {
+	Major uint
+	Minor uint
+	Patch uint
+}
+
+// String returns a string representation of the version.
+func (v VersionInfo) String() string {
+	return fmt.Sprintf("%d.%d.%d", v.Major, v.Minor, v.Patch)
+}
+
+var moduleVersion = VersionInfo{
+	Major: C.LIBVLC_VERSION_MAJOR,
+	Minor: C.LIBVLC_VERSION_MINOR,
+	Patch: C.LIBVLC_VERSION_REVISION,
+}
+
+// Init creates an instance of the libVLC module.
 // Must be called only once and the module instance must be released using
 // the Release function.
 func Init(args ...string) error {
@@ -64,4 +86,9 @@ func Release() error {
 	inst = nil
 
 	return getError()
+}
+
+// Version returns details regarding the version of the libVLC module.
+func Version() VersionInfo {
+	return moduleVersion
 }

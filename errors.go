@@ -24,6 +24,8 @@ var (
 	ErrMediaListNotInitialized = errors.New("media list not initialized")
 	ErrMissingMediaStats       = errors.New("could not get media statistics")
 	ErrInvalidMediaStats       = errors.New("invalid media statistics")
+	ErrMissingMediaLocation    = errors.New("could not get media location")
+	ErrMediaMetaSave           = errors.New("could not save media metadata")
 )
 
 // Event manager errors.

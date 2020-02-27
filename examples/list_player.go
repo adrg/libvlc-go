@@ -31,7 +31,7 @@ func main() {
 	}
 	defer list.Release()
 
-	err = list.AddMediaFromPath("localpath/example1.mp3")
+	err = list.AddMediaFromPath("localpath/test1.mp3")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -53,7 +53,7 @@ func main() {
 
 	// Media files can be added to the list after the list has been added
 	// to the player. The player will play these files as well.
-	err = list.AddMediaFromPath("localpath/example2.mp3")
+	err = list.AddMediaFromPath("localpath/test2.mp3")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -70,7 +70,7 @@ func main() {
 		close(quit)
 	}
 
-	eventID, err := manager.Attach(vlc.MediaPlayerEndReached, eventCallback, nil)
+	eventID, err := manager.Attach(vlc.MediaListPlayerPlayed, eventCallback, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
