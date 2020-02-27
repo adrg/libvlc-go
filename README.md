@@ -26,9 +26,9 @@ The package can be useful for adding multimedia capabilities to applications
 through the provided player interfaces. It relies on Go modules in order to
 mirror each supported major version of libVLC.
 
-Full documentation can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v3@v3.0.0):
-- [v3 documentation](https://pkg.go.dev/github.com/adrg/libvlc-go/v3@v3.0.0), which implements bindings for libVLC 3.X.
-- [v2 documentation](https://pkg.go.dev/github.com/adrg/libvlc-go/v2@v2.0.0), which implements bindings for libVLC 2.X.
+Full documentation can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v3@v3.0.0) or on [GoDoc](https://godoc.org/github.com/adrg/libvlc-go):
+- [Documentation for v3](https://pkg.go.dev/github.com/adrg/libvlc-go/v3@v3.0.0), which implements bindings for libVLC 3.X.
+- [Documentation for v2](https://pkg.go.dev/github.com/adrg/libvlc-go/v2@v2.0.0), which implements bindings for libVLC 2.X.
 
 ## Prerequisites
 
@@ -135,6 +135,8 @@ func main() {
 * [List player usage](v3/examples/list_player.go)
 * [Handling events](v3/examples/event_handling.go)
 * [Media information](v3/examples/media_information.go)
+
+Examples for the older version of the API can be found in [v2/examples](v2/examples).
 
 ## Stargazers over time
 
