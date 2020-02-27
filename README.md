@@ -11,6 +11,9 @@
     <a href="https://pkg.go.dev/github.com/adrg/libvlc-go/v3@v3.0.0">
         <img src="https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white">
     </a>
+    <a href="https://godoc.org/github.com/adrg/libvlc-go/v3" rel="nofollow">
+        <img src="https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square" alt="GoDoc" />
+    </a>
     <a href="https://goreportcard.com/report/github.com/adrg/libvlc-go" rel="nofollow">
         <img src="https://goreportcard.com/badge/github.com/adrg/libvlc-go" alt="Go Report Card" />
     </a>
@@ -26,8 +29,8 @@ The package can be useful for adding multimedia capabilities to applications
 through the provided player interfaces. It relies on Go modules in order to
 mirror each supported major version of libVLC.
 
-- Documentation for v3, which implements bindings for libVLC 3.X, can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v3@v3.0.0) or on [GoDoc](https://godoc.org/github.com/adrg/libvlc-go/v3).
-- Documentation for v2, which implements bindings for libVLC 2.X, can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v2@v2.0.0) or on [GoDoc](https://godoc.org/github.com/adrg/libvlc-go/v2).
+Documentation for v3, which implements bindings for libVLC 3.X, can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v3@v3.0.0) or on [GoDoc](https://godoc.org/github.com/adrg/libvlc-go/v3).  
+Documentation for v2, which implements bindings for libVLC 2.X, can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v2@v2.0.0) or on [GoDoc](https://godoc.org/github.com/adrg/libvlc-go/v2).
 
 ## Prerequisites
 
