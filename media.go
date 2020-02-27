@@ -239,6 +239,41 @@ func (m *Media) SaveMeta() error {
 	return nil
 }
 
+// Parse fetches local art, metadata and track information synchronously.
+// NOTE: deprecated in libVLC v3.0.0+.
+func (m *Media) Parse() error {
+	if err := m.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_parse(m.media)
+	return getError()
+}
+
+// ParseAsync fetches local art, metadata and track information asynchronously.
+// Listen to MediaParsedChanged event on the media event manager the track when
+// the parsing has finished. However, if the media was already parsed, the
+// event will not be sent.
+// NOTE: deprecated in libVLC v3.0.0+.
+func (m *Media) ParseAsync() error {
+	if err := m.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_parse_async(m.media)
+	return getError()
+}
+
+// IsParsed returns true if the media was parsed.
+// NOTE: deprecated in libVLC v3.0.0+.
+func (m *Media) IsParsed() (bool, error) {
+	if err := m.assertInit(); err != nil {
+		return false, err
+	}
+
+	return C.libvlc_media_is_parsed(m.media) != 0, getError()
+}
+
 // EventManager returns the event manager responsible for the media.
 func (m *Media) EventManager() (*EventManager, error) {
 	if err := m.assertInit(); err != nil {
