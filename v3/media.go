@@ -276,7 +276,7 @@ func (m *Media) SaveMeta() error {
 // ParseWithOptions fetches art, metadata and track information asynchronously,
 // using the specified options. Listen to the MediaParsedChanged event on the
 // media event manager the track when the parsing has finished. However, if the
-// media was already parsed, the event will not be sent.
+// media was already parsed, the event is not sent.
 // If no option is provided, the media is parsed only if it is a local file.
 // The timeout parameter specifies the maximum amount of time allowed to
 // preparse the media, in milliseconds.
@@ -322,7 +322,7 @@ func (m *Media) Parse() error {
 // ParseAsync fetches local art, metadata and track information asynchronously.
 // Listen to the MediaParsedChanged event on the media event manager the track
 // when the parsing has finished. However, if the media was already parsed,
-// the event will not be sent.
+// the event is not sent.
 // NOTE: deprecated in libVLC v3.0.0+. Use ParseWithOptions instead.
 func (m *Media) ParseAsync() error {
 	if err := m.assertInit(); err != nil {
@@ -330,6 +330,18 @@ func (m *Media) ParseAsync() error {
 	}
 
 	C.libvlc_media_parse_async(m.media)
+	return getError()
+}
+
+// StopParse stops the parsing of the media. When the media parsing is
+// stopped, the MediaParsedChanged event is sent and the parsing status
+// of the media is set to MediaParseTimeout.
+func (m *Media) StopParse() error {
+	if err := m.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_parse_stop(m.media)
 	return getError()
 }
 
