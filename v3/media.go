@@ -60,12 +60,46 @@ const (
 
 // Validate checks if the media metadata key is valid.
 func (mt MediaMetaKey) Validate() error {
-	if mt < MediaTitle || mt > MediaDiscTotal {
+	if mt > MediaDiscTotal {
 		return fmt.Errorf("invalid media meta key: %d", mt)
 	}
 
 	return nil
 }
+
+// MediaParseOption defines different options for parsing media files.
+type MediaParseOption uint
+
+// Media parse options.
+var (
+	// Parse media if it is a local file.
+	MediaParseLocal MediaParseOption = 0x00
+
+	// Parse media if it is a local or network file.
+	MediaParseNetwork MediaParseOption = 0x01
+
+	// Fetch metadata, track information and cover art using local resources.
+	MediaFetchLocal MediaParseOption = 0x02
+
+	// Fetch metadata, track information and cover art using network resources.
+	MediaFetchNetwork MediaParseOption = 0x04
+
+	// Interact with the user when preparsing media. Set this flag in order to
+	// receive a callback if the input media is asking for credentials.
+	MediaParseInteract MediaParseOption = 0x08
+)
+
+// MediaParseStatus represents the parsing status of a media file.
+type MediaParseStatus uint
+
+// Media parse statuses.
+const (
+	MediaParseUnstarted MediaParseStatus = iota
+	MediaParseSkipped
+	MediaParseFailed
+	MediaParseTimeout
+	MediaParseDone
+)
 
 // MediaStats contains playback statistics for a media file.
 type MediaStats struct {
@@ -239,8 +273,43 @@ func (m *Media) SaveMeta() error {
 	return nil
 }
 
+// ParseWithOptions fetches art, metadata and track information asynchronously,
+// using the specified options. Listen to the MediaParsedChanged event on the
+// media event manager the track when the parsing has finished. However, if the
+// media was already parsed, the event will not be sent.
+// If no option is provided, the media is parsed only if it is a local file.
+// The timeout parameter specifies the maximum amount of time allowed to
+// preparse the media, in milliseconds.
+//   // Timeout values:
+//   timeout <  0: use default preparse time.
+//   timeout == 0: wait indefinitely.
+//   timeout >  0: wait the specified number of milliseconds.
+func (m *Media) ParseWithOptions(timeout int, opts ...MediaParseOption) error {
+	var flags MediaParseOption
+	for _, opt := range opts {
+		flags |= opt
+	}
+
+	// If no options are specified, parse only local media files.
+	if flags == 0 {
+		flags = MediaParseLocal
+	}
+
+	// Use default preparse timeout for invalid timeout values.
+	if timeout < -1 {
+		timeout = -1
+	}
+
+	if int(C.libvlc_media_parse_with_options(m.media,
+		C.libvlc_media_parse_flag_t(flags), C.int(timeout))) != 0 {
+		return errOrDefault(getError(), ErrMediaParse)
+	}
+
+	return nil
+}
+
 // Parse fetches local art, metadata and track information synchronously.
-// NOTE: deprecated in libVLC v3.0.0+.
+// NOTE: deprecated in libVLC v3.0.0+. Use ParseWithOptions instead.
 func (m *Media) Parse() error {
 	if err := m.assertInit(); err != nil {
 		return err
@@ -251,10 +320,10 @@ func (m *Media) Parse() error {
 }
 
 // ParseAsync fetches local art, metadata and track information asynchronously.
-// Listen to MediaParsedChanged event on the media event manager the track when
-// the parsing has finished. However, if the media was already parsed, the
-// event will not be sent.
-// NOTE: deprecated in libVLC v3.0.0+.
+// Listen to the MediaParsedChanged event on the media event manager the track
+// when the parsing has finished. However, if the media was already parsed,
+// the event will not be sent.
+// NOTE: deprecated in libVLC v3.0.0+. Use ParseWithOptions instead.
 func (m *Media) ParseAsync() error {
 	if err := m.assertInit(); err != nil {
 		return err
@@ -264,8 +333,17 @@ func (m *Media) ParseAsync() error {
 	return getError()
 }
 
+// ParseStatus returns the parsing status of the media.
+func (m *Media) ParseStatus() (MediaParseStatus, error) {
+	if err := m.assertInit(); err != nil {
+		return MediaParseUnstarted, err
+	}
+
+	return MediaParseStatus(C.libvlc_media_get_parsed_status(m.media)), getError()
+}
+
 // IsParsed returns true if the media was parsed.
-// NOTE: deprecated in libVLC v3.0.0+.
+// NOTE: deprecated in libVLC v3.0.0+. Use ParseStatus instead.
 func (m *Media) IsParsed() (bool, error) {
 	if err := m.assertInit(); err != nil {
 		return false, err
