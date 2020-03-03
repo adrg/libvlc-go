@@ -36,10 +36,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err = media.Parse(); err != nil {
+
+	// Parse media metadata asynchronously.
+	err = media.ParseWithOptions(0, vlc.MediaParseLocal, vlc.MediaParseNetwork)
+	if err != nil {
 		log.Fatal(err)
 	}
 
+	// Add media to media list.
 	err = list.AddMedia(media)
 	if err != nil {
 		log.Fatal(err)
@@ -85,6 +89,23 @@ func main() {
 				break
 			}
 			log.Println("Media location:", location)
+		case vlc.MediaParsedChanged:
+			// Retrieve media item from user data.
+			media, ok := userData.(*vlc.Media)
+			if !ok {
+				break
+			}
+
+			parseStatus, err := media.ParseStatus()
+			if err != nil {
+				log.Println(err)
+				break
+			}
+			log.Println("Media parse status:", parseStatus)
+
+			if parseStatus != vlc.MediaParseDone {
+				break
+			}
 
 			// Get media title and artist metadata.
 			title, err := media.Meta(vlc.MediaTitle)
@@ -126,6 +147,21 @@ func main() {
 			manager.Detach(eventID)
 		}
 	}()
+
+	// Register media parsed event with the media event manager.
+	mEventManager, err := media.EventManager()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Pass media object as user data in order to retrieve it in the callback
+	// function. This is useful in order to avoid keeping references to the
+	// media file.
+	eventID, err := mEventManager.Attach(vlc.MediaParsedChanged, eventCallback, media)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer mEventManager.Detach(eventID)
 
 	// Start playing the media list.
 	if err = lp.Play(); err != nil {
