@@ -137,6 +137,7 @@ func main() {
 * [List player usage](v3/examples/list_player.go)
 * [Handling events](v3/examples/event_handling.go)
 * [Media information](v3/examples/media_information.go)
+* [GTK player](v3/examples/gtk_player.go) (using [go-gtk](https://github.com/mattn/go-gtk))
 
 Examples for the older version of the API can be found in [v2/examples](v2/examples).
 
