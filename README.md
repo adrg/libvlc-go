@@ -21,7 +21,10 @@
         <img src="https://img.shields.io/badge/license-MIT-red.svg?style=flat-square" alt="License: MIT" />
     </a>
     <a href="https://github.com/avelino/awesome-go#video">
-        <img src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg">
+        <img src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg" />
+    </a>
+    <a href="https://www.buymeacoffee.com/adrg" rel="nofollow">
+        <img src="https://img.shields.io/static/v1.svg?label=%20&message=Buy%20me%20a%20coffee&color=FF813F&logo=buy%20me%20a%20coffee&logoColor=white" alt="Buy Me A Coffee" />
     </a>
 </p>
 
@@ -158,6 +161,13 @@ See [CONTRIBUTING.MD](CONTRIBUTING.md).
 [danielpellon](https://github.com/danielpellon),
 [patknight](https://github.com/patknight),
 [sndnvaps](https://github.com/sndnvaps).
+
+## Buy me a coffee
+
+If you found this project useful and want to support it, consider buying me a coffee.  
+<a href="https://www.buymeacoffee.com/adrg">
+    <img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="48px">
+</a>
 
 ## References
 
