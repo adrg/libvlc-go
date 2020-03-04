@@ -6,3 +6,4 @@ examples/v3/player
 examples/v3/list_player
 examples/v3/event_handling
 examples/v3/media_information
+examples/v3/gtk_player
