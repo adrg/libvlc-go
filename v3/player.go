@@ -250,8 +250,8 @@ func (p *Player) MediaTime() (int, error) {
 	return int(C.libvlc_media_player_get_time(p.player)), getError()
 }
 
-// SetMediaTime sets the media time in milliseconds.
-// Some formats and protocals do not support this.
+// SetMediaTime sets the media time in milliseconds. Some formats and
+// protocols do not support this.
 func (p *Player) SetMediaTime(t int) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -261,8 +261,8 @@ func (p *Player) SetMediaTime(t int) error {
 	return getError()
 }
 
-// WillPlay returns true if the current media is not in a
-// finished or error state.
+// WillPlay returns true if the current media is not in a finished or
+// error state.
 func (p *Player) WillPlay() bool {
 	if err := p.assertInit(); err != nil {
 		return false

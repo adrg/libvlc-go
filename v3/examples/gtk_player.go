@@ -1,9 +1,9 @@
+package main
+
 /*
  * Sample GTK player.
  * See https://github.com/mattn/go-gtk for go-gtk installation instructions.
  */
-package main
-
 import (
 	"log"
 
