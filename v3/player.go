@@ -271,13 +271,48 @@ func (p *Player) WillPlay() bool {
 	return C.libvlc_media_player_will_play(p.player) != 0
 }
 
-// SetXWindow sets the X window to play on.
+// XWindow returns the X window the player renders its video output to, or 0
+// if no window is set. The window can be set using the SetXWindow method.
+func (p *Player) XWindow() (uint32, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return uint32(C.libvlc_media_player_get_xwindow(p.player)), getError()
+}
+
+// SetXWindow sets an X Window System drawable where the media player can
+// render its video output. If libVLC was built without X11 output support,
+// calling this method has no effect.
 func (p *Player) SetXWindow(windowID uint32) error {
 	if err := p.assertInit(); err != nil {
 		return err
 	}
 
 	C.libvlc_media_player_set_xwindow(p.player, C.uint(windowID))
+	return getError()
+}
+
+// HWND returns the Windows API window handle the player renders its video
+// output to, or 0 if no window is set. The window can be set using the
+// SetHWND method.
+func (p *Player) HWND() (uintptr, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return uintptr(C.libvlc_media_player_get_hwnd(p.player)), getError()
+}
+
+// SetHWND sets a Windows API window handle where the media player can render
+// its video output. If libVLC was built without Win32/Win64 API output
+// support, calling this method has no effect.
+func (p *Player) SetHWND(hwnd uintptr) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_set_hwnd(p.player, unsafe.Pointer(hwnd))
 	return getError()
 }
 
