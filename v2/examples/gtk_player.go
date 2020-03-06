@@ -7,7 +7,7 @@ package main
 import (
 	"log"
 
-	vlc "github.com/adrg/libvlc-go/v3"
+	vlc "github.com/adrg/libvlc-go/v2"
 	"github.com/mattn/go-gtk/glib"
 	"github.com/mattn/go-gtk/gtk"
 )

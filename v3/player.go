@@ -250,8 +250,8 @@ func (p *Player) MediaTime() (int, error) {
 	return int(C.libvlc_media_player_get_time(p.player)), getError()
 }
 
-// SetMediaTime sets the media time in milliseconds.
-// Some formats and protocals do not support this.
+// SetMediaTime sets the media time in milliseconds. Some formats and
+// protocols do not support this.
 func (p *Player) SetMediaTime(t int) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -261,8 +261,8 @@ func (p *Player) SetMediaTime(t int) error {
 	return getError()
 }
 
-// WillPlay returns true if the current media is not in a
-// finished or error state.
+// WillPlay returns true if the current media is not in a finished or
+// error state.
 func (p *Player) WillPlay() bool {
 	if err := p.assertInit(); err != nil {
 		return false
@@ -271,13 +271,122 @@ func (p *Player) WillPlay() bool {
 	return C.libvlc_media_player_will_play(p.player) != 0
 }
 
-// SetXWindow sets the X window to play on.
+// XWindow returns the identifier of the X window the media player is
+// configured to render its video output to, or 0 if no window is set.
+// The window can be set using the SetXWindow method.
+// NOTE: The window identifier is returned even if the player is not currently
+// using it (for instance if it is playing an audio-only input).
+func (p *Player) XWindow() (uint32, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return uint32(C.libvlc_media_player_get_xwindow(p.player)), getError()
+}
+
+// SetXWindow sets an X Window System drawable where the media player can
+// render its video output. The call takes effect when the playback starts.
+// If it is already started, it might need to be stopped before changes apply.
+// If libVLC was built without X11 output support, calling this method has no
+// effect.
+// NOTE: By default, libVLC captures input events on the video rendering area.
+// Use the SetMouseInput and SetKeyInput methods if you want to handle input
+// events in your application. By design, the X11 protocol delivers input
+// events to only one recipient.
 func (p *Player) SetXWindow(windowID uint32) error {
 	if err := p.assertInit(); err != nil {
 		return err
 	}
 
 	C.libvlc_media_player_set_xwindow(p.player, C.uint(windowID))
+	return getError()
+}
+
+// HWND returns the handle of the Windows API window the media player is
+// configured to render its video output to, or 0 if no window is set.
+// The window can be set using the SetHWND method.
+// NOTE: The window handle is returned even if the player is not currently
+// using it (for instance if it is playing an audio-only input).
+func (p *Player) HWND() (uintptr, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return uintptr(C.libvlc_media_player_get_hwnd(p.player)), getError()
+}
+
+// SetHWND sets a Windows API window handle where the media player can render
+// its video output. If libVLC was built without Win32/Win64 API output
+// support, calling this method has no effect.
+// NOTE: By default, libVLC captures input events on the video rendering area.
+// Use the SetMouseInput and SetKeyInput methods if you want to handle input
+// events in your application.
+func (p *Player) SetHWND(hwnd uintptr) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_set_hwnd(p.player, unsafe.Pointer(hwnd))
+	return getError()
+}
+
+// NSObject returns the handler of the NSView the media player is configured
+// to render its video output to, or 0 if no view is set. See SetNSObject.
+func (p *Player) NSObject() (uintptr, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return uintptr(C.libvlc_media_player_get_nsobject(p.player)), getError()
+}
+
+// SetNSObject sets a NSObject handler where the media player can render
+// its video output. Use the vout called "macosx". The object can be a NSView
+// or a NSObject following the VLCVideoViewEmbedding protocol.
+//   @protocol VLCVideoViewEmbedding <NSObject>
+//   - (void)addVoutSubview:(NSView *)view;
+//   - (void)removeVoutSubview:(NSView *)view;
+//   @end
+func (p *Player) SetNSObject(drawable uintptr) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_set_nsobject(p.player, unsafe.Pointer(drawable))
+	return getError()
+}
+
+// SetKeyInput enables or disables key press event handling, according to the
+// libVLC hotkeys configuration. By default, keyboard events are handled by
+// the libVLC video widget.
+// NOTE: This method works only for X11 and Win32 at the moment.
+// NOTE: On X11, there can be only one subscriber for key press and mouse click
+// events per window. If your application has subscribed to these events for
+// the X window ID of the video widget, then libVLC will not be able to handle
+// key presses and mouse clicks.
+func (p *Player) SetKeyInput(enable bool) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_key_input(p.player, C.uint(boolToInt(enable)))
+	return getError()
+}
+
+// SetMouseInput enables or disables mouse click event handling. By default,
+// mouse events are handled by the libVLC video widget. This is needed for DVD
+// menus to work, as well as for a few video filters, such as "puzzle".
+// NOTE: This method works only for X11 and Win32 at the moment.
+// NOTE: On X11, there can be only one subscriber for key press and mouse click
+// events per window. If your application has subscribed to these events for
+// the X window ID of the video widget, then libVLC will not be able to handle
+// key presses and mouse clicks.
+func (p *Player) SetMouseInput(enable bool) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_mouse_input(p.player, C.uint(boolToInt(enable)))
 	return getError()
 }
 
