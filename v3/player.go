@@ -274,8 +274,8 @@ func (p *Player) WillPlay() bool {
 // XWindow returns the identifier of the X window the media player is
 // configured to render its video output to, or 0 if no window is set.
 // The window can be set using the SetXWindow method.
-// The windows identifier is returned even if the player is not currently using
-// it (for instance if it is playing an audio-only input).
+// NOTE: The window identifier is returned even if the player is not currently
+// using it (for instance if it is playing an audio-only input).
 func (p *Player) XWindow() (uint32, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
@@ -305,6 +305,8 @@ func (p *Player) SetXWindow(windowID uint32) error {
 // HWND returns the handle of the Windows API window the media player is
 // configured to render its video output to, or 0 if no window is set.
 // The window can be set using the SetHWND method.
+// NOTE: The window handle is returned even if the player is not currently
+// using it (for instance if it is playing an audio-only input).
 func (p *Player) HWND() (uintptr, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
