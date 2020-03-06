@@ -321,6 +321,32 @@ func (p *Player) SetHWND(hwnd uintptr) error {
 	return getError()
 }
 
+// NSObject returns the handler of the NSView the media player is configured
+// to render its video output to, or 0 if no view is set. See SetNSObject.
+func (p *Player) NSObject() (uintptr, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return uintptr(C.libvlc_media_player_get_nsobject(p.player)), getError()
+}
+
+// SetNSObject sets a NSObject handler where the media player can render
+// its video output. Use the vout called "macosx". The object can be a NSView
+// or a NSObject following the VLCVideoViewEmbedding protocol.
+//   @protocol VLCVideoViewEmbedding <NSObject>
+//   - (void)addVoutSubview:(NSView *)view;
+//   - (void)removeVoutSubview:(NSView *)view;
+//   @end
+func (p *Player) SetNSObject(drawable uintptr) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_set_nsobject(p.player, unsafe.Pointer(drawable))
+	return getError()
+}
+
 // EventManager returns the event manager responsible for the media player.
 func (p *Player) EventManager() (*EventManager, error) {
 	if err := p.assertInit(); err != nil {
