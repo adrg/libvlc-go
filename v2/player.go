@@ -287,6 +287,10 @@ func (p *Player) XWindow() (uint32, error) {
 // SetXWindow sets an X Window System drawable where the media player can
 // render its video output. If libVLC was built without X11 output support,
 // calling this method has no effect.
+// NOTE: By default, libVLC captures input events on the video rendering area.
+// Use the SetMouseInput and SetKeyInput methods if you want to handle input
+// events in your application. By design, the X11 protocol delivers input
+// events to only one recipient.
 func (p *Player) SetXWindow(windowID uint32) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -310,6 +314,9 @@ func (p *Player) HWND() (uintptr, error) {
 // SetHWND sets a Windows API window handle where the media player can render
 // its video output. If libVLC was built without Win32/Win64 API output
 // support, calling this method has no effect.
+// NOTE: By default, libVLC captures input events on the video rendering area.
+// Use the SetMouseInput and SetKeyInput methods if you want to handle input
+// events in your application.
 func (p *Player) SetHWND(hwnd uintptr) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -342,6 +349,40 @@ func (p *Player) SetNSObject(drawable uintptr) error {
 	}
 
 	C.libvlc_media_player_set_nsobject(p.player, unsafe.Pointer(drawable))
+	return getError()
+}
+
+// SetKeyInput enables or disables key press event handling, according to the
+// libVLC hotkeys configuration. By default, keyboard events are handled by
+// the libVLC video widget.
+// NOTE: This method works only for X11 and Win32 at the moment.
+// NOTE: On X11, there can be only one subscriber for key press and mouse click
+// events per window. If your application has subscribed to these events for
+// the X window ID of the video widget, then libVLC will not be able to handle
+// key presses and mouse clicks.
+func (p *Player) SetKeyInput(enable bool) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_key_input(p.player, C.uint(boolToInt(enable)))
+	return getError()
+}
+
+// SetMouseInput enables or disables mouse click event handling. By default,
+// mouse events are handled by the libVLC video widget. This is needed for DVD
+// menus to work, as well as for a few video filters, such as "puzzle".
+// NOTE: This method works only for X11 and Win32 at the moment.
+// NOTE: On X11, there can be only one subscriber for key press and mouse click
+// events per window. If your application has subscribed to these events for
+// the X window ID of the video widget, then libVLC will not be able to handle
+// key presses and mouse clicks.
+func (p *Player) SetMouseInput(enable bool) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_mouse_input(p.player, C.uint(boolToInt(enable)))
 	return getError()
 }
 
