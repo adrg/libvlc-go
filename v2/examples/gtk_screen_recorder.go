@@ -102,7 +102,7 @@ func main() {
 	areaBoxSpacer.PackStart(areaSelectBox, false, false, 10)
 	areaBoxSpacer.PackStart(areaBox, true, true, 10)
 
-	areaFrame := gtk.NewFrame("Window capture area")
+	areaFrame := gtk.NewFrame("Capture area")
 	areaFrame.Add(areaBoxSpacer)
 	areaSpacer := gtk.NewHBox(false, 0)
 	areaSpacer.PackStart(areaFrame, true, true, 10)
