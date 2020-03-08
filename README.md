@@ -67,6 +67,19 @@ go build -tags legacy
 All versions above also work for projects which are not using Go modules.
 However, please consider switching to modules.
 
+## Examples
+
+![libvlc-go examples](https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/libvlc-go-examples.jpg)
+
+* [GTK media player](v3/examples/gtk_player.go) (using [go-gtk](https://github.com/mattn/go-gtk))
+* [GTK screen recorder](v3/examples/gtk_screen_recorder.go) (using [go-gtk](https://github.com/mattn/go-gtk))
+* [Player usage](v3/examples/player.go)
+* [List player usage](v3/examples/list_player.go)
+* [Handling events](v3/examples/event_handling.go)
+* [Media information](v3/examples/media_information.go)
+
+Examples for the older version of the API can be found in [v2/examples](v2/examples).
+
 ## Usage
 
 ```go
@@ -133,16 +146,6 @@ func main() {
     <-quit
 }
 ```
-
-## Examples
-
-* [Player usage](v3/examples/player.go)
-* [List player usage](v3/examples/list_player.go)
-* [Handling events](v3/examples/event_handling.go)
-* [Media information](v3/examples/media_information.go)
-* [GTK player](v3/examples/gtk_player.go) (using [go-gtk](https://github.com/mattn/go-gtk))
-
-Examples for the older version of the API can be found in [v2/examples](v2/examples).
 
 ## Stargazers over time
 
