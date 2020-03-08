@@ -8,6 +8,7 @@ import (
 	"log"
 
 	vlc "github.com/adrg/libvlc-go/v2"
+	"github.com/mattn/go-gtk/gdk"
 	"github.com/mattn/go-gtk/glib"
 	"github.com/mattn/go-gtk/gtk"
 )
@@ -38,6 +39,7 @@ func main() {
 
 	window := gtk.NewWindow(gtk.WINDOW_TOPLEVEL)
 	window.SetPosition(gtk.WIN_POS_CENTER)
+	window.SetTypeHint(gdk.WINDOW_TYPE_HINT_DIALOG)
 	window.SetDefaultSize(800, 600)
 	window.SetTitle("libvlc-go player")
 	window.Connect("destroy", func(ctx *glib.CallbackContext) {
