@@ -1,8 +1,9 @@
 package main
 
 /*
- * Sample GTK player.
- * See https://github.com/mattn/go-gtk for go-gtk installation instructions.
+ * GTK media player.
+ * Uses go-gtk.
+ * See https://github.com/mattn/go-gtk for installation instructions.
  */
 import (
 	"log"
