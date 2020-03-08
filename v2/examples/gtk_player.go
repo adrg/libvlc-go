@@ -47,8 +47,8 @@ func main() {
 	})
 
 	// Create window container.
-	vBox := gtk.NewVBox(false, 0)
-	window.Add(vBox)
+	container := gtk.NewVBox(false, 0)
+	window.Add(container)
 
 	// Add player file menu layout.
 	openItem := gtk.NewMenuItemWithLabel("Open")
@@ -61,11 +61,12 @@ func main() {
 	fileItem.SetSubmenu(fileMenu)
 	menuBar := gtk.NewMenuBar()
 	menuBar.Append(fileItem)
-	vBox.PackStart(menuBar, false, false, 0)
+	container.PackStart(menuBar, false, false, 0)
 
 	// Player video area layout.
 	playerWidget := gtk.NewDrawingArea()
-	vBox.PackStart(playerWidget, true, true, 0)
+	playerWidget.ModifyBG(gtk.STATE_NORMAL, gdk.NewColorRGB(0, 0, 0))
+	container.PackStart(playerWidget, true, true, 0)
 
 	// Wait for the realize event and attach the player to the widget window ID.
 	playerWidget.Connect("realize", func(ctx *glib.CallbackContext) {
@@ -76,11 +77,13 @@ func main() {
 	// Player controls area layout.
 	playButton := gtk.NewButtonFromStock("gtk-media-play")
 	stopButton := gtk.NewButtonFromStock("gtk-media-stop")
+	exitButton := gtk.NewButtonFromStock("gtk-close")
 
-	hBox := gtk.NewHBox(false, 0)
-	hBox.PackStart(playButton, false, false, 0)
-	hBox.PackStart(stopButton, false, false, 0)
-	vBox.PackStart(hBox, false, false, 0)
+	buttonBox := gtk.NewHBox(false, 0)
+	buttonBox.PackStart(playButton, false, false, 0)
+	buttonBox.PackStart(stopButton, false, false, 0)
+	buttonBox.PackEnd(exitButton, false, false, 0)
+	container.PackStart(buttonBox, false, false, 0)
 
 	// File open menu item event callback.
 	openItem.Connect("activate", func(ctx *glib.CallbackContext) {
@@ -147,6 +150,11 @@ func main() {
 	stopButton.Connect("clicked", func(ctx *glib.CallbackContext) {
 		player.Stop()
 		playButton.SetLabel("gtk-media-play")
+	})
+
+	// Exit button event callback.
+	exitButton.Connect("clicked", func(ctx *glib.CallbackContext) {
+		gtk.MainQuit()
 	})
 
 	window.ShowAll()
