@@ -7,6 +7,7 @@ package main
  */
 import (
 	"log"
+	"runtime"
 
 	vlc "github.com/adrg/libvlc-go/v3"
 	"github.com/mattn/go-gtk/gdk"
@@ -72,7 +73,21 @@ func main() {
 	// Wait for the realize event and attach the player to the widget window ID.
 	playerWidget.Connect("realize", func(ctx *glib.CallbackContext) {
 		// Set window for the player.
-		player.SetXWindow(uint32(playerWidget.GetWindow().GetNativeWindowID()))
+		windowID := playerWidget.GetWindow().GetNativeWindowID()
+
+		var err error
+		switch runtime.GOOS {
+		case "windows":
+			err = player.SetHWND(uintptr(windowID))
+		case "darwin":
+			err = player.SetNSObject(uintptr(windowID))
+		default:
+			err = player.SetXWindow(uint32(windowID))
+		}
+
+		if err != nil {
+			log.Fatalf("Could not bind media player to window: %s\n", err)
+		}
 	})
 
 	// Player controls area layout.
