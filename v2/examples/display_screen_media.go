@@ -1,5 +1,11 @@
 package main
 
+/*
+ * Display computer screen as player media.
+ * libVLC screen module must be installed.
+ * See https://github.com/adrg/libvlc-go/wiki for installation instructions.
+ * See https://wiki.videolan.org/Documentation:Modules/screen.
+ */
 import (
 	"log"
 
