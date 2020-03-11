@@ -152,6 +152,32 @@ func newMediaStats(st *C.libvlc_media_stats_t) (*MediaStats, error) {
 	}, nil
 }
 
+// MediaScreenOptions provides configuration options for creating media
+// instances from the current computer screen.
+type MediaScreenOptions struct {
+	// Screen capture area.
+	X      int // The left edge coordinate of the subscreen. Default: 0.
+	Y      int // The top edge coordinate of the subscreen. Default: 0.
+	Width  int // The width of the subscreen. Default: 0 (full screen width).
+	Height int // The height of the subscreen. Default: 0 (full screen height).
+
+	// Screen capture frame rate. Default: 0.
+	FPS float64
+
+	// Follow the mouse when capturing a subscreen. Default value: false.
+	FollowMouse bool
+
+	// Mouse cursor image to use. If specified, the cursor will be overlayed
+	// on the captured video. Default: "".
+	// NOTE: Windows only.
+	CursorImage string
+
+	// Optimize the capture by fragmenting the screen in chunks of predefined
+	// height (16 might be a good value). Default: 0 (disabled).
+	// NOTE: Windows only.
+	FragmentSize int
+}
+
 // Media is an abstract representation of a playable media file.
 type Media struct {
 	media *C.libvlc_media_t
@@ -165,6 +191,53 @@ func NewMediaFromPath(path string) (*Media, error) {
 // NewMediaFromURL creates a Media instance from the provided URL.
 func NewMediaFromURL(url string) (*Media, error) {
 	return newMedia(url, false)
+}
+
+// NewMediaFromScreen creates a Media instance from the current computer
+// screen, using the specified options.
+// NOTE: This functionality requires the VLC screen module to be installed.
+// See installation instructions at https://github.com/adrg/libvlc-go/wiki.
+// See https://wiki.videolan.org/Documentation:Modules/screen.
+func NewMediaFromScreen(opts *MediaScreenOptions) (*Media, error) {
+	media, err := newMedia("screen://", false)
+	if err != nil {
+		return nil, err
+	}
+	if opts == nil {
+		return media, nil
+	}
+
+	var mediaOpts []string
+	if opts.X > 0 {
+		mediaOpts = append(mediaOpts, fmt.Sprintf(":screen-left=%d", opts.X))
+	}
+	if opts.Y > 0 {
+		mediaOpts = append(mediaOpts, fmt.Sprintf(":screen-top=%d", opts.Y))
+	}
+	if opts.Width > 0 {
+		mediaOpts = append(mediaOpts, fmt.Sprintf(":screen-width=%d", opts.Width))
+	}
+	if opts.Height > 0 {
+		mediaOpts = append(mediaOpts, fmt.Sprintf(":screen-height=%d", opts.Height))
+	}
+	if opts.FPS != 0 {
+		mediaOpts = append(mediaOpts, fmt.Sprintf(":screen-fps=%f", opts.FPS))
+	}
+	if opts.FollowMouse {
+		mediaOpts = append(mediaOpts, fmt.Sprintf(":screen-follow-mouse"))
+	}
+	if opts.FragmentSize > 0 {
+		mediaOpts = append(mediaOpts, fmt.Sprintf(":screen-fragment-size=%d", opts.FragmentSize))
+	}
+	if opts.CursorImage != "" {
+		mediaOpts = append(mediaOpts, fmt.Sprintf(":screen-mouse-image=%s", opts.CursorImage))
+	}
+
+	if len(mediaOpts) > 0 {
+		return media, media.AddOptions(mediaOpts...)
+	}
+
+	return media, nil
 }
 
 // Release destroys the media instance.
