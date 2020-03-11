@@ -4,9 +4,11 @@ v2/examples/event_handling
 v2/examples/media_information
 v2/examples/gtk_player
 v2/examples/gtk_screen_recorder
+v2/examples/display_screen_media
 v3/examples/player
 v3/examples/list_player
 v3/examples/event_handling
 v3/examples/media_information
 v3/examples/gtk_player
 v3/examples/gtk_screen_recorder
+v3/examples/display_screen_media
