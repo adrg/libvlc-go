@@ -71,8 +71,8 @@ However, please consider switching to modules.
 
 ![libvlc-go examples](https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/libvlc-go-examples.jpg)
 
-* [Media player](v3/examples/gtk_player.go) (using [go-gtk](https://github.com/mattn/go-gtk))
-* [Screen recorder](v3/examples/gtk_screen_recorder.go) (using [go-gtk](https://github.com/mattn/go-gtk))
+* [GUI media player](v3/examples/gtk_player.go) (using [go-gtk](https://github.com/mattn/go-gtk))
+* [GUI screen recorder](v3/examples/gtk_screen_recorder.go) (using [go-gtk](https://github.com/mattn/go-gtk))
 * [Basic player usage](v3/examples/player.go)
 * [Basic list player usage](v3/examples/list_player.go)
 * [Handling events](v3/examples/event_handling.go)
