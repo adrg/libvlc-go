@@ -113,6 +113,28 @@ func main() {
 		areaBox.SetSensitive(areaSelectRadio2.GetActive())
 	})
 
+	// Create recording options layout.
+	fpsLabel := gtk.NewLabel("FPS")
+	fpsInput := gtk.NewSpinButtonWithRange(0, 1000, 1)
+	fpsInput.SetValue(30)
+	fpsBox := gtk.NewHBox(false, 0)
+	fpsBox.PackStart(fpsInput, false, false, 5)
+	fpsBox.PackStart(fpsLabel, false, false, 0)
+
+	followMouseCheck := gtk.NewCheckButtonWithLabel("Follow mouse")
+
+	recordingBox := gtk.NewHBox(false, 0)
+	recordingBox.PackStart(followMouseCheck, false, false, 10)
+	recordingBox.PackEnd(fpsBox, false, false, 10)
+	recordingBoxSpacer := gtk.NewVBox(false, 0)
+	recordingBoxSpacer.PackStart(recordingBox, true, true, 10)
+
+	recordingFrame := gtk.NewFrame("Recording options")
+	recordingFrame.Add(recordingBoxSpacer)
+	recordingSpacer := gtk.NewHBox(false, 0)
+	recordingSpacer.PackStart(recordingFrame, true, true, 10)
+	container.PackStart(recordingSpacer, true, true, 10)
+
 	// Create destination file layout.
 	destInput := gtk.NewEntry()
 	destInput.SetEditable(false)
@@ -155,8 +177,10 @@ func main() {
 	recordButton := gtk.NewButtonFromStock("gtk-media-record")
 	recordButton.Connect("clicked", func(ctx *glib.CallbackContext) {
 		if player.IsPlaying() {
-			player.Stop()
 			recordButton.SetLabel("gtk-media-record")
+			areaFrame.SetSensitive(true)
+			recordingFrame.SetSensitive(true)
+			player.Stop()
 			return
 		}
 
@@ -166,42 +190,45 @@ func main() {
 			return
 		}
 
-		// The screen VLC module must be installed.
-		media, err := player.LoadMediaFromURL("screen://")
+		// Create screen media options.
+		mediaOpts := &vlc.MediaScreenOptions{
+			FPS:         fpsInput.GetValue(),
+			FollowMouse: followMouseCheck.GetActive(),
+		}
+
+		// Configure screen capture area.
+		if areaSelectRadio2.GetActive() {
+			mediaOpts.X = int(xInput.GetValue())
+			mediaOpts.Y = int(yInput.GetValue())
+			mediaOpts.Width = int(wInput.GetValue())
+			mediaOpts.Height = int(hInput.GetValue())
+		}
+
+		// Create media from screen.
+		media, err := vlc.NewMediaFromScreen(mediaOpts)
 		if err != nil {
 			log.Fatalf("Cannot load screen media: %s\n", err)
 		}
 
 		// Configure media to save the recording to the selected destination path.
-		// See https://wiki.videolan.org/Documentation:Modules/screen for all options.
-		mediaOptions := []string{
-			fmt.Sprintf(":sout=#transcode{vcodec=h264,vb=0,scale=1}:duplicate{dst=file{dst=%s}}", destPath),
-			":screen-fps=30",
-			":screen-caching=500",
-		}
-
-		// Configure screen capture area.
-		if areaSelectRadio2.GetActive() {
-			if x := int(xInput.GetValue()); x > 0 {
-				mediaOptions = append(mediaOptions, fmt.Sprintf(":screen-left=%d", x))
-			}
-			if w := int(wInput.GetValue()); w > 0 {
-				mediaOptions = append(mediaOptions, fmt.Sprintf(":screen-width=%d", w))
-			}
-			if y := int(yInput.GetValue()); y > 0 {
-				mediaOptions = append(mediaOptions, fmt.Sprintf(":screen-top=%d", y))
-			}
-			if h := int(hInput.GetValue()); h > 0 {
-				mediaOptions = append(mediaOptions, fmt.Sprintf(":screen-height=%d", h))
-			}
-		}
-
-		if err := media.AddOptions(mediaOptions...); err != nil {
+		saveOpt := fmt.Sprintf(":sout=#transcode{vcodec=h264,vb=0,scale=1}:duplicate{dst=file{dst=%s}}", destPath)
+		if err := media.AddOptions(saveOpt); err != nil {
 			log.Fatalf("Cannot add media options: %s\n", err)
 		}
 
-		player.Play()
+		// Set player media.
+		if err := player.SetMedia(media); err != nil {
+			log.Fatal("Cannot set player media: %s\n", err)
+		}
+
+		// Start screen recording.
+		if err := player.Play(); err != nil {
+			log.Fatal("Cannot play media: %s\n", err)
+		}
+
 		recordButton.SetLabel("gtk-media-stop")
+		areaFrame.SetSensitive(false)
+		recordingFrame.SetSensitive(false)
 	})
 
 	exitButton := gtk.NewButtonFromStock("gtk-close")
