@@ -180,6 +180,7 @@ func main() {
 			recordButton.SetLabel("gtk-media-record")
 			areaFrame.SetSensitive(true)
 			recordingFrame.SetSensitive(true)
+			destFrame.SetSensitive(true)
 			player.Stop()
 			return
 		}
@@ -228,6 +229,7 @@ func main() {
 
 		recordButton.SetLabel("gtk-media-stop")
 		areaFrame.SetSensitive(false)
+		destFrame.SetSensitive(false)
 		recordingFrame.SetSensitive(false)
 	})
 
