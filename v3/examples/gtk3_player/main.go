@@ -12,6 +12,11 @@ import (
 
 const appId = "com.github.libvlc-go.gtk3-media-player-example"
 
+func builderGetObject(builder *gtk.Builder, name string) glib.IObject {
+	obj, _ := builder.GetObject(name)
+	return obj
+}
+
 func assertErr(err error) {
 	if err != nil {
 		log.Panic(err)
@@ -50,15 +55,11 @@ func main() {
 		assertErr(err)
 
 		// Get application window.
-		obj, err := builder.GetObject("appWindow")
-		assertErr(err)
-		appWin, ok := obj.(*gtk.ApplicationWindow)
+		appWin, ok := builderGetObject(builder, "appWindow").(*gtk.ApplicationWindow)
 		assertConv(ok)
 
 		// Get play button.
-		obj, err = builder.GetObject("playButton")
-		assertErr(err)
-		playButton, ok := obj.(*gtk.Button)
+		playButton, ok := builderGetObject(builder, "playButton").(*gtk.Button)
 		assertConv(ok)
 
 		// Add builder signal handlers.
