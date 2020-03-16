@@ -35,6 +35,8 @@ mirror each supported major version of libVLC.
 Documentation for v3, which implements bindings for libVLC 3.X, can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v3) and on [GoDoc](https://godoc.org/github.com/adrg/libvlc-go/v3).  
 Documentation for v2, which implements bindings for libVLC 2.X, can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v2) and on [GoDoc](https://godoc.org/github.com/adrg/libvlc-go/v2).
 
+![libvlc-go examples](https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/libvlc-go-examples.jpg)
+
 Example applications:
 
 * [GUI media player](v3/examples/gtk3_player)
@@ -73,8 +75,6 @@ All versions above also work for projects which are not using Go modules.
 However, please consider switching to modules.
 
 ## Examples
-
-![libvlc-go examples](https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/libvlc-go-examples.jpg)
 
 * [GTK 3 media player](v3/examples/gtk3_player) (using [gotk3](https://github.com/gotk3/gotk3))
 * [GTK 3 screen recorder](v3/examples/gtk3_screen_recorder) (using [gotk3](https://github.com/gotk3/gotk3))
