@@ -1,7 +1,7 @@
-GTK3 screen recorder
-====================
+GTK 3 screen recorder
+=====================
 
-![libvlc-go GTK3 screen recorder example](https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/gtk3-screen-recorder-example/libvlc-gtk3-screen-recorder.jpg)
+![libvlc-go GTK 3 screen recorder example](https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/gtk3-screen-recorder-example/libvlc-gtk3-screen-recorder.jpg)
 
 #### Requirements
 
