@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"log"
 
-	vlc "github.com/adrg/libvlc-go/v2"
+	vlc "github.com/adrg/libvlc-go/v3"
 	"github.com/mattn/go-gtk/gdk"
 	"github.com/mattn/go-gtk/glib"
 	"github.com/mattn/go-gtk/gtk"
@@ -46,6 +46,7 @@ func main() {
 	window.SetTypeHint(gdk.WINDOW_TYPE_HINT_DIALOG)
 	window.SetResizable(false)
 	window.SetTitle("libvlc-go screen recorder")
+	window.SetIconName("media-record")
 	window.Connect("destroy", func(ctx *glib.CallbackContext) {
 		gtk.MainQuit()
 	})
