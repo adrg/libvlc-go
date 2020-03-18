@@ -43,7 +43,8 @@ func main() {
 	window.SetPosition(gtk.WIN_POS_CENTER)
 	window.SetTypeHint(gdk.WINDOW_TYPE_HINT_DIALOG)
 	window.SetDefaultSize(800, 600)
-	window.SetTitle("libvlc-go player")
+	window.SetTitle("libvlc-go media player")
+	window.SetIconName("applications-multimedia")
 	window.Connect("destroy", func(ctx *glib.CallbackContext) {
 		gtk.MainQuit()
 	})

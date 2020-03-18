@@ -46,6 +46,7 @@ func main() {
 	window.SetTypeHint(gdk.WINDOW_TYPE_HINT_DIALOG)
 	window.SetResizable(false)
 	window.SetTitle("libvlc-go screen recorder")
+	window.SetIconName("media-record")
 	window.Connect("destroy", func(ctx *glib.CallbackContext) {
 		gtk.MainQuit()
 	})
