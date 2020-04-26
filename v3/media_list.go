@@ -139,6 +139,26 @@ func (ml *MediaList) MediaAtIndex(index uint) (*Media, error) {
 	return &Media{media}, nil
 }
 
+// IndexOfMedia returns the index of the specified media item in the list.
+// NOTE: The same instance of a media item can be present multiple times
+// in the list. The method returns the first matched index.
+func (ml *MediaList) IndexOfMedia(m *Media) (int, error) {
+	if err := m.assertInit(); err != nil {
+		return 0, err
+	}
+	if err := ml.Lock(); err != nil {
+		return 0, err
+	}
+	defer ml.Unlock()
+
+	idx := int(C.libvlc_media_list_index_of_item(ml.list, m.media))
+	if idx < 0 {
+		return 0, errOrDefault(getError(), ErrMediaNotFound)
+	}
+
+	return idx, nil
+}
+
 // Count returns the number of media items in the list.
 func (ml *MediaList) Count() (int, error) {
 	if err := ml.Lock(); err != nil {
