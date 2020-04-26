@@ -23,7 +23,7 @@ type ListPlayer struct {
 	list   *MediaList
 }
 
-// NewListPlayer creates an instance of a multi-media player.
+// NewListPlayer creates a new list player instance.
 func NewListPlayer() (*ListPlayer, error) {
 	if err := inst.assertInit(); err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func NewListPlayer() (*ListPlayer, error) {
 	return &ListPlayer{player: player}, nil
 }
 
-// Release destroys the media player instance.
+// Release destroys the list player instance.
 func (lp *ListPlayer) Release() error {
 	if err := lp.assertInit(); err != nil {
 		return nil
@@ -49,7 +49,7 @@ func (lp *ListPlayer) Release() error {
 	return getError()
 }
 
-// Player returns the underlying Player instance of the ListPlayer.
+// Player returns the underlying Player instance of the list player.
 func (lp *ListPlayer) Player() (*Player, error) {
 	if err := lp.assertInit(); err != nil {
 		return nil, err
@@ -67,7 +67,7 @@ func (lp *ListPlayer) Player() (*Player, error) {
 	return &Player{player: player}, nil
 }
 
-// SetPlayer sets the underlying Player instance of the ListPlayer.
+// SetPlayer sets the underlying Player instance of the list player.
 func (lp *ListPlayer) SetPlayer(player *Player) error {
 	if err := lp.assertInit(); err != nil {
 		return err
@@ -134,6 +134,23 @@ func (lp *ListPlayer) PlayAtIndex(index uint) error {
 	return nil
 }
 
+// PlayItem plays the specified media item. The item must be part of the
+// current media list of the player.
+func (lp *ListPlayer) PlayItem(m *Media) error {
+	if err := lp.assertInit(); err != nil {
+		return err
+	}
+	if err := m.assertInit(); err != nil {
+		return err
+	}
+
+	if C.libvlc_media_list_player_play_item(lp.player, m.media) < 0 {
+		return errOrDefault(getError(), ErrMediaNotFound)
+	}
+
+	return nil
+}
+
 // IsPlaying returns a boolean value specifying if the player is currently
 // playing.
 func (lp *ListPlayer) IsPlaying() bool {
@@ -151,6 +168,17 @@ func (lp *ListPlayer) Stop() error {
 	}
 
 	C.libvlc_media_list_player_stop(lp.player)
+	return getError()
+}
+
+// SetPause sets the pause state of the list player.
+// Pass in true to pause the current media, or false to resume it.
+func (lp *ListPlayer) SetPause(pause bool) error {
+	if err := lp.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_list_player_set_pause(lp.player, C.int(boolToInt(pause)))
 	return getError()
 }
 
@@ -187,7 +215,7 @@ func (lp *ListPlayer) MediaState() (MediaState, error) {
 	return MediaState(state), getError()
 }
 
-// MediaList returns the current media list of the player, if one exists
+// MediaList returns the current media list of the player, if one exists.
 func (lp *ListPlayer) MediaList() *MediaList {
 	return lp.list
 }
