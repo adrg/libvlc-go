@@ -19,6 +19,7 @@ var (
 // Media errors.
 var (
 	ErrMediaCreate             = errors.New("could not create media")
+	ErrMediaNotFound           = errors.New("could not find media")
 	ErrMediaNotInitialized     = errors.New("media not initialized")
 	ErrMediaListCreate         = errors.New("could not create media list")
 	ErrMediaListNotInitialized = errors.New("media list not initialized")
