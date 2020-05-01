@@ -69,7 +69,7 @@ func Release() error {
 	return getError()
 }
 
-// Version returns details regarding the build version of the libVLC module.
+// Version returns details regarding the version of the libVLC module.
 func Version() VersionInfo {
 	return moduleVersion
 }
