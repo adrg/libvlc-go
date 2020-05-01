@@ -6,6 +6,7 @@ import "errors"
 var (
 	ErrModuleInitialize     = errors.New("could not initialize module")
 	ErrModuleNotInitialized = errors.New("module not initialized")
+	ErrUserInterfaceStart   = errors.New("could not start user interface")
 )
 
 // Player errors.

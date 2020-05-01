@@ -103,9 +103,10 @@ func SetAppID(id, version, icon string) error {
 	return nil
 }
 
-// StartUI attempts to start a user interface for the libVLC instance. Pass an
-// empty string as the name parameter in order to start the default interface.
-func StartUI(name string) error {
+// StartUserInterface attempts to start a user interface for the libVLC
+// instance. Pass an empty string as the name parameter in order to start
+// the default interface.
+func StartUserInterface(name string) error {
 	if err := inst.assertInit(); err != nil {
 		return err
 	}
@@ -114,7 +115,7 @@ func StartUI(name string) error {
 	defer C.free(unsafe.Pointer(cName))
 
 	if C.libvlc_add_intf(inst.handle, cName) < 0 {
-		return getError()
+		return errOrDefault(getError(), ErrUserInterfaceStart)
 	}
 
 	return nil
