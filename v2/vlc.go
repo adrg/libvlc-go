@@ -2,7 +2,6 @@ package vlc
 
 // #cgo LDFLAGS: -lvlc
 // #include <vlc/vlc.h>
-// #include <vlc/libvlc_version.h>
 // #include <stdlib.h>
 import "C"
 import (
