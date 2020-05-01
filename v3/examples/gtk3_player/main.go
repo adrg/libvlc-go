@@ -10,7 +10,7 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 )
 
-const appId = "com.github.libvlc-go.gtk3-media-player-example"
+const appID = "com.github.libvlc-go.gtk3-media-player-example"
 
 func builderGetObject(builder *gtk.Builder, name string) glib.IObject {
 	obj, _ := builder.GetObject(name)
@@ -46,7 +46,7 @@ func main() {
 	assertErr(err)
 
 	// Create new GTK application.
-	app, err := gtk.ApplicationNew(appId, glib.APPLICATION_FLAGS_NONE)
+	app, err := gtk.ApplicationNew(appID, glib.APPLICATION_FLAGS_NONE)
 	assertErr(err)
 
 	app.Connect("activate", func() {
