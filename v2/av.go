@@ -23,7 +23,6 @@ func AudioOutputList() ([]*AudioOutput, error) {
 	if cOutputs == nil {
 		return nil, errOrDefault(getError(), ErrAudioOutputListMissing)
 	}
-	defer C.libvlc_audio_output_list_release(cOutputs)
 
 	var outputs []*AudioOutput
 	for n := cOutputs; n != nil; n = (*C.libvlc_audio_output_t)(n.p_next) {
@@ -33,6 +32,7 @@ func AudioOutputList() ([]*AudioOutput, error) {
 		})
 	}
 
+	C.libvlc_audio_output_list_release(cOutputs)
 	return outputs, getError()
 }
 
@@ -66,7 +66,6 @@ func copyModuleList(cFilters *C.libvlc_module_description_t) ([]*ModuleDescripti
 	if cFilters == nil {
 		return nil, errOrDefault(getError(), ErrFilterListMissing)
 	}
-	defer C.libvlc_module_description_list_release(cFilters)
 
 	var filters []*ModuleDescription
 	for n := cFilters; n != nil; n = (*C.libvlc_module_description_t)(n.p_next) {
@@ -78,5 +77,6 @@ func copyModuleList(cFilters *C.libvlc_module_description_t) ([]*ModuleDescripti
 		})
 	}
 
+	C.libvlc_module_description_list_release(cFilters)
 	return filters, getError()
 }
