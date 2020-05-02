@@ -36,7 +36,8 @@ var (
 	ErrInvalidEventCallback = errors.New("invalid event callback")
 )
 
-// Audio errors.
+// Audio/Video errors.
 var (
 	ErrAudioOutputListMissing = errors.New("could not get audio output list")
+	ErrFilterListMissing      = errors.New("could not get filter list")
 )
