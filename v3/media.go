@@ -7,6 +7,7 @@ import "C"
 import (
 	"fmt"
 	"os"
+	"time"
 	"unsafe"
 )
 
@@ -297,6 +298,18 @@ func (m *Media) Location() (string, error) {
 	defer C.free(unsafe.Pointer(mrl))
 
 	return urlToPath(C.GoString(mrl))
+}
+
+// Duration returns the media duration in milliseconds.
+// NOTE: The duration can only be obtained for parsed media instances. Either
+// play the media once or call one of the parsing methods first.
+func (m *Media) Duration() (time.Duration, error) {
+	if err := m.assertInit(); err != nil {
+		return 0, err
+	}
+
+	duration := C.libvlc_media_get_duration(m.media)
+	return time.Duration(duration) * time.Millisecond, getError()
 }
 
 // Meta reads the value of the specified media metadata key.
