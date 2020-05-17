@@ -270,6 +270,16 @@ func (m *Media) AddOptions(options ...string) error {
 	return nil
 }
 
+// State returns the current state of the media instance.
+func (m *Media) State() (MediaState, error) {
+	if err := m.assertInit(); err != nil {
+		return 0, err
+	}
+
+	state := int(C.libvlc_media_get_state(m.media))
+	return MediaState(state), getError()
+}
+
 // Stats returns playback statistics for the media.
 func (m *Media) Stats() (*MediaStats, error) {
 	if err := m.assertInit(); err != nil {
