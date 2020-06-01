@@ -405,7 +405,7 @@ func (m *Media) ParseWithOptions(timeout int, opts ...MediaParseOption) error {
 }
 
 // Parse fetches local art, metadata and track information synchronously.
-// NOTE: deprecated in libVLC v3.0.0+. Use ParseWithOptions instead.
+// NOTE: Deprecated in libVLC v3.0.0+. Use ParseWithOptions instead.
 func (m *Media) Parse() error {
 	if err := m.assertInit(); err != nil {
 		return err
@@ -419,7 +419,7 @@ func (m *Media) Parse() error {
 // Listen to the MediaParsedChanged event on the media event manager the track
 // when the parsing has finished. However, if the media was already parsed,
 // the event is not sent.
-// NOTE: deprecated in libVLC v3.0.0+. Use ParseWithOptions instead.
+// NOTE: Deprecated in libVLC v3.0.0+. Use ParseWithOptions instead.
 func (m *Media) ParseAsync() error {
 	if err := m.assertInit(); err != nil {
 		return err
@@ -451,13 +451,31 @@ func (m *Media) ParseStatus() (MediaParseStatus, error) {
 }
 
 // IsParsed returns true if the media was parsed.
-// NOTE: deprecated in libVLC v3.0.0+. Use ParseStatus instead.
+// NOTE: Deprecated in libVLC v3.0.0+. Use ParseStatus instead.
 func (m *Media) IsParsed() (bool, error) {
 	if err := m.assertInit(); err != nil {
 		return false, err
 	}
 
 	return C.libvlc_media_is_parsed(m.media) != 0, getError()
+}
+
+// SubItems returns a media list containing the sub-items of the current
+// media instance. If the media does not have any sub-items, an empty media
+// list is returned.
+// NOTE: Call the Release method on the returned media list in order to free
+// the allocated resources.
+func (m *Media) SubItems() (*MediaList, error) {
+	if err := m.assertInit(); err != nil {
+		return nil, err
+	}
+
+	var subitems *C.libvlc_media_list_t
+	if subitems = C.libvlc_media_subitems(m.media); subitems == nil {
+		return nil, errOrDefault(getError(), ErrMediaListNotFound)
+	}
+
+	return &MediaList{list: subitems}, nil
 }
 
 // EventManager returns the event manager responsible for the media.
