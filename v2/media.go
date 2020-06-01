@@ -367,6 +367,24 @@ func (m *Media) IsParsed() (bool, error) {
 	return C.libvlc_media_is_parsed(m.media) != 0, getError()
 }
 
+// SubItems returns a media list containing the sub-items of the current
+// media instance. If the media does not have any sub-items, an empty media
+// list is returned.
+// NOTE: Call the Release method on the returned media list in order to free
+// the allocated resources.
+func (m *Media) SubItems() (*MediaList, error) {
+	if err := m.assertInit(); err != nil {
+		return nil, err
+	}
+
+	var subitems *C.libvlc_media_list_t
+	if subitems = C.libvlc_media_subitems(m.media); subitems == nil {
+		return nil, errOrDefault(getError(), ErrMediaListNotFound)
+	}
+
+	return &MediaList{list: subitems}, nil
+}
+
 // EventManager returns the event manager responsible for the media.
 func (m *Media) EventManager() (*EventManager, error) {
 	if err := m.assertInit(); err != nil {
