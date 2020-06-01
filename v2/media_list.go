@@ -178,6 +178,42 @@ func (ml *MediaList) IsReadOnly() (bool, error) {
 	return (C.libvlc_media_list_is_readonly(ml.list) != C.int(0)), getError()
 }
 
+// AssociatedMedia returns the media instance associated with the list,
+// if one exists. A media instance is automatically associated with the
+// list of its sub-items.
+// NOTE: Do not call Release on the returned media instance.
+func (ml *MediaList) AssociatedMedia() (*Media, error) {
+	if err := ml.assertInit(); err != nil {
+		return nil, err
+	}
+
+	media := C.libvlc_media_list_media(ml.list)
+	if media == nil {
+		return nil, errOrDefault(getError(), ErrMediaNotFound)
+	}
+
+	// This call will not release the media. Instead, it will decrement
+	// the reference count increased by libvlc_media_list_media.
+	C.libvlc_media_release(media)
+
+	return &Media{media: media}, nil
+}
+
+// AssociateMedia associates the specified media with the media list instance.
+// NOTE: If another media instance is already associated with the list, it
+// will be released.
+func (ml *MediaList) AssociateMedia(m *Media) error {
+	if err := ml.assertInit(); err != nil {
+		return err
+	}
+	if err := m.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_list_set_media(ml.list, m.media)
+	return nil
+}
+
 // Lock makes the caller the current owner of the media list.
 func (ml *MediaList) Lock() error {
 	if err := ml.assertInit(); err != nil {
