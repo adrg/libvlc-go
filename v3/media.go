@@ -7,6 +7,7 @@ import "C"
 import (
 	"fmt"
 	"os"
+	"time"
 	"unsafe"
 )
 
@@ -269,6 +270,16 @@ func (m *Media) AddOptions(options ...string) error {
 	return nil
 }
 
+// State returns the current state of the media instance.
+func (m *Media) State() (MediaState, error) {
+	if err := m.assertInit(); err != nil {
+		return 0, err
+	}
+
+	state := int(C.libvlc_media_get_state(m.media))
+	return MediaState(state), getError()
+}
+
 // Stats returns playback statistics for the media.
 func (m *Media) Stats() (*MediaStats, error) {
 	if err := m.assertInit(); err != nil {
@@ -297,6 +308,18 @@ func (m *Media) Location() (string, error) {
 	defer C.free(unsafe.Pointer(mrl))
 
 	return urlToPath(C.GoString(mrl))
+}
+
+// Duration returns the media duration in milliseconds.
+// NOTE: The duration can only be obtained for parsed media instances. Either
+// play the media once or call one of the parsing methods first.
+func (m *Media) Duration() (time.Duration, error) {
+	if err := m.assertInit(); err != nil {
+		return 0, err
+	}
+
+	duration := C.libvlc_media_get_duration(m.media)
+	return time.Duration(duration) * time.Millisecond, getError()
 }
 
 // Meta reads the value of the specified media metadata key.
@@ -382,7 +405,7 @@ func (m *Media) ParseWithOptions(timeout int, opts ...MediaParseOption) error {
 }
 
 // Parse fetches local art, metadata and track information synchronously.
-// NOTE: deprecated in libVLC v3.0.0+. Use ParseWithOptions instead.
+// NOTE: Deprecated in libVLC v3.0.0+. Use ParseWithOptions instead.
 func (m *Media) Parse() error {
 	if err := m.assertInit(); err != nil {
 		return err
@@ -396,7 +419,7 @@ func (m *Media) Parse() error {
 // Listen to the MediaParsedChanged event on the media event manager the track
 // when the parsing has finished. However, if the media was already parsed,
 // the event is not sent.
-// NOTE: deprecated in libVLC v3.0.0+. Use ParseWithOptions instead.
+// NOTE: Deprecated in libVLC v3.0.0+. Use ParseWithOptions instead.
 func (m *Media) ParseAsync() error {
 	if err := m.assertInit(); err != nil {
 		return err
@@ -428,13 +451,31 @@ func (m *Media) ParseStatus() (MediaParseStatus, error) {
 }
 
 // IsParsed returns true if the media was parsed.
-// NOTE: deprecated in libVLC v3.0.0+. Use ParseStatus instead.
+// NOTE: Deprecated in libVLC v3.0.0+. Use ParseStatus instead.
 func (m *Media) IsParsed() (bool, error) {
 	if err := m.assertInit(); err != nil {
 		return false, err
 	}
 
 	return C.libvlc_media_is_parsed(m.media) != 0, getError()
+}
+
+// SubItems returns a media list containing the sub-items of the current
+// media instance. If the media does not have any sub-items, an empty media
+// list is returned.
+// NOTE: Call the Release method on the returned media list in order to free
+// the allocated resources.
+func (m *Media) SubItems() (*MediaList, error) {
+	if err := m.assertInit(); err != nil {
+		return nil, err
+	}
+
+	var subitems *C.libvlc_media_list_t
+	if subitems = C.libvlc_media_subitems(m.media); subitems == nil {
+		return nil, errOrDefault(getError(), ErrMediaListNotFound)
+	}
+
+	return &MediaList{list: subitems}, nil
 }
 
 // EventManager returns the event manager responsible for the media.
