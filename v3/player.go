@@ -144,7 +144,7 @@ func (p *Player) IsScrambled() bool {
 	return C.libvlc_media_player_program_scrambled(p.player) != 0
 }
 
-// PlaybackRate returns playback rate of the media player.
+// PlaybackRate returns the playback rate of the media player.
 // NOTE: Depending on the underlying media, the returned rate may be
 // different from the real playback rate.
 func (p *Player) PlaybackRate() float32 {
