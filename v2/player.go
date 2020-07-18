@@ -66,6 +66,16 @@ func (p *Player) IsPlaying() bool {
 	return C.libvlc_media_player_is_playing(p.player) != 0
 }
 
+// WillPlay returns true if the current media is not in a finished or
+// error state.
+func (p *Player) WillPlay() bool {
+	if err := p.assertInit(); err != nil {
+		return false
+	}
+
+	return C.libvlc_media_player_will_play(p.player) != 0
+}
+
 // Stop cancels the currently playing media, if there is one.
 func (p *Player) Stop() error {
 	if err := p.assertInit(); err != nil {
@@ -95,6 +105,65 @@ func (p *Player) TogglePause() error {
 	}
 
 	C.libvlc_media_player_pause(p.player)
+	return getError()
+}
+
+// CanPause returns true if the media player can be paused.
+func (p *Player) CanPause() bool {
+	if err := p.assertInit(); err != nil {
+		return false
+	}
+
+	return C.libvlc_media_player_can_pause(p.player) != 0
+}
+
+// IsSeekable returns true if the current media is seekable.
+func (p *Player) IsSeekable() bool {
+	if err := p.assertInit(); err != nil {
+		return false
+	}
+
+	return C.libvlc_media_player_is_seekable(p.player) != 0
+}
+
+// VideoOutputCount returns the number of video outputs the media player has.
+func (p *Player) VideoOutputCount() int {
+	if err := p.assertInit(); err != nil {
+		return 0
+	}
+
+	return int(C.libvlc_media_player_has_vout(p.player))
+}
+
+// IsScrambled returns true if the media player is in a scrambled state.
+func (p *Player) IsScrambled() bool {
+	if err := p.assertInit(); err != nil {
+		return false
+	}
+
+	return C.libvlc_media_player_program_scrambled(p.player) != 0
+}
+
+// PlaybackRate returns playback rate of the media player.
+// NOTE: Depending on the underlying media, the returned rate may be
+// different from the real playback rate.
+func (p *Player) PlaybackRate() float32 {
+	if err := p.assertInit(); err != nil {
+		return 0
+	}
+
+	return float32(C.libvlc_media_player_get_rate(p.player))
+}
+
+// SetPlaybackRate sets the playback rate of the media player.
+// NOTE: Depending on the underlying media, changing the playback rate
+// might not be supported.
+func (p *Player) SetPlaybackRate(rate float32) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_set_rate(p.player, C.float(rate))
 	return getError()
 }
 
@@ -259,16 +328,6 @@ func (p *Player) SetMediaTime(t int) error {
 
 	C.libvlc_media_player_set_time(p.player, C.libvlc_time_t(int64(t)))
 	return getError()
-}
-
-// WillPlay returns true if the current media is not in a finished or
-// error state.
-func (p *Player) WillPlay() bool {
-	if err := p.assertInit(); err != nil {
-		return false
-	}
-
-	return C.libvlc_media_player_will_play(p.player) != 0
 }
 
 // XWindow returns the identifier of the X window the media player is
