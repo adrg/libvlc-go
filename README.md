@@ -1,30 +1,43 @@
 <h1 align="center">
   <div>
-    <img src="https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/libvlc-go-logo.jpg" width="150px" alt="libvlc-go logo"/>
+    <img src="https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/libvlc-go-logo.jpg" width="120px" alt="libvlc-go logo"/>
   </div>
   libvlc-go
 </h1>
 
-<h3 align="center">Go bindings for libVLC version 2.X/3.X/4.X.</h3>
+<h3 align="center">Go bindings for libVLC 2.X/3.X/4.X and high-level media player interface.</h3>
 
 <p align="center">
     <a href="https://pkg.go.dev/github.com/adrg/libvlc-go/v3">
-        <img src="https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white">
+        <img alt="pkg.go.dev documentation" src="https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white">
     </a>
-    <a href="https://godoc.org/github.com/adrg/libvlc-go/v3" rel="nofollow">
-        <img src="https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square" alt="GoDoc" />
-    </a>
-    <a href="https://goreportcard.com/report/github.com/adrg/libvlc-go" rel="nofollow">
-        <img src="https://goreportcard.com/badge/github.com/adrg/libvlc-go" alt="Go Report Card" />
+    <a href="https://godoc.org/github.com/adrg/libvlc-go/v3">
+        <img alt="GoDoc documentation" src="https://img.shields.io/badge/godoc-reference-blue.svg?style=flat"/>
     </a>
     <a href="https://opensource.org/licenses/MIT" rel="nofollow">
-        <img src="https://img.shields.io/badge/license-MIT-red.svg?style=flat-square" alt="License: MIT" />
+        <img alt="MIT License" src="https://img.shields.io/github/license/adrg/libvlc-go"/>
     </a>
     <a href="https://github.com/avelino/awesome-go#video">
-        <img src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg" />
+        <img alt="Awesome Go" src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg"/>
     </a>
-    <a href="https://www.buymeacoffee.com/adrg" rel="nofollow">
-        <img src="https://img.shields.io/static/v1.svg?label=%20&message=Buy%20me%20a%20coffee&color=FF813F&logo=buy%20me%20a%20coffee&logoColor=white" alt="Buy Me A Coffee" />
+    <a href="https://www.buymeacoffee.com/adrg">
+        <img alt="Buy me a coffee" src="https://img.shields.io/static/v1.svg?label=%20&message=Buy%20me%20a%20coffee&color=FF813F&logo=buy%20me%20a%20coffee&logoColor=white"/>
+    </a>
+    <a alt="Github stars" href="https://github.com/adrg/libvlc-go/stargazers">
+        <img alt="GitHub stars" src="https://img.shields.io/github/stars/adrg/libvlc-go?style=social">
+    </a>
+    <br />
+    <a href="https://goreportcard.com/report/github.com/adrg/libvlc-go">
+        <img alt="Go report card" src="https://goreportcard.com/badge/github.com/adrg/libvlc-go" />
+    </a>
+    <a href="https://github.com/adrg/libvlc-go/graphs/contributors">
+        <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/adrg/libvlc-go" />
+    </a>
+    <a href="https://github.com/adrg/libvlc-go/issues?q=is%3Aopen+is%3Aissue">
+        <img alt="GitHub open issues" src="https://img.shields.io/github/issues-raw/adrg/libvlc-go">
+    </a>
+    <a href="https://github.com/adrg/libvlc-go/issues?q=is%3Aissue+is%3Aclosed">
+        <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed-raw/adrg/libvlc-go" />
     </a>
 </p>
 
