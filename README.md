@@ -33,6 +33,9 @@
     <a href="https://github.com/adrg/libvlc-go/graphs/contributors">
         <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/adrg/libvlc-go" />
     </a>
+    <a href="https://discord.gg/3h3K3JF">
+        <img alt="LibVLC Discord" src="https://img.shields.io/discord/716939396464508958?label=discord" />
+    </a>
     <a href="https://github.com/adrg/libvlc-go/issues?q=is%3Aopen+is%3Aissue">
         <img alt="GitHub open issues" src="https://img.shields.io/github/issues-raw/adrg/libvlc-go">
     </a>
