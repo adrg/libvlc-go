@@ -46,11 +46,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Start playing the media list.
-	if err = player.Play(); err != nil {
-		log.Fatal(err)
-	}
-
 	// Media files can be added to the list after the list has been added
 	// to the player. The player will play these files as well.
 	err = list.AddMediaFromPath("localpath/test2.mp3")
@@ -75,6 +70,11 @@ func main() {
 		log.Fatal(err)
 	}
 	defer manager.Detach(eventID)
+
+	// Start playing the media list.
+	if err = player.Play(); err != nil {
+		log.Fatal(err)
+	}
 
 	<-quit
 }

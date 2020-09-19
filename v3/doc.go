@@ -32,11 +32,6 @@ Player example
 	}
 	defer media.Release()
 
-	// Start playing the media.
-	if err = player.Play(); err != nil {
-		log.Fatal(err)
-	}
-
 	// Retrieve player event manager.
 	manager, err := player.EventManager()
 	if err != nil {
@@ -54,6 +49,11 @@ Player example
 		log.Fatal(err)
 	}
 	defer manager.Detach(eventID)
+
+	// Start playing the media.
+	if err = player.Play(); err != nil {
+		log.Fatal(err)
+	}
 
 	<-quit
 
@@ -80,7 +80,7 @@ List player example
 		log.Fatal(err)
 	}
 
-	err = list.AddMediaFromURL("https://example.com/test2.mp4")
+	err = list.AddMediaFromURL("http://stream-uk1.radioparadise.com/mp3-32")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -92,13 +92,8 @@ List player example
 
 	// Media files can be added to the list after the list has been added
 	// to the player. The player will play these files as well.
-	err = list.AddMediaFromPath("localpath/test3.mp3")
+	err = list.AddMediaFromPath("localpath/test2.mp3")
 	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Start playing the media list.
-	if err = player.Play(); err != nil {
 		log.Fatal(err)
 	}
 
@@ -114,11 +109,16 @@ List player example
 		close(quit)
 	}
 
-	eventID, err := manager.Attach(vlc.MediaListPlayerPlayed,, eventCallback, nil)
+	eventID, err := manager.Attach(vlc.MediaListPlayerPlayed, eventCallback, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer manager.Detach(eventID)
+
+	// Start playing the media list.
+	if err = player.Play(); err != nil {
+		log.Fatal(err)
+	}
 
 	<-quit
 
@@ -133,17 +133,15 @@ Handling multiple events example
 		player.Release()
 	}()
 
-	// Add player media from path.
-	media, err := player.LoadMediaFromPath("localpath/test.mp3")
+	// Add a media file from path or from URL.
+	// Set player media from URL:
+	// media, err := player.LoadMediaFromURL("http://stream-uk1.radioparadise.com/mp3-32")
+	// Set player media from path:
+	media, err := player.LoadMediaFromPath("test.mp3")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer media.Release()
-
-	// Start playing the media.
-	if err = player.Play(); err != nil {
-		log.Fatal(err)
-	}
 
 	// Retrieve player event manager.
 	manager, err := player.EventManager()
@@ -170,6 +168,7 @@ Handling multiple events example
 				log.Println(err)
 				break
 			}
+
 			log.Printf("%+v\n", stats)
 		}
 	}
@@ -196,6 +195,11 @@ Handling multiple events example
 			manager.Detach(eventID)
 		}
 	}()
+
+	// Start playing the media.
+	if err = player.Play(); err != nil {
+		log.Fatal(err)
+	}
 
 	<-quit
 */

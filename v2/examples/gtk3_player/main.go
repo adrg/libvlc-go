@@ -68,7 +68,7 @@ func main() {
 				// Set window for the player.
 				playerWindow, err := playerArea.GetWindow()
 				assertErr(err)
-				setPlayerWindow(player, playerWindow)
+				err = setPlayerWindow(player, playerWindow)
 				assertErr(err)
 			},
 			"onDrawPlayerArea": func(playerArea *gtk.DrawingArea, cr *cairo.Context) {

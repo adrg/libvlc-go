@@ -46,7 +46,7 @@
 
 The package can be useful for adding multimedia capabilities to applications
 through the provided player interfaces. It relies on Go modules in order to
-mirror each supported major version of libVLC.
+mirror each supported major version of [libVLC](https://www.videolan.org/vlc/libvlc.html).
 
 Documentation for v3, which implements bindings for libVLC 3.X, can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v3) and on [GoDoc](https://godoc.org/github.com/adrg/libvlc-go/v3).  
 Documentation for v2, which implements bindings for libVLC 2.X, can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v2) and on [GoDoc](https://godoc.org/github.com/adrg/libvlc-go/v2).
@@ -94,8 +94,8 @@ However, please consider switching to modules.
 
 * [GTK 3 media player](v3/examples/gtk3_player) (using [gotk3](https://github.com/gotk3/gotk3))
 * [GTK 3 screen recorder](v3/examples/gtk3_screen_recorder) (using [gotk3](https://github.com/gotk3/gotk3))
-* [GTK 2 media player](v3/examples/gtk_player.go) (using [go-gtk](https://github.com/mattn/go-gtk))
-* [GTK 2 screen recorder](v3/examples/gtk_screen_recorder.go) (using [go-gtk](https://github.com/mattn/go-gtk))
+* [GTK 2 media player](v3/examples/gtk2_player) (using [go-gtk](https://github.com/mattn/go-gtk))
+* [GTK 2 screen recorder](v3/examples/gtk2_screen_recorder) (using [go-gtk](https://github.com/mattn/go-gtk))
 * [Basic player usage](v3/examples/player.go)
 * [Basic list player usage](v3/examples/list_player.go)
 * [Handling events](v3/examples/event_handling.go)
@@ -143,12 +143,6 @@ func main() {
     }
     defer media.Release()
 
-    // Start playing the media.
-    err = player.Play()
-    if err != nil {
-        log.Fatal(err)
-    }
-
     // Retrieve player event manager.
     manager, err := player.EventManager()
     if err != nil {
@@ -166,6 +160,12 @@ func main() {
         log.Fatal(err)
     }
     defer manager.Detach(eventID)
+
+    // Start playing the media.
+    err = player.Play()
+    if err != nil {
+        log.Fatal(err)
+    }
 
     <-quit
 }
