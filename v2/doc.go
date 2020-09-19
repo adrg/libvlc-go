@@ -134,10 +134,10 @@ Handling multiple events example
 	}()
 
 	// Add a media file from path or from URL.
-	// Set player media from URL:
-	// media, err := player.LoadMediaFromURL("http://stream-uk1.radioparadise.com/mp3-32")
 	// Set player media from path:
-	media, err := player.LoadMediaFromPath("test.mp3")
+	// media, err := player.LoadMediaFromPath("test.mp3")
+	// Set player media from URL:
+	media, err := player.LoadMediaFromURL("http://stream-uk1.radioparadise.com/mp3-32")
 	if err != nil {
 		log.Fatal(err)
 	}
