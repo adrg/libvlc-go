@@ -91,8 +91,8 @@ However, please consider switching to modules.
 
 * [GTK 3 media player](v3/examples/gtk3_player) (using [gotk3](https://github.com/gotk3/gotk3))
 * [GTK 3 screen recorder](v3/examples/gtk3_screen_recorder) (using [gotk3](https://github.com/gotk3/gotk3))
-* [GTK 2 media player](v3/examples/gtk_player.go) (using [go-gtk](https://github.com/mattn/go-gtk))
-* [GTK 2 screen recorder](v3/examples/gtk_screen_recorder.go) (using [go-gtk](https://github.com/mattn/go-gtk))
+* [GTK 2 media player](v3/examples/gtk2_player) (using [go-gtk](https://github.com/mattn/go-gtk))
+* [GTK 2 screen recorder](v3/examples/gtk2_screen_recorder) (using [go-gtk](https://github.com/mattn/go-gtk))
 * [Basic player usage](v3/examples/player.go)
 * [Basic list player usage](v3/examples/list_player.go)
 * [Handling events](v3/examples/event_handling.go)
