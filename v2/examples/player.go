@@ -34,11 +34,6 @@ func main() {
 	}
 	defer media.Release()
 
-	// Start playing the media.
-	if err = player.Play(); err != nil {
-		log.Fatal(err)
-	}
-
 	// Retrieve player event manager.
 	manager, err := player.EventManager()
 	if err != nil {
@@ -56,6 +51,11 @@ func main() {
 		log.Fatal(err)
 	}
 	defer manager.Detach(eventID)
+
+	// Start playing the media.
+	if err = player.Play(); err != nil {
+		log.Fatal(err)
+	}
 
 	<-quit
 }
