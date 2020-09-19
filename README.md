@@ -43,7 +43,7 @@
 
 The package can be useful for adding multimedia capabilities to applications
 through the provided player interfaces. It relies on Go modules in order to
-mirror each supported major version of libVLC.
+mirror each supported major version of [libVLC](https://www.videolan.org/vlc/libvlc.html).
 
 Documentation for v3, which implements bindings for libVLC 3.X, can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v3) and on [GoDoc](https://godoc.org/github.com/adrg/libvlc-go/v3).  
 Documentation for v2, which implements bindings for libVLC 2.X, can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v2) and on [GoDoc](https://godoc.org/github.com/adrg/libvlc-go/v2).
