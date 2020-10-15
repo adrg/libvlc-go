@@ -11,9 +11,6 @@
     <a href="https://pkg.go.dev/github.com/adrg/libvlc-go/v3">
         <img alt="pkg.go.dev documentation" src="https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white">
     </a>
-    <a href="https://godoc.org/github.com/adrg/libvlc-go/v3">
-        <img alt="GoDoc documentation" src="https://img.shields.io/badge/godoc-reference-blue.svg?style=flat"/>
-    </a>
     <a href="https://opensource.org/licenses/MIT" rel="nofollow">
         <img alt="MIT License" src="https://img.shields.io/github/license/adrg/libvlc-go"/>
     </a>
@@ -193,7 +190,7 @@ See [CONTRIBUTING.MD](CONTRIBUTING.md).
 
 If you found this project useful and want to support it, consider buying me a coffee.  
 <a href="https://www.buymeacoffee.com/adrg">
-    <img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="48px">
+    <img src="https://cdn.buymeacoffee.com/buttons/v2/arial-orange.png" alt="Buy Me A Coffee" height="42px">
 </a>
 
 ## References
