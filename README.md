@@ -1,8 +1,7 @@
 <h1 align="center">
   <div>
-    <img src="https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/libvlc-go-logo.jpg" width="120px" alt="libvlc-go logo"/>
+    <img src="https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/logo.png" height="60px" alt="libvlc-go logo"/>
   </div>
-  libvlc-go
 </h1>
 
 <h3 align="center">Go bindings for libVLC 2.X/3.X/4.X and high-level media player interface.</h3>
@@ -12,7 +11,7 @@
         <img alt="pkg.go.dev documentation" src="https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white">
     </a>
     <a href="https://opensource.org/licenses/MIT" rel="nofollow">
-        <img alt="MIT License" src="https://img.shields.io/github/license/adrg/libvlc-go"/>
+        <img alt="MIT license" src="https://img.shields.io/github/license/adrg/libvlc-go"/>
     </a>
     <a href="https://github.com/avelino/awesome-go#video">
         <img alt="Awesome Go" src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg"/>
@@ -31,7 +30,7 @@
         <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/adrg/libvlc-go" />
     </a>
     <a href="https://discord.gg/3h3K3JF">
-        <img alt="LibVLC Discord" src="https://img.shields.io/discord/716939396464508958?label=discord" />
+        <img alt="Discord channel" src="https://img.shields.io/discord/716939396464508958?label=discord" />
     </a>
     <a href="https://github.com/adrg/libvlc-go/issues?q=is%3Aopen+is%3Aissue">
         <img alt="GitHub open issues" src="https://img.shields.io/github/issues-raw/adrg/libvlc-go">
