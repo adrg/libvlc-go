@@ -117,7 +117,7 @@ type MediaTrack struct {
 	Level int
 
 	Language    string // Media track language name.
-	Description string // Description of the media track language.
+	Description string // Description of the media track.
 
 	// Type specific information.
 	Audio    *MediaAudioTrack
