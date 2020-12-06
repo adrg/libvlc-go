@@ -105,24 +105,24 @@ const (
 // MediaStats contains playback statistics for a media file.
 type MediaStats struct {
 	// Input statistics.
-	ReadBytes    int     // input bytes read.
-	InputBitRate float64 // input bitrate.
+	ReadBytes    int     // Input bytes read.
+	InputBitRate float64 // Input bit rate.
 
 	// Demux statistics.
-	DemuxReadBytes     int     // demux bytes read (demuxed data size).
-	DemuxBitRate       float64 // demux bitrate (content bitrate).
-	DemuxCorrupted     int     // demux corruptions (discarded).
-	DemuxDiscontinuity int     // demux discontinuities (dropped).
+	DemuxReadBytes     int     // Demux bytes read (demuxed data size).
+	DemuxBitRate       float64 // Demux bit rate (content bit rate).
+	DemuxCorrupted     int     // Demux corruptions (discarded).
+	DemuxDiscontinuity int     // Demux discontinuities (dropped).
 
 	// Video output statistics.
-	DecodedVideo      int // number of decoded video blocks.
-	DisplayedPictures int // number of displayed frames.
-	LostPictures      int // number of lost frames.
+	DecodedVideo      int // Number of decoded video blocks.
+	DisplayedPictures int // Number of displayed frames.
+	LostPictures      int // Number of lost frames.
 
 	// Audio output statistics.
-	DecodedAudio       int // number of decoded audio blocks.
-	PlayedAudioBuffers int // number of played audio buffers.
-	LostAudioBuffers   int // number of lost audio buffers.
+	DecodedAudio       int // Number of decoded audio blocks.
+	PlayedAudioBuffers int // Number of played audio buffers.
+	LostAudioBuffers   int // Number of lost audio buffers.
 }
 
 func newMediaStats(st *C.libvlc_media_stats_t) (*MediaStats, error) {
@@ -157,10 +157,10 @@ func newMediaStats(st *C.libvlc_media_stats_t) (*MediaStats, error) {
 // instances from the current computer screen.
 type MediaScreenOptions struct {
 	// Screen capture area.
-	X      int // The left edge coordinate of the subscreen. Default: 0.
-	Y      int // The top edge coordinate of the subscreen. Default: 0.
-	Width  int // The width of the subscreen. Default: 0 (full screen width).
-	Height int // The height of the subscreen. Default: 0 (full screen height).
+	X      int // Left edge coordinate of the subscreen. Default: 0.
+	Y      int // Top edge coordinate of the subscreen. Default: 0.
+	Width  int // Width of the subscreen. Default: 0 (full screen width).
+	Height int // Height of the subscreen. Default: 0 (full screen height).
 
 	// Screen capture frame rate. Default: 0.
 	FPS float64
@@ -476,6 +476,45 @@ func (m *Media) SubItems() (*MediaList, error) {
 	}
 
 	return &MediaList{list: subitems}, nil
+}
+
+// Tracks returns the tracks (audio, video, subtitle) of the current media.
+// NOTE: The tracks can only be obtained for parsed media instances. Either
+// play the media once or call one of the parsing methods first.
+func (m *Media) Tracks() ([]*MediaTrack, error) {
+	if err := m.assertInit(); err != nil {
+		return nil, err
+	}
+
+	// Get media tracks.
+	var cTracks **C.libvlc_media_track_t
+
+	count := int(C.libvlc_media_tracks_get(m.media, &cTracks))
+	if count == 0 || cTracks == nil {
+		return nil, nil
+	}
+	defer C.libvlc_media_tracks_release(cTracks, C.uint(count))
+
+	// Parse media tracks.
+	tracks := make([]*MediaTrack, 0, count)
+	for i := 0; i < count; i++ {
+		// Get current track pointer.
+		cTrack := unsafe.Pointer(uintptr(unsafe.Pointer(cTracks)) +
+			uintptr(i)*unsafe.Sizeof(*cTracks))
+		if cTrack == nil {
+			return nil, ErrMediaTrackNotInitialized
+		}
+
+		// Parse media track.
+		track, err := parseMediaTrack(*(**C.libvlc_media_track_t)(cTrack))
+		if err != nil {
+			return nil, err
+		}
+
+		tracks = append(tracks, track)
+	}
+
+	return tracks, nil
 }
 
 // EventManager returns the event manager responsible for the media.
