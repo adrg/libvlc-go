@@ -136,7 +136,7 @@ func (mt *MediaTrack) CodecDescription() (string, error) {
 		codec = mt.OriginalCodec
 	}
 
-	// Get codec descirption.
+	// Get codec description.
 	return C.GoString(C.libvlc_media_get_codec_description(
 		C.libvlc_track_type_t(mt.Type),
 		C.uint(codec),
