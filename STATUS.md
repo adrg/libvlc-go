@@ -126,8 +126,8 @@ Reference: [libVLC media list player](https://www.videolan.org/developers/vlc/do
 | ☒ | libvlc_media_get_parsed_status         | Media.ParseStatus          | `v3`      |
 | ☐ | libvlc_media_set_user_data             |                            | `v2` `v3` |
 | ☐ | libvlc_media_get_user_data             |                            | `v2` `v3` |
-| ☐ | libvlc_media_tracks_get                |                            | `v2` `v3` |
-| ☐ | libvlc_media_get_codec_description     |                            | `v3`      |
+| ☒ | libvlc_media_tracks_get                |                            | `v2` `v3` |
+| ☒ | libvlc_media_get_codec_description     |                            | `v3`      |
 | ☐ | libvlc_media_get_type                  |                            | `v3`      |
 | ☐ | libvlc_media_slaves_add                |                            | `v3`      |
 | ☐ | libvlc_media_slaves_clear              |                            | `v3`      |
