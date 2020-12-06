@@ -95,6 +95,7 @@ However, please consider switching to modules.
 * [Basic player usage](https://github.com/adrg/libvlc-go-examples/blob/master/v3/player/player.go)
 * [Basic list player usage](https://github.com/adrg/libvlc-go-examples/tree/master/v3/list_player/list_player.go)
 * [Handling events](https://github.com/adrg/libvlc-go-examples/tree/master/v3/event_handling/event_handling.go)
+* [Retrieve media tracks](https://github.com/adrg/libvlc-go-examples/blob/master/v3/media_tracks/media_tracks.go)
 * [Retrieve media information](https://github.com/adrg/libvlc-go-examples/blob/master/v3/media_information/media_information.go)
 * [Display screen as player media](https://github.com/adrg/libvlc-go-examples/blob/master/v3/display_screen_media/display_screen_media.go)
 
