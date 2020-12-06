@@ -478,6 +478,45 @@ func (m *Media) SubItems() (*MediaList, error) {
 	return &MediaList{list: subitems}, nil
 }
 
+// Tracks returns the tracks (audio, video, subtitle) of the current media.
+// NOTE: The tracks can only be obtained for parsed media instances. Either
+// play the media once or call one of the parsing methods first.
+func (m *Media) Tracks() ([]*MediaTrack, error) {
+	if err := m.assertInit(); err != nil {
+		return nil, err
+	}
+
+	// Get media tracks.
+	var cTracks **C.libvlc_media_track_t
+
+	count := int(C.libvlc_media_tracks_get(m.media, &cTracks))
+	if count == 0 || cTracks == nil {
+		return nil, nil
+	}
+	defer C.libvlc_media_tracks_release(cTracks, C.uint(count))
+
+	// Parse media tracks.
+	tracks := make([]*MediaTrack, 0, count)
+	for i := 0; i < count; i++ {
+		// Get current track pointer.
+		cTrack := unsafe.Pointer(uintptr(unsafe.Pointer(cTracks)) +
+			uintptr(i)*unsafe.Sizeof(*cTracks))
+		if cTrack == nil {
+			return nil, ErrMediaTrackNotInitialized
+		}
+
+		// Parse media track.
+		track, err := parseMediaTrack(*(**C.libvlc_media_track_t)(cTrack))
+		if err != nil {
+			return nil, err
+		}
+
+		tracks = append(tracks, track)
+	}
+
+	return tracks, nil
+}
+
 // EventManager returns the event manager responsible for the media.
 func (m *Media) EventManager() (*EventManager, error) {
 	if err := m.assertInit(); err != nil {
