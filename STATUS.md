@@ -101,41 +101,41 @@ Reference: [libVLC media list player](https://www.videolan.org/developers/vlc/do
 
 ## Media
 
-| ☐ | Binding                                | Implementation             | Versions  |
-|---|:---------------------------------------|:---------------------------|:----------|
-| ☒ | libvlc_media_new_location              | vlc.NewMediaFromPath       | `v2` `v3` |
-| ☒ | libvlc_media_new_path                  | vlc.NewMediaFromURL        | `v2` `v3` |
-| ☐ | libvlc_media_new_fd                    |                            | `v2` `v3` |
-| ☐ | libvlc_media_new_callbacks             |                            | `v3`      |
-| ☐ | libvlc_media_new_as_node               |                            | `v2` `v3` |
-| ☒ | libvlc_media_add_option                | Media.AddOptions           | `v2` `v3` |
-| ☐ | libvlc_media_add_option_flag           |                            | `v2` `v3` |
-| ☒ | libvlc_media_release                   | Media.Release              | `v2` `v3` |
-| ☒ | libvlc_media_get_mrl                   | Media.Location             | `v2` `v3` |
-| ☐ | libvlc_media_duplicate                 |                            | `v2` `v3` |
-| ☒ | libvlc_media_get_meta                  | Media.Meta                 | `v2` `v3` |
-| ☒ | libvlc_media_set_meta                  | Media.SetMeta              | `v2` `v3` |
-| ☒ | libvlc_media_save_meta                 | Media.SaveMeta             | `v2` `v3` |
-| ☒ | libvlc_media_get_state                 | Media.State                | `v2` `v3` |
-| ☒ | libvlc_media_get_stats                 | Media.Stats                | `v2` `v3` |
-| ☒ | libvlc_media_subitems                  | Media.SubItems             | `v2` `v3` |
-| ☒ | libvlc_media_event_manager             | Media.EventManager         | `v2` `v3` |
-| ☒ | libvlc_media_get_duration              | Media.Duration             | `v2` `v3` |
-| ☒ | libvlc_media_parse_with_options        | Media.ParseWithOptions     | `v3`      |
-| ☒ | libvlc_media_parse_stop                | Media.StopParse            | `v3`      |
-| ☒ | libvlc_media_get_parsed_status         | Media.ParseStatus          | `v3`      |
-| ☐ | libvlc_media_set_user_data             |                            | `v2` `v3` |
-| ☐ | libvlc_media_get_user_data             |                            | `v2` `v3` |
-| ☒ | libvlc_media_tracks_get                |                            | `v2` `v3` |
-| ☒ | libvlc_media_get_codec_description     |                            | `v3`      |
-| ☐ | libvlc_media_get_type                  |                            | `v3`      |
-| ☐ | libvlc_media_slaves_add                |                            | `v3`      |
-| ☐ | libvlc_media_slaves_clear              |                            | `v3`      |
-| ☐ | libvlc_media_slaves_get                |                            | `v3`      |
-| ☐ | libvlc_media_slaves_release            |                            | `v3`      |
-| ☒ | libvlc_media_parse                     | Media.Parse                | `v2` `v3` |
-| ☒ | libvlc_media_parse_async               | Media.ParseAsync           | `v2` `v3` |
-| ☒ | libvlc_media_is_parsed                 | Media.IsParsed             | `v2` `v3` |
+| ☐ | Binding                                | Implementation              | Versions  |
+|---|:---------------------------------------|:----------------------------|:----------|
+| ☒ | libvlc_media_new_location              | vlc.NewMediaFromPath        | `v2` `v3` |
+| ☒ | libvlc_media_new_path                  | vlc.NewMediaFromURL         | `v2` `v3` |
+| ☐ | libvlc_media_new_fd                    |                             | `v2` `v3` |
+| ☐ | libvlc_media_new_callbacks             |                             | `v3`      |
+| ☐ | libvlc_media_new_as_node               |                             | `v2` `v3` |
+| ☒ | libvlc_media_add_option                | Media.AddOptions            | `v2` `v3` |
+| ☐ | libvlc_media_add_option_flag           |                             | `v2` `v3` |
+| ☒ | libvlc_media_release                   | Media.Release               | `v2` `v3` |
+| ☒ | libvlc_media_get_mrl                   | Media.Location              | `v2` `v3` |
+| ☐ | libvlc_media_duplicate                 |                             | `v2` `v3` |
+| ☒ | libvlc_media_get_meta                  | Media.Meta                  | `v2` `v3` |
+| ☒ | libvlc_media_set_meta                  | Media.SetMeta               | `v2` `v3` |
+| ☒ | libvlc_media_save_meta                 | Media.SaveMeta              | `v2` `v3` |
+| ☒ | libvlc_media_get_state                 | Media.State                 | `v2` `v3` |
+| ☒ | libvlc_media_get_stats                 | Media.Stats                 | `v2` `v3` |
+| ☒ | libvlc_media_subitems                  | Media.SubItems              | `v2` `v3` |
+| ☒ | libvlc_media_event_manager             | Media.EventManager          | `v2` `v3` |
+| ☒ | libvlc_media_get_duration              | Media.Duration              | `v2` `v3` |
+| ☒ | libvlc_media_parse_with_options        | Media.ParseWithOptions      | `v3`      |
+| ☒ | libvlc_media_parse_stop                | Media.StopParse             | `v3`      |
+| ☒ | libvlc_media_get_parsed_status         | Media.ParseStatus           | `v3`      |
+| ☐ | libvlc_media_set_user_data             |                             | `v2` `v3` |
+| ☐ | libvlc_media_get_user_data             |                             | `v2` `v3` |
+| ☒ | libvlc_media_tracks_get                | Media.Tracks                | `v2` `v3` |
+| ☒ | libvlc_media_get_codec_description     | MediaTrack.CodecDescription | `v3`      |
+| ☒ | libvlc_media_get_type                  | Media.Type                  | `v3`      |
+| ☐ | libvlc_media_slaves_add                |                             | `v3`      |
+| ☐ | libvlc_media_slaves_clear              |                             | `v3`      |
+| ☐ | libvlc_media_slaves_get                |                             | `v3`      |
+| ☐ | libvlc_media_slaves_release            |                             | `v3`      |
+| ☒ | libvlc_media_parse                     | Media.Parse                 | `v2` `v3` |
+| ☒ | libvlc_media_parse_async               | Media.ParseAsync            | `v2` `v3` |
+| ☒ | libvlc_media_is_parsed                 | Media.IsParsed              | `v2` `v3` |
 
 Reference: [libVLC media](https://www.videolan.org/developers/vlc/doc/doxygen/html/group__libvlc__media.html).
 
