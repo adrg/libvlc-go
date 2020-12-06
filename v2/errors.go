@@ -19,16 +19,17 @@ var (
 
 // Media errors.
 var (
-	ErrMediaCreate             = errors.New("could not create media")
-	ErrMediaNotFound           = errors.New("could not find media")
-	ErrMediaNotInitialized     = errors.New("media not initialized")
-	ErrMediaListCreate         = errors.New("could not create media list")
-	ErrMediaListNotFound       = errors.New("could not find media list")
-	ErrMediaListNotInitialized = errors.New("media list not initialized")
-	ErrMissingMediaStats       = errors.New("could not get media statistics")
-	ErrInvalidMediaStats       = errors.New("invalid media statistics")
-	ErrMissingMediaLocation    = errors.New("could not get media location")
-	ErrMediaMetaSave           = errors.New("could not save media metadata")
+	ErrMediaCreate              = errors.New("could not create media")
+	ErrMediaNotFound            = errors.New("could not find media")
+	ErrMediaNotInitialized      = errors.New("media not initialized")
+	ErrMediaListCreate          = errors.New("could not create media list")
+	ErrMediaListNotFound        = errors.New("could not find media list")
+	ErrMediaListNotInitialized  = errors.New("media list not initialized")
+	ErrMissingMediaStats        = errors.New("could not get media statistics")
+	ErrInvalidMediaStats        = errors.New("invalid media statistics")
+	ErrMissingMediaLocation     = errors.New("could not get media location")
+	ErrMediaMetaSave            = errors.New("could not save media metadata")
+	ErrMediaTrackNotInitialized = errors.New("media track not initialized")
 )
 
 // Event manager errors.
