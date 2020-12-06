@@ -72,11 +72,11 @@ func (mt MediaMetaKey) Validate() error {
 type MediaStats struct {
 	// Input statistics.
 	ReadBytes    int     // Input bytes read.
-	InputBitRate float64 // Input bitrate.
+	InputBitRate float64 // Input bit rate.
 
 	// Demux statistics.
 	DemuxReadBytes     int     // Demux bytes read (demuxed data size).
-	DemuxBitRate       float64 // Demux bitrate (content bitrate).
+	DemuxBitRate       float64 // Demux bit rate (content bit rate).
 	DemuxCorrupted     int     // Demux corruptions (discarded).
 	DemuxDiscontinuity int     // Demux discontinuities (dropped).
 
