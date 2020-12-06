@@ -12,9 +12,9 @@ type PlaybackMode uint
 
 // Playback modes.
 const (
-	PlaybackDefault PlaybackMode = iota
-	PlaybackLoop
-	PlaybackRepeat
+	Default PlaybackMode = iota
+	Loop
+	Repeat
 )
 
 // ListPlayer is an enhanced media player used to play media lists.

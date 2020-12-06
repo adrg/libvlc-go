@@ -11,6 +11,19 @@ import (
 	"unsafe"
 )
 
+// MediaType represents the type of a media file.
+type MediaType uint
+
+// MediaTypes.
+const (
+	MediaTypeUnknown MediaType = iota
+	MediaTypeFile
+	MediaTypeDirectory
+	MediaTypeDisc
+	MediaTypeStream
+	MediaTypePlaylist
+)
+
 // MediaState represents the state of a media file.
 type MediaState uint
 
@@ -270,14 +283,22 @@ func (m *Media) AddOptions(options ...string) error {
 	return nil
 }
 
+// Type returns the type of the media instance.
+func (m *Media) Type() (MediaType, error) {
+	if err := m.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return MediaType(C.libvlc_media_get_type(m.media)), getError()
+}
+
 // State returns the current state of the media instance.
 func (m *Media) State() (MediaState, error) {
 	if err := m.assertInit(); err != nil {
 		return 0, err
 	}
 
-	state := int(C.libvlc_media_get_state(m.media))
-	return MediaState(state), getError()
+	return MediaState(C.libvlc_media_get_state(m.media)), getError()
 }
 
 // Stats returns playback statistics for the media.
