@@ -51,8 +51,8 @@ Documentation for v2, which implements bindings for libVLC 2.X, can be found on 
 
 Example applications:
 
-* [GUI media player](v3/examples/gtk3_player)
-* [GUI screen recorder](v3/examples/gtk3_screen_recorder)
+* [GUI media player](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_player)
+* [GUI screen recorder](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_screen_recorder)
 
 ## Prerequisites
 
@@ -88,17 +88,17 @@ However, please consider switching to modules.
 
 ## Examples
 
-* [GTK 3 media player](v3/examples/gtk3_player) (using [gotk3](https://github.com/gotk3/gotk3))
-* [GTK 3 screen recorder](v3/examples/gtk3_screen_recorder) (using [gotk3](https://github.com/gotk3/gotk3))
-* [GTK 2 media player](v3/examples/gtk2_player) (using [go-gtk](https://github.com/mattn/go-gtk))
-* [GTK 2 screen recorder](v3/examples/gtk2_screen_recorder) (using [go-gtk](https://github.com/mattn/go-gtk))
-* [Basic player usage](v3/examples/player.go)
-* [Basic list player usage](v3/examples/list_player.go)
-* [Handling events](v3/examples/event_handling.go)
-* [Retrieve media information](v3/examples/media_information.go)
-* [Display screen as player media](v3/examples/display_screen_media.go)
+* [GTK 3 media player](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_player) (using [gotk3](https://github.com/gotk3/gotk3))
+* [GTK 3 screen recorder](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_screen_recorder) (using [gotk3](https://github.com/gotk3/gotk3))
+* [GTK 2 media player](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk2_player) (using [go-gtk](https://github.com/mattn/go-gtk))
+* [GTK 2 screen recorder](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk2_screen_recorder) (using [go-gtk](https://github.com/mattn/go-gtk))
+* [Basic player usage](https://github.com/adrg/libvlc-go-examples/blob/master/v3/player/player.go)
+* [Basic list player usage](https://github.com/adrg/libvlc-go-examples/tree/master/v3/list_player/list_player.go)
+* [Handling events](https://github.com/adrg/libvlc-go-examples/tree/master/v3/event_handling/event_handling.go)
+* [Retrieve media information](https://github.com/adrg/libvlc-go-examples/blob/master/v3/media_information/media_information.go)
+* [Display screen as player media](https://github.com/adrg/libvlc-go-examples/blob/master/v3/display_screen_media/display_screen_media.go)
 
-Examples for the older version of the API can be found in [v2/examples](v2/examples).
+Examples for the older version of the API can be found in [here](https://github.com/adrg/libvlc-go-examples/tree/master/v2).
 
 ## Usage
 
