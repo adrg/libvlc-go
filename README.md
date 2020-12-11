@@ -16,11 +16,8 @@
     <a href="https://github.com/avelino/awesome-go#video">
         <img alt="Awesome Go" src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg"/>
     </a>
-    <a href="https://www.buymeacoffee.com/adrg">
-        <img alt="Buy me a coffee" src="https://img.shields.io/static/v1.svg?label=%20&message=Buy%20me%20a%20coffee&color=FF813F&logo=buy%20me%20a%20coffee&logoColor=white"/>
-    </a>
-    <a alt="Github stars" href="https://github.com/adrg/libvlc-go/stargazers">
-        <img alt="GitHub stars" src="https://img.shields.io/github/stars/adrg/libvlc-go?style=social">
+    <a href="https://ko-fi.com/T6T72WATK">
+        <img alt="Buy me a coffee" src="https://img.shields.io/static/v1.svg?label=%20&message=Buy%20me%20a%20coffee&color=579fbf&logo=buy%20me%20a%20coffee&logoColor=white"/>
     </a>
     <br />
     <a href="https://goreportcard.com/report/github.com/adrg/libvlc-go">
@@ -175,8 +172,7 @@ func main() {
 ## Contributing
 
 Contributions in the form of pull requests, issues or just general feedback,
-are always welcome.
-See [CONTRIBUTING.MD](CONTRIBUTING.md).
+are always welcome. See [CONTRIBUTING.MD](CONTRIBUTING.md).
 
 **Contributors**:
 [adrg](https://github.com/adrg),
@@ -185,13 +181,6 @@ See [CONTRIBUTING.MD](CONTRIBUTING.md).
 [danielpellon](https://github.com/danielpellon),
 [patknight](https://github.com/patknight),
 [sndnvaps](https://github.com/sndnvaps).
-
-## Buy me a coffee
-
-If you found this project useful and want to support it, consider buying me a coffee.  
-<a href="https://www.buymeacoffee.com/adrg">
-    <img src="https://cdn.buymeacoffee.com/buttons/v2/arial-orange.png" alt="Buy Me A Coffee" height="42px">
-</a>
 
 ## References
 
