@@ -58,6 +58,7 @@ VLC SDK on multiple operating systems can be found on the wiki pages of this pro
 
 - [Install on Linux](https://github.com/adrg/libvlc-go/wiki/Install-on-Linux)
 - [Install on Windows](https://github.com/adrg/libvlc-go/wiki/Install-on-Windows)
+- [Install on macOS](https://github.com/adrg/libvlc-go/wiki/Install-on-macOS)
 
 ## Installation
 
