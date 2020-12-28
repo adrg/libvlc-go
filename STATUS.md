@@ -112,7 +112,7 @@ Reference: [libVLC media list player](https://www.videolan.org/developers/vlc/do
 | ☐ | libvlc_media_add_option_flag           |                             | `v2` `v3` |
 | ☒ | libvlc_media_release                   | Media.Release               | `v2` `v3` |
 | ☒ | libvlc_media_get_mrl                   | Media.Location              | `v2` `v3` |
-| ☐ | libvlc_media_duplicate                 |                             | `v2` `v3` |
+| ☒ | libvlc_media_duplicate                 | Media.Duplicate             | `v2` `v3` |
 | ☒ | libvlc_media_get_meta                  | Media.Meta                  | `v2` `v3` |
 | ☒ | libvlc_media_set_meta                  | Media.SetMeta               | `v2` `v3` |
 | ☒ | libvlc_media_save_meta                 | Media.SaveMeta              | `v2` `v3` |
