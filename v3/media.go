@@ -266,6 +266,22 @@ func (m *Media) Release() error {
 	return getError()
 }
 
+// Duplicate duplicates the current media instance.
+// NOTE: Call the Release method on the returned media in order to free
+// the allocated resources.
+func (m *Media) Duplicate() (*Media, error) {
+	if err := m.assertInit(); err != nil {
+		return nil, err
+	}
+
+	media := C.libvlc_media_duplicate(m.media)
+	if media == nil {
+		return nil, errOrDefault(getError(), ErrMediaCreate)
+	}
+
+	return &Media{media: media}, nil
+}
+
 // AddOptions adds the specified options to the media. The specified options
 // determine how a media player reads the media, allowing advanced reading or
 // streaming on a per-media basis.
