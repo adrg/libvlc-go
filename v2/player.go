@@ -330,6 +330,16 @@ func (p *Player) SetMediaTime(t int) error {
 	return getError()
 }
 
+// NextFrame displays the next video frame, if supported.
+func (p *Player) NextFrame() error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_next_frame(p.player)
+	return getError()
+}
+
 // XWindow returns the identifier of the X window the media player is
 // configured to render its video output to, or 0 if no window is set.
 // The window can be set using the SetXWindow method.
