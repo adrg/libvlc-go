@@ -68,7 +68,7 @@ Reference: [libVLC core](https://www.videolan.org/developers/vlc/doc/doxygen/htm
 | ☒ | libvlc_media_player_is_seekable                 | Player.IsSeekable          | `v2`, `v3` |
 | ☒ | libvlc_media_player_can_pause                   | Player.CanPause            | `v2`, `v3` |
 | ☒ | libvlc_media_player_program_scrambled           | Player.IsScrambled         | `v2`, `v3` |
-| ☐ | libvlc_media_player_next_frame                  |                            | `v2`, `v3` |
+| ☒ | libvlc_media_player_next_frame                  | Player.NextFrame           | `v2`, `v3` |
 | ☐ | libvlc_media_player_navigate                    |                            | `v2`, `v3` |
 | ☐ | libvlc_media_player_set_video_title_display     |                            | `v2`, `v3` |
 | ☐ | libvlc_media_player_add_slave                   |                            | `v2`, `v3` |
@@ -85,9 +85,9 @@ Reference: [libVLC media player](https://www.videolan.org/developers/vlc/doc/dox
 | ☐ | libvlc_audio_output_device_list_get             |                            | `v2`, `v3` |
 | ☐ | libvlc_audio_output_device_set                  |                            | `v2`, `v3` |
 | ☐ | libvlc_audio_output_device_get                  |                            | `v3`       |
-| ☐ | libvlc_audio_toggle_mute                        |                            | `v2`, `v3` |
-| ☐ | libvlc_audio_get_mute                           |                            | `v2`, `v3` |
-| ☐ | libvlc_audio_set_mute                           |                            | `v2`, `v3` |
+| ☒ | libvlc_audio_toggle_mute                        | Player.ToggleMute          | `v2`, `v3` |
+| ☒ | libvlc_audio_get_mute                           | Player.IsMuted             | `v2`, `v3` |
+| ☒ | libvlc_audio_set_mute                           | Player.SetMute             | `v2`, `v3` |
 | ☒ | libvlc_audio_get_volume                         | Player.Volume              | `v2`, `v3` |
 | ☒ | libvlc_audio_set_volume                         | Player.SetVolume           | `v2`, `v3` |
 | ☐ | libvlc_audio_get_track_count                    |                            | `v2`, `v3` |
@@ -126,10 +126,10 @@ Reference: [libVLC audio controls](https://www.videolan.org/developers/vlc/doc/d
 | ☒ | libvlc_video_set_mouse_input                      | Player.SetMouseInput       | `v2`, `v3` |
 | ☐ | libvlc_video_get_size                             |                            | `v2`, `v3` |
 | ☐ | libvlc_video_get_cursor                           |                            | `v2`, `v3` |
-| ☐ | libvlc_video_get_scale                            |                            | `v2`, `v3` |
-| ☐ | libvlc_video_set_scale                            |                            | `v2`, `v3` |
-| ☐ | libvlc_video_get_aspect_ratio                     |                            | `v2`, `v3` |
-| ☐ | libvlc_video_set_aspect_ratio                     |                            | `v2`, `v3` |
+| ☒ | libvlc_video_get_scale                            | Player.Scale               | `v2`, `v3` |
+| ☒ | libvlc_video_set_scale                            | Player.SetScale            | `v2`, `v3` |
+| ☒ | libvlc_video_get_aspect_ratio                     | Player.AspectRatio         | `v2`, `v3` |
+| ☒ | libvlc_video_set_aspect_ratio                     | Player.SetAspectRatio      | `v2`, `v3` |
 | ☐ | libvlc_video_new_viewpoint                        |                            | `v3`       |
 | ☐ | libvlc_video_update_viewpoint                     |                            | `v3`       |
 | ☐ | libvlc_video_get_spu                              |                            | `v2`, `v3` |
