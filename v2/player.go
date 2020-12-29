@@ -97,7 +97,7 @@ func (p *Player) SetPause(pause bool) error {
 	return getError()
 }
 
-// TogglePause pauses/resumes the player.
+// TogglePause pauses or resumes the player, depending on its current status.
 // Calling this method has no effect if there is no media.
 func (p *Player) TogglePause() error {
 	if err := p.assertInit(); err != nil {
@@ -189,13 +189,13 @@ func (p *Player) ToggleFullScreen() error {
 	return getError()
 }
 
-// IsFullScreen gets the fullscreen status of the current player.
+// IsFullScreen returns the fullscreen status of the player.
 func (p *Player) IsFullScreen() (bool, error) {
 	if err := p.assertInit(); err != nil {
 		return false, err
 	}
 
-	return (C.libvlc_get_fullscreen(p.player) != C.int(0)), getError()
+	return C.libvlc_get_fullscreen(p.player) != C.int(0), getError()
 }
 
 // Volume returns the volume of the player.
@@ -214,6 +214,43 @@ func (p *Player) SetVolume(volume int) error {
 	}
 
 	C.libvlc_audio_set_volume(p.player, C.int(volume))
+	return getError()
+}
+
+// IsMuted returns a boolean value that specifies whether the audio
+// output of the player is muted.
+func (p *Player) IsMuted() (bool, error) {
+	if err := p.assertInit(); err != nil {
+		return false, err
+	}
+
+	return C.libvlc_audio_get_mute(p.player) > C.int(0), getError()
+}
+
+// SetMute mutes or unmutes the audio output of the player.
+// NOTE: If there is no active audio playback stream, the mute status might not
+// be available. If digital pass-through (S/PDIF, HDMI, etc.) is in use, muting
+// may not be applicable. Some audio output plugins do not support muting.
+func (p *Player) SetMute(mute bool) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_audio_set_mute(p.player, C.int(boolToInt(mute)))
+	return getError()
+}
+
+// ToggleMute mutes or unmutes the audio output of the player, depending on
+// the current status.
+// NOTE: If there is no active audio playback stream, the mute status might not
+// be available. If digital pass-through (S/PDIF, HDMI, etc.) is in use, muting
+// may not be applicable. Some audio output plugins do not support muting.
+func (p *Player) ToggleMute() error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_audio_toggle_mute(p.player)
 	return getError()
 }
 
