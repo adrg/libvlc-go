@@ -443,8 +443,10 @@ func (p *Player) XWindow() (uint32, error) {
 }
 
 // SetXWindow sets an X Window System drawable where the media player can
-// render its video output. If libVLC was built without X11 output support,
-// calling this method has no effect.
+// render its video output. The call takes effect when the playback starts.
+// If it is already started, it might need to be stopped before changes apply.
+// If libVLC was built without X11 output support, calling this method has no
+// effect.
 // NOTE: By default, libVLC captures input events on the video rendering area.
 // Use the SetMouseInput and SetKeyInput methods if you want to handle input
 // events in your application. By design, the X11 protocol delivers input
