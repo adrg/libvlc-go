@@ -97,7 +97,7 @@ func (p *Player) SetPause(pause bool) error {
 	return getError()
 }
 
-// TogglePause pauses/resumes the player.
+// TogglePause pauses or resumes the player, depending on its current status.
 // Calling this method has no effect if there is no media.
 func (p *Player) TogglePause() error {
 	if err := p.assertInit(); err != nil {
@@ -189,13 +189,13 @@ func (p *Player) ToggleFullScreen() error {
 	return getError()
 }
 
-// IsFullScreen gets the fullscreen status of the current player.
+// IsFullScreen returns the fullscreen status of the player.
 func (p *Player) IsFullScreen() (bool, error) {
 	if err := p.assertInit(); err != nil {
 		return false, err
 	}
 
-	return (C.libvlc_get_fullscreen(p.player) != C.int(0)), getError()
+	return C.libvlc_get_fullscreen(p.player) != C.int(0), getError()
 }
 
 // Volume returns the volume of the player.
@@ -214,6 +214,43 @@ func (p *Player) SetVolume(volume int) error {
 	}
 
 	C.libvlc_audio_set_volume(p.player, C.int(volume))
+	return getError()
+}
+
+// IsMuted returns a boolean value that specifies whether the audio
+// output of the player is muted.
+func (p *Player) IsMuted() (bool, error) {
+	if err := p.assertInit(); err != nil {
+		return false, err
+	}
+
+	return C.libvlc_audio_get_mute(p.player) > C.int(0), getError()
+}
+
+// SetMute mutes or unmutes the audio output of the player.
+// NOTE: If there is no active audio playback stream, the mute status might not
+// be available. If digital pass-through (S/PDIF, HDMI, etc.) is in use, muting
+// may not be applicable. Some audio output plugins do not support muting.
+func (p *Player) SetMute(mute bool) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_audio_set_mute(p.player, C.int(boolToInt(mute)))
+	return getError()
+}
+
+// ToggleMute mutes or unmutes the audio output of the player, depending on
+// the current status.
+// NOTE: If there is no active audio playback stream, the mute status might not
+// be available. If digital pass-through (S/PDIF, HDMI, etc.) is in use, muting
+// may not be applicable. Some audio output plugins do not support muting.
+func (p *Player) ToggleMute() error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_audio_toggle_mute(p.player)
 	return getError()
 }
 
@@ -327,6 +364,68 @@ func (p *Player) SetMediaTime(t int) error {
 	}
 
 	C.libvlc_media_player_set_time(p.player, C.libvlc_time_t(int64(t)))
+	return getError()
+}
+
+// NextFrame displays the next video frame, if supported.
+func (p *Player) NextFrame() error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_next_frame(p.player)
+	return getError()
+}
+
+// Scale returns the scaling factor of the current video. A scaling factor
+// of zero means the video is configured to fit in the available space.
+func (p *Player) Scale() (float64, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return float64(C.libvlc_video_get_scale(p.player)), getError()
+}
+
+// SetScale sets the scaling factor of the current video. The scaling factor
+// is the ratio of the number of pixels displayed on the screen to the number
+// of pixels in the original decoded video. A scaling factor of zero adjusts
+// the video to fit in the available space.
+// NOTE: Not all video outputs support scaling.
+func (p *Player) SetScale(scale float64) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_scale(p.player, C.float(scale))
+	return getError()
+}
+
+// AspectRatio returns the aspect ratio of the current video.
+func (p *Player) AspectRatio() (string, error) {
+	if err := p.assertInit(); err != nil {
+		return "", err
+	}
+
+	aspectRatio := C.libvlc_video_get_aspect_ratio(p.player)
+	if aspectRatio == nil {
+		return "", getError()
+	}
+	defer C.free(unsafe.Pointer(aspectRatio))
+
+	return C.GoString(aspectRatio), getError()
+}
+
+// SetAspectRatio sets the aspect ratio of the current video (e.g. `16:9`).
+// NOTE: Invalid aspect ratios are ignored.
+func (p *Player) SetAspectRatio(aspectRatio string) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	cAspectRatio := C.CString(aspectRatio)
+	C.libvlc_video_set_aspect_ratio(p.player, cAspectRatio)
+	C.free(unsafe.Pointer(cAspectRatio))
 	return getError()
 }
 
