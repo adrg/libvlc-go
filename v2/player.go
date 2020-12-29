@@ -377,6 +377,30 @@ func (p *Player) NextFrame() error {
 	return getError()
 }
 
+// Scale returns the scaling factor of the current video. A scaling factor
+// of zero means the video is configured to fit in the available space.
+func (p *Player) Scale() (float32, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return float32(C.libvlc_video_get_scale(p.player)), getError()
+}
+
+// SetScale sets the scaling factor of the current video. The scaling factor
+// is the ratio of the number of pixels displayed on the screen to the number
+// of pixels in the original decoded video. A scaling factor of zero adjusts
+// the video to fit in the available space.
+// NOTE: not all video outputs support scaling.
+func (p *Player) SetScale(scale float32) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_scale(p.player, C.float(scale))
+	return getError()
+}
+
 // XWindow returns the identifier of the X window the media player is
 // configured to render its video output to, or 0 if no window is set.
 // The window can be set using the SetXWindow method.
