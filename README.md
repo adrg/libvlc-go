@@ -82,7 +82,7 @@ go build -tags legacy
 ```
 
 All versions above also work for projects which are not using Go modules.
-However, please consider switching to modules.
+However, consider switching to modules.
 
 ## Examples
 
@@ -97,7 +97,7 @@ However, please consider switching to modules.
 * [Retrieve media information](https://github.com/adrg/libvlc-go-examples/blob/master/v3/media_information/media_information.go)
 * [Display screen as player media](https://github.com/adrg/libvlc-go-examples/blob/master/v3/display_screen_media/display_screen_media.go)
 
-Examples for the older version of the API can be found in [here](https://github.com/adrg/libvlc-go-examples/tree/master/v2).
+Examples for the older version of the API can be found [here](https://github.com/adrg/libvlc-go-examples/tree/master/v2).
 
 ## Usage
 
@@ -166,6 +166,14 @@ func main() {
 }
 ```
 
+## In action
+
+A list of projects using libvlc-go, in alphabetical order. If you want to
+showcase your project in this section, please create a pull request with it.
+
+- [Alio](https://github.com/fenimore/alio) - Command-line music player with Emacs style key bindings.
+- [Tripbot](https://dana.lol/2020/04/15/tripbot-the-adventure-robot) - An ongoing 24/7 slow-TV art project.
+
 ## Stargazers over time
 
 [![Stargazers over time](https://starchart.cc/adrg/libvlc-go.svg)](https://starchart.cc/adrg/libvlc-go)
@@ -173,7 +181,8 @@ func main() {
 ## Contributing
 
 Contributions in the form of pull requests, issues or just general feedback,
-are always welcome. See [CONTRIBUTING.MD](CONTRIBUTING.md).
+are always welcome.  
+See [CONTRIBUTING.MD](CONTRIBUTING.md).
 
 **Contributors**:
 [adrg](https://github.com/adrg),
