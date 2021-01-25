@@ -128,6 +128,17 @@ func (ml *MediaList) InsertMediaFromURL(url string, index uint) error {
 	return ml.InsertMedia(media, index)
 }
 
+// InsertMediaFromReadSeeker loads the media from the provided read
+// seeker and inserts it in the list, at the specified index.
+func (ml *MediaList) InsertMediaFromReadSeeker(r io.ReadSeeker, index uint) error {
+	media, err := NewMediaFromReadSeeker(r)
+	if err != nil {
+		return err
+	}
+
+	return ml.InsertMedia(media, index)
+}
+
 // RemoveMediaAtIndex removes the media item at the specified index
 // from the list.
 func (ml *MediaList) RemoveMediaAtIndex(index uint) error {
