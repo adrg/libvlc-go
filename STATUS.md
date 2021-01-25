@@ -191,7 +191,7 @@ Reference: [libVLC media list player](https://www.videolan.org/developers/vlc/do
 | ☒ | libvlc_media_new_location              | vlc.NewMediaFromPath        | `v2`, `v3` |
 | ☒ | libvlc_media_new_path                  | vlc.NewMediaFromURL         | `v2`, `v3` |
 | ☐ | libvlc_media_new_fd                    |                             | `v2`, `v3` |
-| ☐ | libvlc_media_new_callbacks             |                             | `v3`       |
+| ☒ | libvlc_media_new_callbacks             | vlc.NewMediaFromReadSeeker  | `v3`       |
 | ☐ | libvlc_media_new_as_node               |                             | `v2`, `v3` |
 | ☒ | libvlc_media_add_option                | Media.AddOptions            | `v2`, `v3` |
 | ☐ | libvlc_media_add_option_flag           |                             | `v2`, `v3` |
