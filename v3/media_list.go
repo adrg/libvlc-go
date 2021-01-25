@@ -3,6 +3,7 @@ package vlc
 // #cgo LDFLAGS: -lvlc
 // #include <vlc/vlc.h>
 import "C"
+import "io"
 
 // MediaList represents a collection of media files.
 type MediaList struct {
@@ -68,6 +69,17 @@ func (ml *MediaList) AddMediaFromPath(path string) error {
 // the end of the the media list.
 func (ml *MediaList) AddMediaFromURL(url string) error {
 	media, err := NewMediaFromURL(url)
+	if err != nil {
+		return err
+	}
+
+	return ml.AddMedia(media)
+}
+
+// AddMediaFromReadSeeker loads the media from the provided read
+// seeker and adds it at the end of the media list.
+func (ml *MediaList) AddMediaFromReadSeeker(r io.ReadSeeker) error {
+	media, err := NewMediaFromReadSeeker(r)
 	if err != nil {
 		return err
 	}

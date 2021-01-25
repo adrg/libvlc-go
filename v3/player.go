@@ -299,7 +299,6 @@ func (p *Player) LoadMediaFromReadSeeker(r io.ReadSeeker) (*Media, error) {
 	}
 
 	if err = p.setMedia(m); err != nil {
-		_ = m.Release()
 		return nil, err
 	}
 
@@ -586,7 +585,6 @@ func (p *Player) loadMedia(path string, local bool) (*Media, error) {
 	}
 
 	if err = p.setMedia(m); err != nil {
-		_ = m.Release()
 		return nil, err
 	}
 
