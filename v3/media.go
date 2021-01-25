@@ -29,6 +29,7 @@ import "C"
 import (
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"time"
 	"unsafe"
@@ -666,9 +667,9 @@ func mediaBufferOpenCB(id unsafe.Pointer, userData *unsafe.Pointer, size *C.uint
 	}
 
 	// Get reader size.
-	offset, err := r.Seek(0, io.SeekEnd)
-	if err != nil {
-		return -1
+	var offset uint64 = math.MaxUint64
+	if offsetEnd, err := r.Seek(0, io.SeekEnd); err != nil {
+		offset = uint64(offsetEnd)
 	}
 
 	// Rewind reader.
