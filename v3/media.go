@@ -1,11 +1,34 @@
 package vlc
 
-// #cgo LDFLAGS: -lvlc
-// #include <vlc/vlc.h>
-// #include <stdlib.h>
+/*
+#cgo LDFLAGS: -lvlc
+#include <vlc/vlc.h>
+#include <stdlib.h>
+#include <string.h>
+
+extern int mediaBufferOpenCB(void *opaque, void **datap, uint64_t *sizep);
+extern ssize_t mediaBufferReadCB(void *opaque, unsigned char *buf, size_t len);
+extern int mediaBufferSeekCB(void *opaque, uint64_t offset);
+extern void mediaBufferCloseCB(void *opaque);
+
+static inline libvlc_media_open_cb media_open_cb_wrapper() {
+	return mediaBufferOpenCB;
+}
+static inline libvlc_media_read_cb media_read_cb_wrapper() {
+	return mediaBufferReadCB;
+}
+static inline libvlc_media_seek_cb media_seek_cb_wrapper() {
+	return mediaBufferSeekCB;
+}
+static inline libvlc_media_close_cb media_close_cb_wrapper() {
+	return mediaBufferCloseCB;
+}
+*/
 import "C"
+
 import (
 	"fmt"
+	"io"
 	"os"
 	"time"
 	"unsafe"
@@ -197,17 +220,37 @@ type Media struct {
 	media *C.libvlc_media_t
 }
 
-// NewMediaFromPath creates a Media instance from the provided path.
+// NewMediaFromPath creates a new media instance based on the media
+// located at the specified path.
 func NewMediaFromPath(path string) (*Media, error) {
 	return newMedia(path, true)
 }
 
-// NewMediaFromURL creates a Media instance from the provided URL.
+// NewMediaFromURL creates a new media instance based on the media
+// located at the specified URL.
 func NewMediaFromURL(url string) (*Media, error) {
 	return newMedia(url, false)
 }
 
-// NewMediaFromScreen creates a Media instance from the current computer
+// NewMediaFromReadSeeker creates a new media instance based on the
+// provided read seeker.
+func NewMediaFromReadSeeker(r io.ReadSeeker) (*Media, error) {
+	media := C.libvlc_media_new_callbacks(
+		inst.handle,
+		C.media_open_cb_wrapper(),
+		C.media_read_cb_wrapper(),
+		C.media_seek_cb_wrapper(),
+		C.media_close_cb_wrapper(),
+		unsafe.Pointer(uintptr(inst.events.add(mediaBufferCallbacks, nil, r))),
+	)
+	if media == nil {
+		return nil, errOrDefault(getError(), ErrMediaCreate)
+	}
+
+	return &Media{media: media}, nil
+}
+
+// NewMediaFromScreen creates a media instance from the current computer
 // screen, using the specified options.
 // NOTE: This functionality requires the VLC screen module to be installed.
 // See installation instructions at https://github.com/adrg/libvlc-go/wiki.
@@ -238,7 +281,7 @@ func NewMediaFromScreen(opts *MediaScreenOptions) (*Media, error) {
 		mediaOpts = append(mediaOpts, fmt.Sprintf(":screen-fps=%f", opts.FPS))
 	}
 	if opts.FollowMouse {
-		mediaOpts = append(mediaOpts, fmt.Sprintf(":screen-follow-mouse"))
+		mediaOpts = append(mediaOpts, ":screen-follow-mouse")
 	}
 	if opts.FragmentSize > 0 {
 		mediaOpts = append(mediaOpts, fmt.Sprintf(":screen-fragment-size=%d", opts.FragmentSize))
@@ -612,4 +655,94 @@ func newMedia(path string, local bool) (*Media, error) {
 	}
 
 	return &Media{media: media}, nil
+}
+
+//export mediaBufferOpenCB
+func mediaBufferOpenCB(id unsafe.Pointer, userData *unsafe.Pointer, size *C.uint64_t) C.int {
+	// Get media reader.
+	r, err := getMediaBuffer(id)
+	if err != nil {
+		return -1
+	}
+
+	// Get reader size.
+	offset, err := r.Seek(0, io.SeekEnd)
+	if err != nil {
+		return -1
+	}
+
+	// Rewind reader.
+	if _, err := r.Seek(0, io.SeekStart); err != nil {
+		return -1
+	}
+
+	// Initialize callback data.
+	*userData = id
+	*size = C.uint64_t(offset)
+	return 0
+}
+
+//export mediaBufferReadCB
+func mediaBufferReadCB(id unsafe.Pointer, dst *C.uchar, size C.size_t) C.ssize_t {
+	// Get media reader.
+	r, err := getMediaBuffer(id)
+	if err != nil {
+		return -1
+	}
+
+	// Read data.
+	b := make([]byte, int(size))
+
+	read, err := r.Read(b)
+	if err != nil {
+		if err != io.EOF {
+			read = -1
+		}
+	}
+
+	// Copy data to buffer.
+	if read > 0 {
+		C.memcpy(unsafe.Pointer(dst), unsafe.Pointer(&b[0]), C.size_t(read))
+	}
+
+	return C.ssize_t(read)
+}
+
+//export mediaBufferSeekCB
+func mediaBufferSeekCB(id unsafe.Pointer, offset C.uint64_t) C.int {
+	// Get media reader.
+	r, err := getMediaBuffer(id)
+	if err != nil {
+		return -1
+	}
+
+	// Seek to the specified offset.
+	if _, err := r.Seek(int64(offset), io.SeekStart); err != nil {
+		return -1
+	}
+
+	return 0
+}
+
+//export mediaBufferCloseCB
+func mediaBufferCloseCB(id unsafe.Pointer) {
+	inst.events.remove(EventID(uintptr(id)))
+}
+
+func getMediaBuffer(id unsafe.Pointer) (io.ReadSeeker, error) {
+	if err := inst.assertInit(); err != nil {
+		return nil, err
+	}
+
+	ctx, ok := inst.events.get(EventID(uintptr(id)))
+	if !ok {
+		return nil, ErrMediaNotInitialized
+	}
+
+	r, ok := ctx.userData.(io.ReadSeeker)
+	if !ok || r == nil {
+		return nil, ErrMediaNotInitialized
+	}
+
+	return r, nil
 }

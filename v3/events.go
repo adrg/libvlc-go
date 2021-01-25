@@ -143,3 +143,8 @@ const (
 	VlmMediaInstanceStatusEnd
 	VlmMediaInstanceStatusError
 )
+
+// Internal events.
+const (
+	mediaBufferCallbacks Event = 0x100000 + iota
+)
