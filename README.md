@@ -14,7 +14,7 @@
         <img alt="MIT license" src="https://img.shields.io/github/license/adrg/libvlc-go"/>
     </a>
     <a href="https://github.com/avelino/awesome-go#video">
-        <img alt="Awesome Go" src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg"/>
+        <img alt="Awesome Go" src="https://awesome.re/mentioned-badge.svg"/>
     </a>
     <a href="https://ko-fi.com/T6T72WATK">
         <img alt="Buy me a coffee" src="https://img.shields.io/static/v1.svg?label=%20&message=Buy%20me%20a%20coffee&color=579fbf&logo=buy%20me%20a%20coffee&logoColor=white"/>
