@@ -43,8 +43,8 @@ type VideoProjection int
 // Video projections.
 const (
 	ProjectionRectangular           VideoProjection = 0
-	ProjectionEquirectangular                       = 1
-	ProjectionCubemapLayoutStandard                 = 0x100
+	ProjectionEquirectangular       VideoProjection = 1
+	ProjectionCubemapLayoutStandard VideoProjection = 0x100
 )
 
 // VideoViewpoint contains viewpoint information for a video media track.
