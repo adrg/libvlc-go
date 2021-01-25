@@ -43,9 +43,13 @@ func (ml *MediaList) AddMedia(m *Media) error {
 	if err := ml.Lock(); err != nil {
 		return err
 	}
-	defer ml.Unlock()
 
+	// Add the media to the list.
 	C.libvlc_media_list_add_media(ml.list, m.media)
+
+	if err := ml.Unlock(); err != nil {
+		return err
+	}
 	return getError()
 }
 
@@ -80,9 +84,13 @@ func (ml *MediaList) InsertMedia(m *Media, index uint) error {
 	if err := ml.Lock(); err != nil {
 		return err
 	}
-	defer ml.Unlock()
 
+	// Insert the media in the list.
 	C.libvlc_media_list_insert_media(ml.list, m.media, C.int(index))
+
+	if err := ml.Unlock(); err != nil {
+		return err
+	}
 	return getError()
 }
 
@@ -114,9 +122,13 @@ func (ml *MediaList) RemoveMediaAtIndex(index uint) error {
 	if err := ml.Lock(); err != nil {
 		return err
 	}
-	defer ml.Unlock()
 
+	// Remove the media from the list.
 	C.libvlc_media_list_remove_index(ml.list, C.int(index))
+
+	if err := ml.Unlock(); err != nil {
+		return err
+	}
 	return getError()
 }
 
@@ -125,8 +137,8 @@ func (ml *MediaList) MediaAtIndex(index uint) (*Media, error) {
 	if err := ml.Lock(); err != nil {
 		return nil, err
 	}
-	defer ml.Unlock()
 
+	// Retrieve the media at the specified index.
 	media := C.libvlc_media_list_item_at_index(ml.list, C.int(index))
 	if media == nil {
 		return nil, getError()
@@ -136,6 +148,9 @@ func (ml *MediaList) MediaAtIndex(index uint) (*Media, error) {
 	// the reference count increased by libvlc_media_list_item_at_index.
 	C.libvlc_media_release(media)
 
+	if err := ml.Unlock(); err != nil {
+		return nil, err
+	}
 	return &Media{media}, nil
 }
 
@@ -149,13 +164,16 @@ func (ml *MediaList) IndexOfMedia(m *Media) (int, error) {
 	if err := ml.Lock(); err != nil {
 		return 0, err
 	}
-	defer ml.Unlock()
 
+	// Retrieve the index of the media.
 	idx := int(C.libvlc_media_list_index_of_item(ml.list, m.media))
 	if idx < 0 {
 		return 0, errOrDefault(getError(), ErrMediaNotFound)
 	}
 
+	if err := ml.Unlock(); err != nil {
+		return 0, err
+	}
 	return idx, nil
 }
 
@@ -164,9 +182,14 @@ func (ml *MediaList) Count() (int, error) {
 	if err := ml.Lock(); err != nil {
 		return 0, err
 	}
-	defer ml.Unlock()
 
-	return int(C.libvlc_media_list_count(ml.list)), getError()
+	// Retrieve media count.
+	count := int(C.libvlc_media_list_count(ml.list))
+
+	if err := ml.Unlock(); err != nil {
+		return 0, err
+	}
+	return count, getError()
 }
 
 // IsReadOnly specifies if the media list can be modified.

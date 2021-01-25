@@ -277,14 +277,14 @@ func (p *Player) SetMedia(m *Media) error {
 	return p.setMedia(m)
 }
 
-// LoadMediaFromPath loads the media from the specified path and adds it as the
-// current media of the player.
+// LoadMediaFromPath loads the media from the specified path and sets it as
+// the current media of the player.
 func (p *Player) LoadMediaFromPath(path string) (*Media, error) {
 	return p.loadMedia(path, true)
 }
 
-// LoadMediaFromURL loads the media from the specified URL and adds it as the
-// current media of the player.
+// LoadMediaFromURL loads the media from the specified URL and sets it as
+// the current media of the player.
 func (p *Player) LoadMediaFromURL(url string) (*Media, error) {
 	return p.loadMedia(url, false)
 }
@@ -569,7 +569,6 @@ func (p *Player) loadMedia(path string, local bool) (*Media, error) {
 	}
 
 	if err = p.setMedia(m); err != nil {
-		m.Release()
 		return nil, err
 	}
 

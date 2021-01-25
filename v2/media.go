@@ -150,17 +150,19 @@ type Media struct {
 	media *C.libvlc_media_t
 }
 
-// NewMediaFromPath creates a Media instance from the provided path.
+// NewMediaFromPath creates a new media instance based on the media
+// located at the specified path.
 func NewMediaFromPath(path string) (*Media, error) {
 	return newMedia(path, true)
 }
 
-// NewMediaFromURL creates a Media instance from the provided URL.
+// NewMediaFromURL creates a new media instance based on the media
+// located at the specified URL.
 func NewMediaFromURL(url string) (*Media, error) {
 	return newMedia(url, false)
 }
 
-// NewMediaFromScreen creates a Media instance from the current computer
+// NewMediaFromScreen creates a media instance from the current computer
 // screen, using the specified options.
 // NOTE: This functionality requires the VLC screen module to be installed.
 // See installation instructions at https://github.com/adrg/libvlc-go/wiki.
@@ -191,7 +193,7 @@ func NewMediaFromScreen(opts *MediaScreenOptions) (*Media, error) {
 		mediaOpts = append(mediaOpts, fmt.Sprintf(":screen-fps=%f", opts.FPS))
 	}
 	if opts.FollowMouse {
-		mediaOpts = append(mediaOpts, fmt.Sprintf(":screen-follow-mouse"))
+		mediaOpts = append(mediaOpts, ":screen-follow-mouse")
 	}
 	if opts.FragmentSize > 0 {
 		mediaOpts = append(mediaOpts, fmt.Sprintf(":screen-fragment-size=%d", opts.FragmentSize))
