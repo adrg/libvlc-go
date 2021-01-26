@@ -61,7 +61,7 @@ const (
 
 // Validate checks if the media metadata key is valid.
 func (mt MediaMetaKey) Validate() error {
-	if mt < MediaTitle || mt > MediaDiscTotal {
+	if mt > MediaDiscTotal {
 		return fmt.Errorf("invalid media meta key: %d", mt)
 	}
 
@@ -260,8 +260,7 @@ func (m *Media) State() (MediaState, error) {
 		return 0, err
 	}
 
-	state := int(C.libvlc_media_get_state(m.media))
-	return MediaState(state), getError()
+	return MediaState(C.libvlc_media_get_state(m.media)), getError()
 }
 
 // Stats returns playback statistics for the media.

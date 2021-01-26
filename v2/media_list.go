@@ -50,6 +50,7 @@ func (ml *MediaList) AddMedia(m *Media) error {
 	if err := ml.Unlock(); err != nil {
 		return err
 	}
+
 	return getError()
 }
 
@@ -64,8 +65,8 @@ func (ml *MediaList) AddMediaFromPath(path string) error {
 	return ml.AddMedia(media)
 }
 
-// AddMediaFromURL loads the media file at the specified URL and adds it at the
-// end of the the media list.
+// AddMediaFromURL loads the media file at the specified URL and adds it at
+// the end of the the media list.
 func (ml *MediaList) AddMediaFromURL(url string) error {
 	media, err := NewMediaFromURL(url)
 	if err != nil {
@@ -91,6 +92,7 @@ func (ml *MediaList) InsertMedia(m *Media, index uint) error {
 	if err := ml.Unlock(); err != nil {
 		return err
 	}
+
 	return getError()
 }
 
@@ -129,6 +131,7 @@ func (ml *MediaList) RemoveMediaAtIndex(index uint) error {
 	if err := ml.Unlock(); err != nil {
 		return err
 	}
+
 	return getError()
 }
 
@@ -151,6 +154,7 @@ func (ml *MediaList) MediaAtIndex(index uint) (*Media, error) {
 	if err := ml.Unlock(); err != nil {
 		return nil, err
 	}
+
 	return &Media{media}, nil
 }
 
@@ -174,6 +178,7 @@ func (ml *MediaList) IndexOfMedia(m *Media) (int, error) {
 	if err := ml.Unlock(); err != nil {
 		return 0, err
 	}
+
 	return idx, nil
 }
 
@@ -189,6 +194,7 @@ func (ml *MediaList) Count() (int, error) {
 	if err := ml.Unlock(); err != nil {
 		return 0, err
 	}
+
 	return count, getError()
 }
 

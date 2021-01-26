@@ -51,6 +51,7 @@ func (ml *MediaList) AddMedia(m *Media) error {
 	if err := ml.Unlock(); err != nil {
 		return err
 	}
+
 	return getError()
 }
 
@@ -103,6 +104,7 @@ func (ml *MediaList) InsertMedia(m *Media, index uint) error {
 	if err := ml.Unlock(); err != nil {
 		return err
 	}
+
 	return getError()
 }
 
@@ -152,6 +154,7 @@ func (ml *MediaList) RemoveMediaAtIndex(index uint) error {
 	if err := ml.Unlock(); err != nil {
 		return err
 	}
+
 	return getError()
 }
 
@@ -174,6 +177,7 @@ func (ml *MediaList) MediaAtIndex(index uint) (*Media, error) {
 	if err := ml.Unlock(); err != nil {
 		return nil, err
 	}
+
 	return &Media{media}, nil
 }
 
@@ -197,6 +201,7 @@ func (ml *MediaList) IndexOfMedia(m *Media) (int, error) {
 	if err := ml.Unlock(); err != nil {
 		return 0, err
 	}
+
 	return idx, nil
 }
 
@@ -212,6 +217,7 @@ func (ml *MediaList) Count() (int, error) {
 	if err := ml.Unlock(); err != nil {
 		return 0, err
 	}
+
 	return count, getError()
 }
 
