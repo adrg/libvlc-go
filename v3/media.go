@@ -216,6 +216,11 @@ type MediaScreenOptions struct {
 	FragmentSize int
 }
 
+type mediaData struct {
+	readerID objectID
+	userData interface{}
+}
+
 // Media is an abstract representation of a playable media file.
 type Media struct {
 	media *C.libvlc_media_t
@@ -236,19 +241,36 @@ func NewMediaFromURL(url string) (*Media, error) {
 // NewMediaFromReadSeeker creates a new media instance based on the
 // provided read seeker.
 func NewMediaFromReadSeeker(r io.ReadSeeker) (*Media, error) {
-	media := C.libvlc_media_new_callbacks(
+	if err := inst.assertInit(); err != nil {
+		return nil, err
+	}
+
+	// Create media.
+	readerID := inst.objects.add(r)
+	cMedia := C.libvlc_media_new_callbacks(
 		inst.handle,
 		C.media_open_cb_wrapper(),
 		C.media_read_cb_wrapper(),
 		C.media_seek_cb_wrapper(),
 		C.media_close_cb_wrapper(),
-		unsafe.Pointer(uintptr(inst.events.add(mediaBufferCallbacks, nil, r))),
+		unsafe.Pointer(uintptr(readerID)),
 	)
-	if media == nil {
+	if cMedia == nil {
+		inst.objects.decRefs(readerID)
 		return nil, errOrDefault(getError(), ErrMediaCreate)
 	}
+	m := &Media{media: cMedia}
 
-	return &Media{media: media}, nil
+	// Set user data.
+	if _, err := m.setUserData(&mediaData{
+		readerID: readerID,
+	}); err != nil {
+		inst.objects.decRefs(readerID)
+		_ = m.Release()
+		return nil, err
+	}
+
+	return m, nil
 }
 
 // NewMediaFromScreen creates a media instance from the current computer
@@ -304,6 +326,12 @@ func (m *Media) Release() error {
 		return nil
 	}
 
+	// Delete user data.
+	if err := m.deleteUserData(); err != nil {
+		return err
+	}
+
+	// Delete media.
 	C.libvlc_media_release(m.media)
 	m.media = nil
 
@@ -318,12 +346,25 @@ func (m *Media) Duplicate() (*Media, error) {
 		return nil, err
 	}
 
-	media := C.libvlc_media_duplicate(m.media)
-	if media == nil {
+	// Duplicate media.
+	cMedia := C.libvlc_media_duplicate(m.media)
+	if cMedia == nil {
 		return nil, errOrDefault(getError(), ErrMediaCreate)
 	}
+	dup := &Media{media: cMedia}
 
-	return &Media{media: media}, nil
+	// Duplicate user data.
+	if _, data, err := m.getUserData(); err == nil && data != nil {
+		dupData := *data
+		if _, err := dup.setUserData(&dupData); err != nil {
+			_ = dup.Release()
+			return nil, err
+		}
+
+		inst.objects.incRefs(dupData.readerID)
+	}
+
+	return dup, nil
 }
 
 // AddOptions adds the specified options to the media. The specified options
@@ -624,6 +665,52 @@ func (m *Media) addOption(option string) error {
 	return getError()
 }
 
+func (m *Media) getUserData() (objectID, *mediaData, error) {
+	if err := inst.assertInit(); err != nil {
+		return 0, nil, err
+	}
+	if err := m.assertInit(); err != nil {
+		return 0, nil, err
+	}
+
+	id := objectID(uintptr(C.libvlc_media_get_user_data(m.media)))
+	if id == 0 {
+		return 0, nil, nil
+	}
+
+	obj, ok := inst.objects.get(id)
+	if !ok {
+		return 0, nil, nil
+	}
+
+	data, _ := obj.(*mediaData)
+	return id, data, nil
+}
+
+func (m *Media) setUserData(data *mediaData) (objectID, error) {
+	if err := inst.assertInit(); err != nil {
+		return 0, err
+	}
+	if err := m.assertInit(); err != nil {
+		return 0, err
+	}
+
+	id := inst.objects.add(data)
+	C.libvlc_media_set_user_data(m.media, unsafe.Pointer(uintptr(id)))
+	return id, nil
+}
+
+func (m *Media) deleteUserData() error {
+	id, data, err := m.getUserData()
+	if err != nil || data == nil {
+		return err
+	}
+
+	inst.objects.decRefs(data.readerID)
+	inst.objects.decRefs(id)
+	return nil
+}
+
 func (m *Media) assertInit() error {
 	if m == nil || m.media == nil {
 		return ErrMediaNotInitialized
@@ -658,10 +745,28 @@ func newMedia(path string, local bool) (*Media, error) {
 	return &Media{media: media}, nil
 }
 
+func getMediaReader(id unsafe.Pointer) (io.ReadSeeker, error) {
+	if err := inst.assertInit(); err != nil {
+		return nil, err
+	}
+
+	obj, ok := inst.objects.get(objectID(uintptr(id)))
+	if !ok {
+		return nil, ErrMediaNotInitialized
+	}
+
+	r, ok := obj.(io.ReadSeeker)
+	if !ok || r == nil {
+		return nil, ErrMediaNotInitialized
+	}
+
+	return r, nil
+}
+
 //export mediaBufferOpenCB
 func mediaBufferOpenCB(id unsafe.Pointer, userData *unsafe.Pointer, size *C.uint64_t) C.int {
 	// Get media reader.
-	r, err := getMediaBuffer(id)
+	r, err := getMediaReader(id)
 	if err != nil {
 		return -1
 	}
@@ -686,7 +791,7 @@ func mediaBufferOpenCB(id unsafe.Pointer, userData *unsafe.Pointer, size *C.uint
 //export mediaBufferReadCB
 func mediaBufferReadCB(id unsafe.Pointer, dst *C.uchar, size C.size_t) C.ssize_t {
 	// Get media reader.
-	r, err := getMediaBuffer(id)
+	r, err := getMediaReader(id)
 	if err != nil {
 		return -1
 	}
@@ -712,7 +817,7 @@ func mediaBufferReadCB(id unsafe.Pointer, dst *C.uchar, size C.size_t) C.ssize_t
 //export mediaBufferSeekCB
 func mediaBufferSeekCB(id unsafe.Pointer, offset C.uint64_t) C.int {
 	// Get media reader.
-	r, err := getMediaBuffer(id)
+	r, err := getMediaReader(id)
 	if err != nil {
 		return -1
 	}
@@ -727,23 +832,4 @@ func mediaBufferSeekCB(id unsafe.Pointer, offset C.uint64_t) C.int {
 
 //export mediaBufferCloseCB
 func mediaBufferCloseCB(id unsafe.Pointer) {
-	inst.events.remove(EventID(uintptr(id)))
-}
-
-func getMediaBuffer(id unsafe.Pointer) (io.ReadSeeker, error) {
-	if err := inst.assertInit(); err != nil {
-		return nil, err
-	}
-
-	ctx, ok := inst.events.get(EventID(uintptr(id)))
-	if !ok {
-		return nil, ErrMediaNotInitialized
-	}
-
-	r, ok := ctx.userData.(io.ReadSeeker)
-	if !ok || r == nil {
-		return nil, ErrMediaNotInitialized
-	}
-
-	return r, nil
 }

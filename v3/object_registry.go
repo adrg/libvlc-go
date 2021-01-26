@@ -22,7 +22,7 @@ func newObjectRegistry() *objectRegistry {
 	}
 }
 
-func (or *objectRegistry) get(id objectID) (*objectContext, bool) {
+func (or *objectRegistry) get(id objectID) (interface{}, bool) {
 	if id == 0 {
 		return nil, false
 	}
@@ -31,7 +31,7 @@ func (or *objectRegistry) get(id objectID) (*objectContext, bool) {
 	defer or.RUnlock()
 
 	ctx, ok := or.contexts[id]
-	return ctx, ok
+	return ctx.data, ok
 }
 
 func (or *objectRegistry) add(data interface{}) objectID {
