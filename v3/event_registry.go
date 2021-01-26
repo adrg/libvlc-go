@@ -28,6 +28,13 @@ func newEventRegistry() *eventRegistry {
 }
 
 func (er *eventRegistry) get(id EventID) (*eventContext, bool) {
+	if id == 0 {
+		return nil, false
+	}
+
+	er.RLock()
+	defer er.RUnlock()
+
 	ctx, ok := er.contexts[id]
 	return ctx, ok
 }
@@ -47,6 +54,10 @@ func (er *eventRegistry) add(event Event, callback EventCallback, userData inter
 }
 
 func (er *eventRegistry) remove(id EventID) {
+	if id == 0 {
+		return
+	}
+
 	er.Lock()
 	delete(er.contexts, id)
 	er.Unlock()
