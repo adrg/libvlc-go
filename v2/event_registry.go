@@ -33,24 +33,26 @@ func (er *eventRegistry) get(id EventID) (*eventContext, bool) {
 	}
 
 	er.RLock()
-	defer er.RUnlock()
-
 	ctx, ok := er.contexts[id]
+	er.RUnlock()
+
 	return ctx, ok
 }
 
 func (er *eventRegistry) add(event Event, callback EventCallback, userData interface{}) EventID {
 	er.Lock()
-	defer er.Unlock()
 
 	er.sequence++
-	er.contexts[er.sequence] = &eventContext{
+	id := er.sequence
+
+	er.contexts[id] = &eventContext{
 		event:    event,
 		callback: callback,
 		userData: userData,
 	}
 
-	return er.sequence
+	er.Unlock()
+	return id
 }
 
 func (er *eventRegistry) remove(id EventID) {

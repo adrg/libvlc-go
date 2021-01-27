@@ -215,9 +215,7 @@ func (m *Media) Release() error {
 		return nil
 	}
 
-	C.libvlc_media_release(m.media)
-	m.media = nil
-
+	m.release()
 	return getError()
 }
 
@@ -465,6 +463,12 @@ func (m *Media) addOption(option string) error {
 
 	C.libvlc_media_add_option(m.media, cOption)
 	return getError()
+}
+
+func (m *Media) release() {
+	// Delete media.
+	C.libvlc_media_release(m.media)
+	m.media = nil
 }
 
 func (m *Media) assertInit() error {

@@ -61,9 +61,9 @@ func (ml *MediaList) AddMedia(m *Media) error {
 func (ml *MediaList) AddMediaFromPath(path string) error {
 	media, err := NewMediaFromPath(path)
 	if err != nil {
-
 		return err
 	}
+
 	if err := ml.AddMedia(media); err != nil {
 		media.release()
 		return err

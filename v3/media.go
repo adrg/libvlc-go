@@ -327,6 +327,9 @@ func (m *Media) Release() error {
 // NOTE: Call the Release method on the returned media in order to free
 // the allocated resources.
 func (m *Media) Duplicate() (*Media, error) {
+	if err := inst.assertInit(); err != nil {
+		return nil, err
+	}
 	if err := m.assertInit(); err != nil {
 		return nil, err
 	}
@@ -691,9 +694,6 @@ func (m *Media) release() {
 }
 
 func (m *Media) assertInit() error {
-	if err := inst.assertInit(); err != nil {
-		return err
-	}
 	if m == nil || m.media == nil {
 		return ErrMediaNotInitialized
 	}
