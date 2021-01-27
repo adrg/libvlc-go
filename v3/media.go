@@ -25,7 +25,6 @@ static inline libvlc_media_close_cb media_close_cb_wrapper() {
 }
 */
 import "C"
-
 import (
 	"fmt"
 	"io"
@@ -253,22 +252,16 @@ func NewMediaFromReadSeeker(r io.ReadSeeker) (*Media, error) {
 		C.media_read_cb_wrapper(),
 		C.media_seek_cb_wrapper(),
 		C.media_close_cb_wrapper(),
-		unsafe.Pointer(uintptr(readerID)),
+		readerID,
 	)
 	if cMedia == nil {
 		inst.objects.decRefs(readerID)
 		return nil, errOrDefault(getError(), ErrMediaCreate)
 	}
-	m := &Media{media: cMedia}
 
 	// Set user data.
-	if _, err := m.setUserData(&mediaData{
-		readerID: readerID,
-	}); err != nil {
-		inst.objects.decRefs(readerID)
-		_ = m.Release()
-		return nil, err
-	}
+	m := &Media{media: cMedia}
+	m.setUserData(&mediaData{readerID: readerID})
 
 	return m, nil
 }
@@ -326,15 +319,7 @@ func (m *Media) Release() error {
 		return nil
 	}
 
-	// Delete user data.
-	if err := m.deleteUserData(); err != nil {
-		return err
-	}
-
-	// Delete media.
-	C.libvlc_media_release(m.media)
-	m.media = nil
-
+	m.release()
 	return getError()
 }
 
@@ -351,16 +336,12 @@ func (m *Media) Duplicate() (*Media, error) {
 	if cMedia == nil {
 		return nil, errOrDefault(getError(), ErrMediaCreate)
 	}
-	dup := &Media{media: cMedia}
 
 	// Duplicate user data.
-	if _, data, err := m.getUserData(); err == nil && data != nil {
+	dup := &Media{media: cMedia}
+	if _, data := m.getUserData(); data != nil {
 		dupData := *data
-		if _, err := dup.setUserData(&dupData); err != nil {
-			_ = dup.Release()
-			return nil, err
-		}
-
+		dup.setUserData(&dupData)
 		inst.objects.incRefs(dupData.readerID)
 	}
 
@@ -665,53 +646,54 @@ func (m *Media) addOption(option string) error {
 	return getError()
 }
 
-func (m *Media) getUserData() (objectID, *mediaData, error) {
-	if err := inst.assertInit(); err != nil {
-		return 0, nil, err
-	}
-	if err := m.assertInit(); err != nil {
-		return 0, nil, err
-	}
-
-	id := objectID(uintptr(C.libvlc_media_get_user_data(m.media)))
-	if id == 0 {
-		return 0, nil, nil
+func (m *Media) getUserData() (objectID, *mediaData) {
+	id := objectID(C.libvlc_media_get_user_data(m.media))
+	if id == nil {
+		return nil, nil
 	}
 
 	obj, ok := inst.objects.get(id)
 	if !ok {
-		return 0, nil, nil
+		return nil, nil
 	}
 
-	data, _ := obj.(*mediaData)
-	return id, data, nil
+	data, ok := obj.(*mediaData)
+	if !ok {
+		return nil, nil
+	}
+
+	return id, data
 }
 
-func (m *Media) setUserData(data *mediaData) (objectID, error) {
-	if err := inst.assertInit(); err != nil {
-		return 0, err
-	}
-	if err := m.assertInit(); err != nil {
-		return 0, err
-	}
-
+func (m *Media) setUserData(data *mediaData) objectID {
 	id := inst.objects.add(data)
-	C.libvlc_media_set_user_data(m.media, unsafe.Pointer(uintptr(id)))
-	return id, nil
+	C.libvlc_media_set_user_data(m.media, id)
+	return id
 }
 
-func (m *Media) deleteUserData() error {
-	id, data, err := m.getUserData()
-	if err != nil || data == nil {
-		return err
+func (m *Media) deleteUserData() {
+	id, data := m.getUserData()
+	if data == nil {
+		return
 	}
 
 	inst.objects.decRefs(data.readerID)
 	inst.objects.decRefs(id)
-	return nil
+}
+
+func (m *Media) release() {
+	// Delete user data.
+	m.deleteUserData()
+
+	// Delete media.
+	C.libvlc_media_release(m.media)
+	m.media = nil
 }
 
 func (m *Media) assertInit() error {
+	if err := inst.assertInit(); err != nil {
+		return err
+	}
 	if m == nil || m.media == nil {
 		return ErrMediaNotInitialized
 	}
@@ -745,12 +727,12 @@ func newMedia(path string, local bool) (*Media, error) {
 	return &Media{media: media}, nil
 }
 
-func getMediaReader(id unsafe.Pointer) (io.ReadSeeker, error) {
+func getMediaReader(id objectID) (io.ReadSeeker, error) {
 	if err := inst.assertInit(); err != nil {
 		return nil, err
 	}
 
-	obj, ok := inst.objects.get(objectID(uintptr(id)))
+	obj, ok := inst.objects.get(id)
 	if !ok {
 		return nil, ErrMediaNotInitialized
 	}

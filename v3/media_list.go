@@ -41,6 +41,7 @@ func (ml *MediaList) AddMedia(m *Media) error {
 	if err := m.assertInit(); err != nil {
 		return err
 	}
+
 	if err := ml.Lock(); err != nil {
 		return err
 	}
@@ -60,10 +61,15 @@ func (ml *MediaList) AddMedia(m *Media) error {
 func (ml *MediaList) AddMediaFromPath(path string) error {
 	media, err := NewMediaFromPath(path)
 	if err != nil {
+
+		return err
+	}
+	if err := ml.AddMedia(media); err != nil {
+		media.release()
 		return err
 	}
 
-	return ml.AddMedia(media)
+	return nil
 }
 
 // AddMediaFromURL loads the media file at the specified URL and adds it at
@@ -74,7 +80,12 @@ func (ml *MediaList) AddMediaFromURL(url string) error {
 		return err
 	}
 
-	return ml.AddMedia(media)
+	if err := ml.AddMedia(media); err != nil {
+		media.release()
+		return err
+	}
+
+	return nil
 }
 
 // AddMediaFromReadSeeker loads the media from the provided read
@@ -85,7 +96,12 @@ func (ml *MediaList) AddMediaFromReadSeeker(r io.ReadSeeker) error {
 		return err
 	}
 
-	return ml.AddMedia(media)
+	if err := ml.AddMedia(media); err != nil {
+		media.release()
+		return err
+	}
+
+	return nil
 }
 
 // InsertMedia inserts the provided Media instance in the list,
@@ -94,6 +110,7 @@ func (ml *MediaList) InsertMedia(m *Media, index uint) error {
 	if err := m.assertInit(); err != nil {
 		return err
 	}
+
 	if err := ml.Lock(); err != nil {
 		return err
 	}
@@ -116,7 +133,12 @@ func (ml *MediaList) InsertMediaFromPath(path string, index uint) error {
 		return err
 	}
 
-	return ml.InsertMedia(media, index)
+	if err := ml.InsertMedia(media, index); err != nil {
+		media.release()
+		return err
+	}
+
+	return nil
 }
 
 // InsertMediaFromURL loads the media file at the provided URL and inserts
@@ -127,7 +149,12 @@ func (ml *MediaList) InsertMediaFromURL(url string, index uint) error {
 		return err
 	}
 
-	return ml.InsertMedia(media, index)
+	if err := ml.InsertMedia(media, index); err != nil {
+		media.release()
+		return err
+	}
+
+	return nil
 }
 
 // InsertMediaFromReadSeeker loads the media from the provided read
@@ -138,7 +165,12 @@ func (ml *MediaList) InsertMediaFromReadSeeker(r io.ReadSeeker, index uint) erro
 		return err
 	}
 
-	return ml.InsertMedia(media, index)
+	if err := ml.InsertMedia(media, index); err != nil {
+		media.release()
+		return err
+	}
+
+	return nil
 }
 
 // RemoveMediaAtIndex removes the media item at the specified index
@@ -188,6 +220,7 @@ func (ml *MediaList) IndexOfMedia(m *Media) (int, error) {
 	if err := m.assertInit(); err != nil {
 		return 0, err
 	}
+
 	if err := ml.Lock(); err != nil {
 		return 0, err
 	}
