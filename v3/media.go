@@ -767,8 +767,8 @@ func getMediaReadSeeker(id objectID) (io.ReadSeeker, error) {
 		return nil, ErrMediaNotInitialized
 	}
 
-	r, ok := obj.(io.ReadSeeker)
-	if !ok || r == nil {
+	r, _ := obj.(io.ReadSeeker)
+	if r == nil {
 		return nil, ErrMediaNotInitialized
 	}
 
@@ -780,7 +780,7 @@ func mediaBufferOpenCB(id unsafe.Pointer, userData *unsafe.Pointer, size *C.uint
 	// Get media reader.
 	r, err := getMediaReadSeeker(id)
 	if err != nil {
-		return -1
+		return 1
 	}
 
 	// Get reader size.
@@ -791,7 +791,7 @@ func mediaBufferOpenCB(id unsafe.Pointer, userData *unsafe.Pointer, size *C.uint
 
 	// Rewind reader.
 	if _, err := r.Seek(0, io.SeekStart); err != nil {
-		return -1
+		return 1
 	}
 
 	// Initialize callback data.
