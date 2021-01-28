@@ -10,8 +10,9 @@ import (
 )
 
 type instance struct {
-	handle *C.libvlc_instance_t
-	events *eventRegistry
+	handle  *C.libvlc_instance_t
+	events  *eventRegistry
+	objects *objectRegistry
 }
 
 func (i *instance) assertInit() error {
@@ -50,8 +51,9 @@ func Init(args ...string) error {
 	}
 
 	inst = &instance{
-		handle: handle,
-		events: newEventRegistry(),
+		handle:  handle,
+		events:  newEventRegistry(),
+		objects: newObjectRegistry(),
 	}
 
 	return nil

@@ -61,7 +61,7 @@ const (
 
 // Validate checks if the media metadata key is valid.
 func (mt MediaMetaKey) Validate() error {
-	if mt < MediaTitle || mt > MediaDiscTotal {
+	if mt > MediaDiscTotal {
 		return fmt.Errorf("invalid media meta key: %d", mt)
 	}
 
@@ -145,22 +145,28 @@ type MediaScreenOptions struct {
 	FragmentSize int
 }
 
+type mediaData struct {
+	userData interface{}
+}
+
 // Media is an abstract representation of a playable media file.
 type Media struct {
 	media *C.libvlc_media_t
 }
 
-// NewMediaFromPath creates a Media instance from the provided path.
+// NewMediaFromPath creates a new media instance based on the media
+// located at the specified path.
 func NewMediaFromPath(path string) (*Media, error) {
 	return newMedia(path, true)
 }
 
-// NewMediaFromURL creates a Media instance from the provided URL.
+// NewMediaFromURL creates a new media instance based on the media
+// located at the specified URL.
 func NewMediaFromURL(url string) (*Media, error) {
 	return newMedia(url, false)
 }
 
-// NewMediaFromScreen creates a Media instance from the current computer
+// NewMediaFromScreen creates a media instance from the current computer
 // screen, using the specified options.
 // NOTE: This functionality requires the VLC screen module to be installed.
 // See installation instructions at https://github.com/adrg/libvlc-go/wiki.
@@ -191,7 +197,7 @@ func NewMediaFromScreen(opts *MediaScreenOptions) (*Media, error) {
 		mediaOpts = append(mediaOpts, fmt.Sprintf(":screen-fps=%f", opts.FPS))
 	}
 	if opts.FollowMouse {
-		mediaOpts = append(mediaOpts, fmt.Sprintf(":screen-follow-mouse"))
+		mediaOpts = append(mediaOpts, ":screen-follow-mouse")
 	}
 	if opts.FragmentSize > 0 {
 		mediaOpts = append(mediaOpts, fmt.Sprintf(":screen-fragment-size=%d", opts.FragmentSize))
@@ -213,9 +219,7 @@ func (m *Media) Release() error {
 		return nil
 	}
 
-	C.libvlc_media_release(m.media)
-	m.media = nil
-
+	m.release()
 	return getError()
 }
 
@@ -227,12 +231,20 @@ func (m *Media) Duplicate() (*Media, error) {
 		return nil, err
 	}
 
-	media := C.libvlc_media_duplicate(m.media)
-	if media == nil {
+	// Duplicate media.
+	cMedia := C.libvlc_media_duplicate(m.media)
+	if cMedia == nil {
 		return nil, errOrDefault(getError(), ErrMediaCreate)
 	}
 
-	return &Media{media: media}, nil
+	// Duplicate user data.
+	dup := &Media{media: cMedia}
+	if _, data := m.getUserData(); data != nil {
+		dupData := *data
+		dup.setUserData(&dupData)
+	}
+
+	return dup, nil
 }
 
 // AddOptions adds the specified options to the media. The specified options
@@ -258,8 +270,7 @@ func (m *Media) State() (MediaState, error) {
 		return 0, err
 	}
 
-	state := int(C.libvlc_media_get_state(m.media))
-	return MediaState(state), getError()
+	return MediaState(C.libvlc_media_get_state(m.media)), getError()
 }
 
 // Stats returns playback statistics for the media.
@@ -440,6 +451,39 @@ func (m *Media) Tracks() ([]*MediaTrack, error) {
 	return tracks, nil
 }
 
+// UserData returns the user data associated with the media instance.
+// NOTE: the method returns `nil` if no user data is found.
+func (m *Media) UserData() (interface{}, error) {
+	if err := m.assertInit(); err != nil {
+		return nil, err
+	}
+
+	// Retrieve user data.
+	_, md := m.getUserData()
+	if md == nil {
+		return nil, nil
+	}
+
+	return md.userData, nil
+}
+
+// SetUserData associates the passed in user data with the media instance.
+// The data can be retrieved by using the UserData method.
+func (m *Media) SetUserData(userData interface{}) error {
+	if err := m.assertInit(); err != nil {
+		return err
+	}
+
+	// Set or update user data.
+	if _, md := m.getUserData(); md != nil {
+		md.userData = userData
+	} else {
+		m.setUserData(&mediaData{userData: userData})
+	}
+
+	return nil
+}
+
 // EventManager returns the event manager responsible for the media.
 func (m *Media) EventManager() (*EventManager, error) {
 	if err := m.assertInit(); err != nil {
@@ -464,6 +508,49 @@ func (m *Media) addOption(option string) error {
 
 	C.libvlc_media_add_option(m.media, cOption)
 	return getError()
+}
+
+func (m *Media) getUserData() (objectID, *mediaData) {
+	if err := inst.assertInit(); err != nil {
+		return nil, nil
+	}
+	id := objectID(C.libvlc_media_get_user_data(m.media))
+
+	obj, ok := inst.objects.get(id)
+	if !ok {
+		return nil, nil
+	}
+
+	data, ok := obj.(*mediaData)
+	if !ok {
+		return nil, nil
+	}
+
+	return id, data
+}
+
+func (m *Media) setUserData(data *mediaData) objectID {
+	id := inst.objects.add(data)
+	C.libvlc_media_set_user_data(m.media, id)
+	return id
+}
+
+func (m *Media) deleteUserData() {
+	id, data := m.getUserData()
+	if data == nil {
+		return
+	}
+
+	inst.objects.decRefs(id)
+}
+
+func (m *Media) release() {
+	// Delete user data.
+	m.deleteUserData()
+
+	// Delete media.
+	C.libvlc_media_release(m.media)
+	m.media = nil
 }
 
 func (m *Media) assertInit() error {
