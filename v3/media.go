@@ -327,9 +327,6 @@ func (m *Media) Release() error {
 // NOTE: Call the Release method on the returned media in order to free
 // the allocated resources.
 func (m *Media) Duplicate() (*Media, error) {
-	if err := inst.assertInit(); err != nil {
-		return nil, err
-	}
 	if err := m.assertInit(); err != nil {
 		return nil, err
 	}
@@ -626,9 +623,6 @@ func (m *Media) Tracks() ([]*MediaTrack, error) {
 // UserData returns the user data associated with the media instance.
 // NOTE: the method returns `nil` if no user data is found.
 func (m *Media) UserData() (interface{}, error) {
-	if err := inst.assertInit(); err != nil {
-		return nil, err
-	}
 	if err := m.assertInit(); err != nil {
 		return nil, err
 	}
@@ -645,9 +639,6 @@ func (m *Media) UserData() (interface{}, error) {
 // SetUserData associates the passed in user data with the media instance.
 // The data can be retrieved by using the UserData method.
 func (m *Media) SetUserData(userData interface{}) error {
-	if err := inst.assertInit(); err != nil {
-		return err
-	}
 	if err := m.assertInit(); err != nil {
 		return err
 	}
@@ -689,10 +680,10 @@ func (m *Media) addOption(option string) error {
 }
 
 func (m *Media) getUserData() (objectID, *mediaData) {
-	id := objectID(C.libvlc_media_get_user_data(m.media))
-	if id == nil {
+	if err := inst.assertInit(); err != nil {
 		return nil, nil
 	}
+	id := objectID(C.libvlc_media_get_user_data(m.media))
 
 	obj, ok := inst.objects.get(id)
 	if !ok {
