@@ -74,6 +74,14 @@ type MediaTrack struct {
 	Subtitle *MediaSubtitleTrack
 }
 
+func (mt *MediaTrack) assertInit() error {
+	if mt == nil {
+		return ErrMediaTrackNotInitialized
+	}
+
+	return nil
+}
+
 func parseMediaTrack(cTrack *C.libvlc_media_track_t) (*MediaTrack, error) {
 	if cTrack == nil {
 		return nil, ErrMediaTrackNotInitialized
