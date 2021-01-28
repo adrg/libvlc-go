@@ -6,10 +6,10 @@ package vlc
 #include <stdlib.h>
 #include <string.h>
 
-extern int mediaBufferOpenCB(void *opaque, void **datap, uint64_t *sizep);
-extern ssize_t mediaBufferReadCB(void *opaque, unsigned char *buf, size_t len);
-extern int mediaBufferSeekCB(void *opaque, uint64_t offset);
-extern void mediaBufferCloseCB(void *opaque);
+extern int mediaBufferOpenCB(void* opaque, void** datap, uint64_t* sizep);
+extern ssize_t mediaBufferReadCB(void* opaque, unsigned char* buf, size_t len);
+extern int mediaBufferSeekCB(void* opaque, uint64_t offset);
+extern void mediaBufferCloseCB(void* opaque);
 
 static inline libvlc_media_open_cb media_open_cb_wrapper() {
 	return mediaBufferOpenCB;
@@ -623,6 +623,45 @@ func (m *Media) Tracks() ([]*MediaTrack, error) {
 	return tracks, nil
 }
 
+// UserData returns the user data associated with the media instance.
+// NOTE: the method returns `nil` if no user data is found.
+func (m *Media) UserData() (interface{}, error) {
+	if err := inst.assertInit(); err != nil {
+		return nil, err
+	}
+	if err := m.assertInit(); err != nil {
+		return nil, err
+	}
+
+	// Retrieve user data.
+	_, md := m.getUserData()
+	if md == nil {
+		return nil, nil
+	}
+
+	return md.userData, nil
+}
+
+// SetUserData associates the passed in user data with the media instance.
+// The data can be retrieved by using the UserData method.
+func (m *Media) SetUserData(userData interface{}) error {
+	if err := inst.assertInit(); err != nil {
+		return err
+	}
+	if err := m.assertInit(); err != nil {
+		return err
+	}
+
+	// Set or update user data.
+	if _, md := m.getUserData(); md != nil {
+		md.userData = userData
+	} else {
+		m.setUserData(&mediaData{userData: userData})
+	}
+
+	return nil
+}
+
 // EventManager returns the event manager responsible for the media.
 func (m *Media) EventManager() (*EventManager, error) {
 	if err := m.assertInit(); err != nil {
@@ -727,7 +766,7 @@ func newMedia(path string, local bool) (*Media, error) {
 	return &Media{media: media}, nil
 }
 
-func getMediaReader(id objectID) (io.ReadSeeker, error) {
+func getMediaReadSeeker(id objectID) (io.ReadSeeker, error) {
 	if err := inst.assertInit(); err != nil {
 		return nil, err
 	}
@@ -748,14 +787,14 @@ func getMediaReader(id objectID) (io.ReadSeeker, error) {
 //export mediaBufferOpenCB
 func mediaBufferOpenCB(id unsafe.Pointer, userData *unsafe.Pointer, size *C.uint64_t) C.int {
 	// Get media reader.
-	r, err := getMediaReader(id)
+	r, err := getMediaReadSeeker(id)
 	if err != nil {
 		return -1
 	}
 
 	// Get reader size.
 	var offset uint64 = math.MaxUint64
-	if offsetEnd, err := r.Seek(0, io.SeekEnd); err != nil {
+	if offsetEnd, err := r.Seek(0, io.SeekEnd); err == nil {
 		offset = uint64(offsetEnd)
 	}
 
@@ -771,9 +810,9 @@ func mediaBufferOpenCB(id unsafe.Pointer, userData *unsafe.Pointer, size *C.uint
 }
 
 //export mediaBufferReadCB
-func mediaBufferReadCB(id unsafe.Pointer, dst *C.uchar, size C.size_t) C.ssize_t {
+func mediaBufferReadCB(id unsafe.Pointer, buf *C.uchar, size C.size_t) C.ssize_t {
 	// Get media reader.
-	r, err := getMediaReader(id)
+	r, err := getMediaReadSeeker(id)
 	if err != nil {
 		return -1
 	}
@@ -790,7 +829,7 @@ func mediaBufferReadCB(id unsafe.Pointer, dst *C.uchar, size C.size_t) C.ssize_t
 
 	// Copy data to buffer.
 	if read > 0 {
-		C.memcpy(unsafe.Pointer(dst), unsafe.Pointer(&b[0]), C.size_t(read))
+		C.memcpy(unsafe.Pointer(buf), unsafe.Pointer(&b[0]), C.size_t(read))
 	}
 
 	return C.ssize_t(read)
@@ -799,7 +838,7 @@ func mediaBufferReadCB(id unsafe.Pointer, dst *C.uchar, size C.size_t) C.ssize_t
 //export mediaBufferSeekCB
 func mediaBufferSeekCB(id unsafe.Pointer, offset C.uint64_t) C.int {
 	// Get media reader.
-	r, err := getMediaReader(id)
+	r, err := getMediaReadSeeker(id)
 	if err != nil {
 		return -1
 	}
