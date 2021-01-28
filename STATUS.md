@@ -209,8 +209,8 @@ Reference: [libVLC media list player](https://www.videolan.org/developers/vlc/do
 | ☒ | libvlc_media_parse_with_options        | Media.ParseWithOptions      | `v3`       |
 | ☒ | libvlc_media_parse_stop                | Media.StopParse             | `v3`       |
 | ☒ | libvlc_media_get_parsed_status         | Media.ParseStatus           | `v3`       |
-| ☐ | libvlc_media_set_user_data             |                             | `v2`, `v3` |
-| ☐ | libvlc_media_get_user_data             |                             | `v2`, `v3` |
+| ☒ | libvlc_media_set_user_data             | Media.UserData              | `v2`, `v3` |
+| ☒ | libvlc_media_get_user_data             | Media.SetUserData           | `v2`, `v3` |
 | ☒ | libvlc_media_tracks_get                | Media.Tracks                | `v2`, `v3` |
 | ☒ | libvlc_media_get_codec_description     | MediaTrack.CodecDescription | `v3`       |
 | ☒ | libvlc_media_get_type                  | Media.Type                  | `v3`       |
