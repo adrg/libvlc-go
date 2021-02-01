@@ -4,8 +4,7 @@ package vlc
 #cgo LDFLAGS: -lvlc
 #include <vlc/vlc.h>
 
-typedef const struct libvlc_event_t* clibvlc_event_t;
-extern void eventDispatch(clibvlc_event_t, void*);
+extern void eventDispatch(libvlc_event_t*, void*);
 
 static inline int eventAttach(libvlc_event_manager_t* em, libvlc_event_type_t et, unsigned long userData) {
     return libvlc_event_attach(em, et, eventDispatch, (void*)userData);
@@ -34,11 +33,17 @@ func newEventManager(manager *C.libvlc_event_manager_t) *EventManager {
 
 // Attach registers a callback for an event notification.
 func (em *EventManager) Attach(event Event, callback EventCallback, userData interface{}) (EventID, error) {
-	if callback == nil {
+	return em.attach(event, callback, nil, userData)
+}
+
+// attach registers callbacks for an event notification.
+func (em *EventManager) attach(event Event, externalCallback EventCallback,
+	internalCallback internalEventCallback, userData interface{}) (EventID, error) {
+	if externalCallback == nil && internalCallback == nil {
 		return 0, ErrInvalidEventCallback
 	}
 
-	id := inst.events.add(event, callback, userData)
+	id := inst.events.add(event, externalCallback, internalCallback, userData)
 	if C.eventAttach(em.manager, C.libvlc_event_type_t(event), C.ulong(id)) != 0 {
 		return 0, getError()
 	}
@@ -58,14 +63,19 @@ func (em *EventManager) Detach(eventID EventID) {
 }
 
 //export eventDispatch
-func eventDispatch(event C.clibvlc_event_t, userData unsafe.Pointer) {
+func eventDispatch(event *C.libvlc_event_t, userData unsafe.Pointer) {
 	ctx, ok := inst.events.get(EventID(uintptr(userData)))
 	if !ok {
 		return
 	}
-	if ctx.callback == nil {
-		return
+
+	// Execute external callback.
+	if ctx.externalCallback != nil {
+		ctx.externalCallback(ctx.event, ctx.userData)
 	}
 
-	ctx.callback(ctx.event, ctx.userData)
+	// Execuute external callback.
+	if ctx.internalCallback != nil {
+		ctx.internalCallback(event, ctx.userData)
+	}
 }
