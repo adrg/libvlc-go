@@ -13,6 +13,7 @@ var (
 var (
 	ErrPlayerCreate             = errors.New("could not create player")
 	ErrPlayerNotInitialized     = errors.New("player not initialized")
+	ErrPlayerSetRenderer        = errors.New("could not set player renderer")
 	ErrListPlayerCreate         = errors.New("could not create list player")
 	ErrListPlayerNotInitialized = errors.New("list player not initialized")
 )
@@ -43,4 +44,13 @@ var (
 var (
 	ErrAudioOutputListMissing = errors.New("could not get audio output list")
 	ErrFilterListMissing      = errors.New("could not get filter list")
+)
+
+// Renderer discoverer errors.
+var (
+	ErrRendererDiscovererParse          = errors.New("could not parse renderer discoverer")
+	ErrRendererDiscovererCreate         = errors.New("could not create renderer discoverer")
+	ErrRendererDiscovererNotInitialized = errors.New("renderer discoverer not initialized")
+	ErrRendererDiscovererStart          = errors.New("could not start renderer discoverer")
+	ErrRendererNotInitialized           = errors.New("renderer not initialized")
 )
