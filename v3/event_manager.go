@@ -39,6 +39,9 @@ func (em *EventManager) Attach(event Event, callback EventCallback, userData int
 // attach registers callbacks for an event notification.
 func (em *EventManager) attach(event Event, externalCallback EventCallback,
 	internalCallback internalEventCallback, userData interface{}) (EventID, error) {
+	if err := inst.assertInit(); err != nil {
+		return 0, err
+	}
 	if externalCallback == nil && internalCallback == nil {
 		return 0, ErrInvalidEventCallback
 	}
@@ -52,18 +55,28 @@ func (em *EventManager) attach(event Event, externalCallback EventCallback,
 }
 
 // Detach unregisters the specified event notification.
-func (em *EventManager) Detach(eventID EventID) {
-	ctx, ok := inst.events.get(eventID)
-	if !ok {
+func (em *EventManager) Detach(eventIDs ...EventID) {
+	if err := inst.assertInit(); err != nil {
 		return
 	}
 
-	inst.events.remove(eventID)
-	C.eventDetach(em.manager, C.libvlc_event_type_t(ctx.event), C.ulong(eventID))
+	for _, eventID := range eventIDs {
+		ctx, ok := inst.events.get(eventID)
+		if !ok {
+			continue
+		}
+
+		inst.events.remove(eventID)
+		C.eventDetach(em.manager, C.libvlc_event_type_t(ctx.event), C.ulong(eventID))
+	}
 }
 
 //export eventDispatch
 func eventDispatch(event *C.libvlc_event_t, userData unsafe.Pointer) {
+	if err := inst.assertInit(); err != nil {
+		return
+	}
+
 	ctx, ok := inst.events.get(EventID(uintptr(userData)))
 	if !ok {
 		return
