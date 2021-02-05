@@ -87,7 +87,7 @@ func eventDispatch(event *C.libvlc_event_t, userData unsafe.Pointer) {
 		ctx.externalCallback(ctx.event, ctx.userData)
 	}
 
-	// Execuute external callback.
+	// Execuute internal callback.
 	if ctx.internalCallback != nil {
 		ctx.internalCallback(event, ctx.userData)
 	}
