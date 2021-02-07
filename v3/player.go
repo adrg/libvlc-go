@@ -446,6 +446,24 @@ func (p *Player) SetAspectRatio(aspectRatio string) error {
 	return getError()
 }
 
+// SetRenderer sets a renderer for the player media (e.g. Chromecast).
+// NOTE: this method must be called before starting media playback in order
+// to take effect.
+func (p *Player) SetRenderer(r *Renderer) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+	if err := r.assertInit(); err != nil {
+		return err
+	}
+
+	if C.libvlc_media_player_set_renderer(p.player, r.renderer) < 0 {
+		return errOrDefault(getError(), ErrPlayerSetRenderer)
+	}
+
+	return nil
+}
+
 // XWindow returns the identifier of the X window the media player is
 // configured to render its video output to, or 0 if no window is set.
 // The window can be set using the SetXWindow method.

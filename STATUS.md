@@ -31,7 +31,7 @@ Reference: [libVLC core](https://www.videolan.org/developers/vlc/doc/doxygen/htm
 | ☒ | libvlc_media_player_set_pause                   | Player.SetPause            | `v2`, `v3` |
 | ☒ | libvlc_media_player_pause                       | Player.TogglePause         | `v2`, `v3` |
 | ☒ | libvlc_media_player_stop                        | Player.Stop                | `v2`, `v3` |
-| ☐ | libvlc_media_player_set_renderer                |                            | `v2`, `v3` |
+| ☒ | libvlc_media_player_set_renderer                | Player.SetRenderer         | `v3`       |
 | ☐ | libvlc_video_set_callbacks                      |                            | `v2`, `v3` |
 | ☐ | libvlc_video_set_format                         |                            | `v2`, `v3` |
 | ☐ | libvlc_video_set_format_callbacks               |                            | `v2`, `v3` |
@@ -253,3 +253,19 @@ Reference: [libVLC media list](https://www.videolan.org/developers/vlc/doc/doxyg
 | ☒ | libvlc_event_detach | EventManager.Detach | `v2`, `v3` |
 
 Reference: [libVLC events](https://www.videolan.org/developers/vlc/doc/doxygen/html/group__libvlc__event.html).
+
+## Renderer discoverer
+
+| ☐ | Binding                                  | Implementation             | Versions   |
+|---|:-----------------------------------------|:---------------------------|:-----------|
+| ☒ | libvlc_renderer_item_name                | Renderer.Name              | `v3`       |
+| ☒ | libvlc_renderer_item_type                | Renderer.Type              | `v3`       |
+| ☒ | libvlc_renderer_item_icon_uri            | Renderer.IconURI           | `v3`       |
+| ☒ | libvlc_renderer_item_flags               | Renderer.Flags             | `v3`       |
+| ☒ | libvlc_renderer_discoverer_new           | vlc.NewRendererDiscoverer  | `v3`       |
+| ☒ | libvlc_renderer_discoverer_release       | RendererDiscoverer.Release | `v3`       |
+| ☒ | libvlc_renderer_discoverer_start         | RendererDiscoverer.Start   | `v3`       |
+| ☒ | libvlc_renderer_discoverer_stop          | RendererDiscoverer.Stop    | `v3`       |
+| ☒ | libvlc_renderer_discoverer_list_get      | ListRendererDiscoverers    | `v3`       |
+
+Reference: [libVLC renderer discoverer](https://www.videolan.org/developers/vlc/doc/doxygen/html/group__libvlc__renderer__discoverer.html).

@@ -424,7 +424,7 @@ func (m *Media) Tracks() ([]*MediaTrack, error) {
 	var cTracks **C.libvlc_media_track_t
 
 	count := int(C.libvlc_media_tracks_get(m.media, &cTracks))
-	if count == 0 || cTracks == nil {
+	if count <= 0 || cTracks == nil {
 		return nil, nil
 	}
 	defer C.libvlc_media_tracks_release(cTracks, C.uint(count))
