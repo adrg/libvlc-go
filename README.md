@@ -96,6 +96,7 @@ However, consider switching to modules.
 * [Retrieve media tracks](https://github.com/adrg/libvlc-go-examples/blob/master/v3/media_tracks/media_tracks.go)
 * [Retrieve media information](https://github.com/adrg/libvlc-go-examples/blob/master/v3/media_information/media_information.go)
 * [Display screen as player media](https://github.com/adrg/libvlc-go-examples/blob/master/v3/display_screen_media/display_screen_media.go)
+* [Stream media to Chromecast](https://github.com/adrg/libvlc-go-examples/blob/master/v3/chromecast_streaming/chromecast_streaming.go)
 
 Examples for the older version of the API can be found [here](https://github.com/adrg/libvlc-go-examples/tree/master/v2).
 
@@ -172,7 +173,7 @@ A list of projects using libvlc-go, in alphabetical order. If you want to
 showcase your project in this section, please create a pull request with it.
 
 - [Alio](https://github.com/fenimore/alio) - Command-line music player with Emacs style key bindings.
-- [Tripbot](https://dana.lol/2020/04/15/tripbot-the-adventure-robot) - An ongoing 24/7 slow-TV art project.
+- [Tripbot](https://github.com/adanalife/tripbot) - An ongoing 24/7 slow-TV art project.
 
 ## Stargazers over time
 
