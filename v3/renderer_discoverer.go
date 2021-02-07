@@ -102,9 +102,7 @@ func (rd *RendererDiscoverer) Release() error {
 	}
 
 	// Stop discovery service.
-	if err := rd.Stop(); err != nil {
-		return err
-	}
+	rd.stop()
 
 	// Release renderers.
 	for _, renderer := range rd.renderers {
@@ -124,9 +122,6 @@ func (rd *RendererDiscoverer) Release() error {
 // NOTE: the Stop and Release methods should not be called from the callback
 // function. Doing so will result in undefined behavior.
 func (rd *RendererDiscoverer) Start(cb RendererDiscoveryCallback) error {
-	if err := rd.assertInit(); err != nil {
-		return err
-	}
 	if cb == nil {
 		return ErrInvalidEventCallback
 	}
@@ -211,12 +206,19 @@ func (rd *RendererDiscoverer) Start(cb RendererDiscoveryCallback) error {
 
 // Stop stops the discovery service.
 func (rd *RendererDiscoverer) Stop() error {
+	if err := rd.assertInit(); err != nil {
+		return err
+	}
+
+	rd.stop()
+	return nil
+}
+
+func (rd *RendererDiscoverer) stop() {
 	if rd.stopFunc != nil {
 		rd.stopFunc()
 		rd.stopFunc = nil
 	}
-
-	return nil
 }
 
 // eventManager returns the event manager responsible for the renderer
