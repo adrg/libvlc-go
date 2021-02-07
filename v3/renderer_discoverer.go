@@ -5,7 +5,6 @@ package vlc
 // #include <stdlib.h>
 import "C"
 import (
-	"sync"
 	"unsafe"
 )
 
@@ -66,12 +65,9 @@ func ListRendererDiscoverers() ([]*RendererDiscovererDescriptor, error) {
 // Discovery services use different discovery protocols (e.g. mDNS)
 // in order to find available media renderers (e.g. Chromecast).
 type RendererDiscoverer struct {
-	sync.Mutex
-
 	discoverer *C.libvlc_renderer_discoverer_t
 	renderers  map[*C.libvlc_renderer_item_t]*Renderer
-	eventIDs   []EventID
-	isRunning  bool
+	stopFunc   func()
 }
 
 // NewRendererDiscoverer instantiates the renderer discovery service
@@ -105,11 +101,8 @@ func (rd *RendererDiscoverer) Release() error {
 		return nil
 	}
 
-	rd.Lock()
-	defer rd.Unlock()
-
 	// Stop discovery service.
-	if err := rd.stop(); err != nil {
+	if err := rd.Stop(); err != nil {
 		return err
 	}
 
@@ -128,17 +121,19 @@ func (rd *RendererDiscoverer) Release() error {
 
 // Start starts the renderer discovery service and reports discovery
 // events through the specified callback function.
+// NOTE: the Stop and Release methods should not be called from the callback
+// function. Doing so will result in undefined behavior.
 func (rd *RendererDiscoverer) Start(cb RendererDiscoveryCallback) error {
 	if err := rd.assertInit(); err != nil {
-		return nil
+		return err
+	}
+	if cb == nil {
+		return ErrInvalidEventCallback
 	}
 
-	rd.Lock()
-	defer rd.Unlock()
-
-	// Check if the discovery service is running.
-	if rd.isRunning {
-		return nil
+	// Stop discovery service, if started.
+	if err := rd.Stop(); err != nil {
+		return err
 	}
 
 	// Retrieve event manager.
@@ -156,9 +151,6 @@ func (rd *RendererDiscoverer) Start(cb RendererDiscoveryCallback) error {
 			return
 		}
 
-		rd.Lock()
-		defer rd.Unlock()
-
 		cRenderer := *(**C.libvlc_renderer_item_t)(unsafe.Pointer(&event.u[0]))
 		if cRenderer == nil {
 			return
@@ -167,8 +159,8 @@ func (rd *RendererDiscoverer) Start(cb RendererDiscoveryCallback) error {
 		renderer, ok := rd.renderers[cRenderer]
 		if !ok {
 			renderer = &Renderer{renderer: cRenderer}
-			rd.renderers[cRenderer] = renderer
 			renderer.hold()
+			rd.renderers[cRenderer] = renderer
 		}
 
 		switch event := Event(event._type); event {
@@ -183,8 +175,7 @@ func (rd *RendererDiscoverer) Start(cb RendererDiscoveryCallback) error {
 
 	// Attach discovery service events.
 	events := []Event{
-		RendererDiscovererItemAdded,
-		RendererDiscovererItemDeleted,
+		RendererDiscovererItemAdded, RendererDiscovererItemDeleted,
 	}
 
 	var eventIDs []EventID
@@ -197,7 +188,7 @@ func (rd *RendererDiscoverer) Start(cb RendererDiscoveryCallback) error {
 		eventIDs = append(eventIDs, eventID)
 	}
 	defer func() {
-		if !rd.isRunning {
+		if rd.stopFunc == nil {
 			manager.Detach(eventIDs...)
 		}
 	}()
@@ -207,41 +198,24 @@ func (rd *RendererDiscoverer) Start(cb RendererDiscoveryCallback) error {
 		return errOrDefault(getError(), ErrRendererDiscovererStart)
 	}
 
-	rd.isRunning = true
-	rd.eventIDs = eventIDs
+	rd.stopFunc = func() {
+		// Detach events.
+		manager.Detach(eventIDs...)
+
+		// Stop discovery service.
+		C.libvlc_renderer_discoverer_start(rd.discoverer)
+	}
+
 	return nil
 }
 
 // Stop stops the discovery service.
 func (rd *RendererDiscoverer) Stop() error {
-	if err := rd.assertInit(); err != nil {
-		return err
+	if rd.stopFunc != nil {
+		rd.stopFunc()
+		rd.stopFunc = nil
 	}
 
-	rd.Lock()
-	defer rd.Unlock()
-	return rd.stop()
-}
-
-func (rd *RendererDiscoverer) stop() error {
-	// Check if the discovery service is stopped.
-	if !rd.isRunning {
-		return nil
-	}
-
-	// Detach events.
-	manager, err := rd.eventManager()
-	if err != nil {
-		return err
-	}
-
-	manager.Detach(rd.eventIDs...)
-	rd.eventIDs = nil
-
-	// Stop discovery service.
-	C.libvlc_renderer_discoverer_stop(rd.discoverer)
-
-	rd.isRunning = false
 	return nil
 }
 
