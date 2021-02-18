@@ -469,7 +469,7 @@ func (p *Player) SetAudioDelay(d time.Duration) error {
 	}
 
 	if C.libvlc_audio_set_delay(p.player, C.int64_t(d.Microseconds())) != 0 {
-		return errOrDefault(getError(), ErrMediaTrackNotInitialized)
+		return errOrDefault(getError(), ErrMissingMediaTrack)
 	}
 
 	return nil
@@ -497,7 +497,7 @@ func (p *Player) SetSubtitleDelay(d time.Duration) error {
 	}
 
 	if C.libvlc_video_set_spu_delay(p.player, C.int64_t(d.Microseconds())) != 0 {
-		return errOrDefault(getError(), ErrMediaTrackNotInitialized)
+		return errOrDefault(getError(), ErrMissingMediaTrack)
 	}
 
 	return nil
@@ -512,7 +512,7 @@ func (p *Player) VideoTrackCount() (int, error) {
 
 	count := int(C.libvlc_video_get_track_count(p.player))
 	if count < 0 {
-		return 0, errOrDefault(getError(), ErrMediaTrackNotInitialized)
+		return 0, errOrDefault(getError(), ErrMediaNotInitialized)
 	}
 
 	return count, nil
@@ -526,7 +526,7 @@ func (p *Player) VideoTrackID() (int, error) {
 
 	id := int(C.libvlc_video_get_track(p.player))
 	if id < 0 {
-		return 0, errOrDefault(getError(), ErrMediaTrackNotInitialized)
+		return 0, errOrDefault(getError(), ErrMissingMediaTrack)
 	}
 
 	return id, nil
@@ -540,7 +540,7 @@ func (p *Player) SetVideoTrack(trackID int) error {
 	}
 
 	if C.libvlc_video_set_track(p.player, C.int(trackID)) != 0 {
-		return errOrDefault(getError(), ErrMediaTrackNotInitialized)
+		return errOrDefault(getError(), ErrInvalidMediaTrack)
 	}
 
 	return nil
@@ -555,7 +555,7 @@ func (p *Player) AudioTrackCount() (int, error) {
 
 	count := int(C.libvlc_audio_get_track_count(p.player))
 	if count < 0 {
-		return 0, errOrDefault(getError(), ErrMediaTrackNotInitialized)
+		return 0, errOrDefault(getError(), ErrMediaNotInitialized)
 	}
 
 	return count, nil
@@ -569,7 +569,7 @@ func (p *Player) AudioTrackID() (int, error) {
 
 	id := int(C.libvlc_audio_get_track(p.player))
 	if id < 0 {
-		return 0, errOrDefault(getError(), ErrMediaTrackNotInitialized)
+		return 0, errOrDefault(getError(), ErrMissingMediaTrack)
 	}
 
 	return id, nil
@@ -583,7 +583,7 @@ func (p *Player) SetAudioTrack(trackID int) error {
 	}
 
 	if C.libvlc_audio_set_track(p.player, C.int(trackID)) != 0 {
-		return errOrDefault(getError(), ErrMediaTrackNotInitialized)
+		return errOrDefault(getError(), ErrInvalidMediaTrack)
 	}
 
 	return nil
@@ -598,7 +598,7 @@ func (p *Player) SubtitleTrackCount() (int, error) {
 
 	count := int(C.libvlc_video_get_spu_count(p.player))
 	if count < 0 {
-		return 0, errOrDefault(getError(), ErrMediaTrackNotInitialized)
+		return 0, errOrDefault(getError(), ErrMediaNotInitialized)
 	}
 
 	return count, nil
@@ -612,7 +612,7 @@ func (p *Player) SubtitleTrackID() (int, error) {
 
 	id := int(C.libvlc_video_get_spu(p.player))
 	if id < 0 {
-		return 0, errOrDefault(getError(), ErrMediaTrackNotInitialized)
+		return 0, errOrDefault(getError(), ErrMissingMediaTrack)
 	}
 
 	return id, nil
@@ -626,7 +626,7 @@ func (p *Player) SetSubtitleTrack(trackID int) error {
 	}
 
 	if C.libvlc_video_set_spu(p.player, C.int(trackID)) != 0 {
-		return errOrDefault(getError(), ErrMediaTrackNotInitialized)
+		return errOrDefault(getError(), ErrInvalidMediaTrack)
 	}
 
 	return nil
