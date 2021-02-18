@@ -5,6 +5,7 @@ package vlc
 // #include <stdlib.h>
 import "C"
 import (
+	"time"
 	"unsafe"
 )
 
@@ -427,6 +428,212 @@ func (p *Player) SetAspectRatio(aspectRatio string) error {
 	C.libvlc_video_set_aspect_ratio(p.player, cAspectRatio)
 	C.free(unsafe.Pointer(cAspectRatio))
 	return getError()
+}
+
+// AudioDelay returns the delay of the current audio track,
+// with microsecond precision.
+func (p *Player) AudioDelay() (time.Duration, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	delay := C.libvlc_audio_get_delay(p.player)
+	return time.Duration(delay) * time.Microsecond, getError()
+}
+
+// SetAudioDelay delays the current audio track according to the
+// specified duration, with microsecond precision.
+// The delay can be either positive (the audio track is played later) or
+// negative (the audio track is played earlier) and it defaults to zero.
+// NOTE: The audio delay is set to zero each time the player media changes.
+func (p *Player) SetAudioDelay(d time.Duration) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	if C.libvlc_audio_set_delay(p.player, C.int64_t(d.Microseconds())) != 0 {
+		return errOrDefault(getError(), ErrMissingMediaTrack)
+	}
+
+	return nil
+}
+
+// SubtitleDelay returns the delay of the current subtitle track,
+// with microsecond precision.
+func (p *Player) SubtitleDelay() (time.Duration, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	delay := C.libvlc_video_get_spu_delay(p.player)
+	return time.Duration(delay) * time.Microsecond, getError()
+}
+
+// SetSubtitleDelay delays the current subtitle track according to the
+// specified duration, with microsecond precision.
+// The delay can be either positive (the subtitle track is displayed later) or
+// negative (the subtitle track is displayed earlier) and it defaults to zero.
+// NOTE: The subtitle delay is set to zero each time the player media changes.
+func (p *Player) SetSubtitleDelay(d time.Duration) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	if C.libvlc_video_set_spu_delay(p.player, C.int64_t(d.Microseconds())) != 0 {
+		return errOrDefault(getError(), ErrMissingMediaTrack)
+	}
+
+	return nil
+}
+
+// VideoTrackCount returns the number of video tracks available
+// in the current media of the player.
+func (p *Player) VideoTrackCount() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	count := int(C.libvlc_video_get_track_count(p.player))
+	if count < 0 {
+		return 0, errOrDefault(getError(), ErrMediaNotInitialized)
+	}
+
+	return count, nil
+}
+
+// VideoTrackDescriptors returns a descriptor list of the available
+// video tracks for the current player media.
+func (p *Player) VideoTrackDescriptors() ([]*MediaTrackDescriptor, error) {
+	if err := p.assertInit(); err != nil {
+		return nil, err
+	}
+
+	cDescriptors := C.libvlc_video_get_track_description(p.player)
+	return parseMediaTrackDescriptorList(cDescriptors)
+}
+
+// VideoTrackID returns the ID of the current video track of the player.
+// NOTE: The method returns -1 if there is no active video track.
+func (p *Player) VideoTrackID() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return int(C.libvlc_video_get_track(p.player)), nil
+}
+
+// SetVideoTrack sets the track identified by the specified ID as the
+// current video track of the player.
+func (p *Player) SetVideoTrack(trackID int) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	if C.libvlc_video_set_track(p.player, C.int(trackID)) != 0 {
+		return errOrDefault(getError(), ErrInvalidMediaTrack)
+	}
+
+	return nil
+}
+
+// AudioTrackCount returns the number of audio tracks available
+// in the current media of the player.
+func (p *Player) AudioTrackCount() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	count := int(C.libvlc_audio_get_track_count(p.player))
+	if count < 0 {
+		return 0, errOrDefault(getError(), ErrMediaNotInitialized)
+	}
+
+	return count, nil
+}
+
+// AudioTrackDescriptors returns a descriptor list of the available
+// audio tracks for the current player media.
+func (p *Player) AudioTrackDescriptors() ([]*MediaTrackDescriptor, error) {
+	if err := p.assertInit(); err != nil {
+		return nil, err
+	}
+
+	cDescriptors := C.libvlc_audio_get_track_description(p.player)
+	return parseMediaTrackDescriptorList(cDescriptors)
+}
+
+// AudioTrackID returns the ID of the current audio track of the player.
+// NOTE: The method returns -1 if there is no active audio track.
+func (p *Player) AudioTrackID() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return int(C.libvlc_audio_get_track(p.player)), nil
+}
+
+// SetAudioTrack sets the track identified by the specified ID as the
+// current audio track of the player.
+func (p *Player) SetAudioTrack(trackID int) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	if C.libvlc_audio_set_track(p.player, C.int(trackID)) != 0 {
+		return errOrDefault(getError(), ErrInvalidMediaTrack)
+	}
+
+	return nil
+}
+
+// SubtitleTrackCount returns the number of subtitle tracks available
+// in the current media of the player.
+func (p *Player) SubtitleTrackCount() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	count := int(C.libvlc_video_get_spu_count(p.player))
+	if count < 0 {
+		return 0, errOrDefault(getError(), ErrMediaNotInitialized)
+	}
+
+	return count, nil
+}
+
+// SubtitleTrackDescriptors returns a descriptor list of the available
+// subtitle tracks for the current player media.
+func (p *Player) SubtitleTrackDescriptors() ([]*MediaTrackDescriptor, error) {
+	if err := p.assertInit(); err != nil {
+		return nil, err
+	}
+
+	cDescriptors := C.libvlc_video_get_spu_description(p.player)
+	return parseMediaTrackDescriptorList(cDescriptors)
+}
+
+// SubtitleTrackID returns the ID of the current subtitle track of the player.
+// NOTE: The method returns -1 if there is no active subtitle track.
+func (p *Player) SubtitleTrackID() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return int(C.libvlc_video_get_spu(p.player)), nil
+}
+
+// SetSubtitleTrack sets the track identified by the specified ID as the
+// current subtitle track of the player.
+func (p *Player) SetSubtitleTrack(trackID int) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	if C.libvlc_video_set_spu(p.player, C.int(trackID)) != 0 {
+		return errOrDefault(getError(), ErrInvalidMediaTrack)
+	}
+
+	return nil
 }
 
 // XWindow returns the identifier of the X window the media player is
