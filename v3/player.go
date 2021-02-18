@@ -568,6 +568,17 @@ func (p *Player) AudioTrackCount() (int, error) {
 	return count, nil
 }
 
+// AudioTrackDescriptors returns a descriptors list of the available
+// audio tracks for the current player media.
+func (p *Player) AudioTrackDescriptors() ([]*MediaTrackDescriptor, error) {
+	if err := p.assertInit(); err != nil {
+		return nil, err
+	}
+
+	cDescriptors := C.libvlc_audio_get_track_description(p.player)
+	return parseMediaTrackDescriptorList(cDescriptors)
+}
+
 // AudioTrackID returns the ID of the current audio track of the player.
 // NOTE: The method returns -1 if there is no active audio track.
 func (p *Player) AudioTrackID() (int, error) {
