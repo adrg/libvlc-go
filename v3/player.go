@@ -6,6 +6,7 @@ package vlc
 import "C"
 import (
 	"io"
+	"time"
 	"unsafe"
 )
 
@@ -444,6 +445,34 @@ func (p *Player) SetAspectRatio(aspectRatio string) error {
 	C.libvlc_video_set_aspect_ratio(p.player, cAspectRatio)
 	C.free(unsafe.Pointer(cAspectRatio))
 	return getError()
+}
+
+// AudioDelay returns the delay of the current audio track,
+// with microsecond precision.
+func (p *Player) AudioDelay() (time.Duration, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	delay := C.libvlc_audio_get_delay(p.player)
+	return time.Duration(delay) * time.Microsecond, getError()
+}
+
+// SetAudioDelay delays the current audio track according to the
+// specified duration, with microsecond precision.
+// The delay can be either positive (the audio track is played later) or
+// negative (the audio track is played earlier) and it defaults to zero.
+// NOTE: The audio delay is set to zero each time the player media changes.
+func (p *Player) SetAudioDelay(d time.Duration) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	if C.libvlc_audio_set_delay(p.player, C.int64_t(d.Microseconds())) != 0 {
+		return errOrDefault(getError(), ErrMediaTrackNotInitialized)
+	}
+
+	return nil
 }
 
 // SetRenderer sets a renderer for the player media (e.g. Chromecast).
