@@ -519,17 +519,13 @@ func (p *Player) VideoTrackCount() (int, error) {
 }
 
 // VideoTrackID returns the ID of the current video track of the player.
+// NOTE: The method returns -1 if there is no active video track.
 func (p *Player) VideoTrackID() (int, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
 	}
 
-	id := int(C.libvlc_video_get_track(p.player))
-	if id < 0 {
-		return 0, errOrDefault(getError(), ErrMissingMediaTrack)
-	}
-
-	return id, nil
+	return int(C.libvlc_video_get_track(p.player)), nil
 }
 
 // SetVideoTrack sets the track identified by the specified ID as the
@@ -562,17 +558,13 @@ func (p *Player) AudioTrackCount() (int, error) {
 }
 
 // AudioTrackID returns the ID of the current audio track of the player.
+// NOTE: The method returns -1 if there is no active audio track.
 func (p *Player) AudioTrackID() (int, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
 	}
 
-	id := int(C.libvlc_audio_get_track(p.player))
-	if id < 0 {
-		return 0, errOrDefault(getError(), ErrMissingMediaTrack)
-	}
-
-	return id, nil
+	return int(C.libvlc_audio_get_track(p.player)), nil
 }
 
 // SetAudioTrack sets the track identified by the specified ID as the
@@ -605,17 +597,13 @@ func (p *Player) SubtitleTrackCount() (int, error) {
 }
 
 // SubtitleTrackID returns the ID of the current subtitle track of the player.
+// NOTE: The method returns -1 if there is no active subtitle track.
 func (p *Player) SubtitleTrackID() (int, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
 	}
 
-	id := int(C.libvlc_video_get_spu(p.player))
-	if id < 0 {
-		return 0, errOrDefault(getError(), ErrMissingMediaTrack)
-	}
-
-	return id, nil
+	return int(C.libvlc_video_get_spu(p.player)), nil
 }
 
 // SetSubtitleTrack sets the track identified by the specified ID as the
