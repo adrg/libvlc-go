@@ -36,7 +36,7 @@ var (
 // Media track errors.
 var (
 	ErrMediaTrackNotInitialized = errors.New("media track not initialized")
-	ErrMissingMediaTrack        = errors.New("could not get media track")
+	ErrMediaTrackNotFound       = errors.New("could not find media track")
 	ErrInvalidMediaTrack        = errors.New("invalid media track")
 )
 

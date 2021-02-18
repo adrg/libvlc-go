@@ -469,7 +469,7 @@ func (p *Player) SetAudioDelay(d time.Duration) error {
 	}
 
 	if C.libvlc_audio_set_delay(p.player, C.int64_t(d.Microseconds())) != 0 {
-		return errOrDefault(getError(), ErrMissingMediaTrack)
+		return errOrDefault(getError(), ErrMediaTrackNotFound)
 	}
 
 	return nil
@@ -497,7 +497,7 @@ func (p *Player) SetSubtitleDelay(d time.Duration) error {
 	}
 
 	if C.libvlc_video_set_spu_delay(p.player, C.int64_t(d.Microseconds())) != 0 {
-		return errOrDefault(getError(), ErrMissingMediaTrack)
+		return errOrDefault(getError(), ErrMediaTrackNotFound)
 	}
 
 	return nil
