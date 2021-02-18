@@ -503,6 +503,34 @@ func (p *Player) SetSubtitleDelay(d time.Duration) error {
 	return nil
 }
 
+// VideoTrackID returns the ID of the current video track of the player.
+func (p *Player) VideoTrackID() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	id := int(C.libvlc_video_get_track(p.player))
+	if id < 0 {
+		return 0, errOrDefault(getError(), ErrMediaTrackNotInitialized)
+	}
+
+	return id, nil
+}
+
+// SetVideoTrack sets the track identified by the specified ID as the
+// current video track of the player.
+func (p *Player) SetVideoTrack(trackID int) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	if C.libvlc_video_set_track(p.player, C.int(trackID)) != 0 {
+		return errOrDefault(getError(), ErrMediaTrackNotInitialized)
+	}
+
+	return nil
+}
+
 // SetRenderer sets a renderer for the player media (e.g. Chromecast).
 // NOTE: this method must be called before starting media playback in order
 // to take effect.
