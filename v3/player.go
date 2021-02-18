@@ -475,6 +475,34 @@ func (p *Player) SetAudioDelay(d time.Duration) error {
 	return nil
 }
 
+// SubtitleDelay returns the delay of the current subtitle track,
+// with microsecond precision.
+func (p *Player) SubtitleDelay() (time.Duration, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	delay := C.libvlc_video_get_spu_delay(p.player)
+	return time.Duration(delay) * time.Microsecond, getError()
+}
+
+// SetSubtitleDelay delays the current subtitle track according to the
+// specified duration, with microsecond precision.
+// The delay can be either positive (the subtitle track is displayed later) or
+// negative (the subtitle track is displayed earlier) and it defaults to zero.
+// NOTE: The subtitle delay is set to zero each time the player media changes.
+func (p *Player) SetSubtitleDelay(d time.Duration) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	if C.libvlc_video_set_spu_delay(p.player, C.int64_t(d.Microseconds())) != 0 {
+		return errOrDefault(getError(), ErrMediaTrackNotInitialized)
+	}
+
+	return nil
+}
+
 // SetRenderer sets a renderer for the player media (e.g. Chromecast).
 // NOTE: this method must be called before starting media playback in order
 // to take effect.
