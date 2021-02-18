@@ -559,6 +559,34 @@ func (p *Player) SetAudioTrack(trackID int) error {
 	return nil
 }
 
+// SubtitleTrackID returns the ID of the current subtitle track of the player.
+func (p *Player) SubtitleTrackID() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	id := int(C.libvlc_video_get_spu(p.player))
+	if id < 0 {
+		return 0, errOrDefault(getError(), ErrMediaTrackNotInitialized)
+	}
+
+	return id, nil
+}
+
+// SetSubtitleTrack sets the track identified by the specified ID as the
+// current subtitle track of the player.
+func (p *Player) SetSubtitleTrack(trackID int) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	if C.libvlc_video_set_spu(p.player, C.int(trackID)) != 0 {
+		return errOrDefault(getError(), ErrMediaTrackNotInitialized)
+	}
+
+	return nil
+}
+
 // SetRenderer sets a renderer for the player media (e.g. Chromecast).
 // NOTE: this method must be called before starting media playback in order
 // to take effect.
