@@ -589,6 +589,21 @@ func (p *Player) SetAudioTrack(trackID int) error {
 	return nil
 }
 
+// SubtitleTrackCount returns the number of subtitle tracks available
+// in the current media of the player.
+func (p *Player) SubtitleTrackCount() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	count := int(C.libvlc_video_get_spu_count(p.player))
+	if count < 0 {
+		return 0, errOrDefault(getError(), ErrMediaTrackNotInitialized)
+	}
+
+	return count, nil
+}
+
 // SubtitleTrackID returns the ID of the current subtitle track of the player.
 func (p *Player) SubtitleTrackID() (int, error) {
 	if err := p.assertInit(); err != nil {
