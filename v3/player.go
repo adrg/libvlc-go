@@ -503,6 +503,21 @@ func (p *Player) SetSubtitleDelay(d time.Duration) error {
 	return nil
 }
 
+// VideoTrackCount returns the number of video tracks available
+// in the current media of the player.
+func (p *Player) VideoTrackCount() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	count := int(C.libvlc_video_get_track_count(p.player))
+	if count < 0 {
+		return 0, errOrDefault(getError(), ErrMediaTrackNotInitialized)
+	}
+
+	return count, nil
+}
+
 // VideoTrackID returns the ID of the current video track of the player.
 func (p *Player) VideoTrackID() (int, error) {
 	if err := p.assertInit(); err != nil {
