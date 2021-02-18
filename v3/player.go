@@ -518,6 +518,17 @@ func (p *Player) VideoTrackCount() (int, error) {
 	return count, nil
 }
 
+// VideoTrackDescriptors returns a descriptors list of the available
+// video tracks for the current player media.
+func (p *Player) VideoTrackDescriptors() ([]*MediaTrackDescriptor, error) {
+	if err := p.assertInit(); err != nil {
+		return nil, err
+	}
+
+	cDescriptors := C.libvlc_video_get_track_description(p.player)
+	return parseMediaTrackDescriptorList(cDescriptors)
+}
+
 // VideoTrackID returns the ID of the current video track of the player.
 // NOTE: The method returns -1 if there is no active video track.
 func (p *Player) VideoTrackID() (int, error) {
