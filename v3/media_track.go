@@ -66,6 +66,12 @@ const (
 	MediaTrackText
 )
 
+// MediaTrackDescriptor contains information about a media track.
+type MediaTrackDescriptor struct {
+	ID          int    // Media track identifier.
+	Description string // Description of the media track.
+}
+
 // MediaAudioTrack contains information specific to audio media tracks.
 type MediaAudioTrack struct {
 	Channels uint // number of audio channels.
@@ -213,4 +219,21 @@ func parseMediaTrack(cTrack *C.libvlc_media_track_t) (*MediaTrack, error) {
 	}
 
 	return mt, nil
+}
+
+func parseMediaTrackDescriptorList(cDescriptors *C.libvlc_track_description_t) ([]*MediaTrackDescriptor, error) {
+	if cDescriptors == nil {
+		return nil, nil
+	}
+
+	var descriptors []*MediaTrackDescriptor
+	for n := cDescriptors; n != nil; n = (*C.libvlc_track_description_t)(n.p_next) {
+		descriptors = append(descriptors, &MediaTrackDescriptor{
+			ID:          int(n.i_id),
+			Description: C.GoString(n.psz_name),
+		})
+	}
+
+	C.libvlc_track_description_list_release(cDescriptors)
+	return descriptors, getError()
 }
