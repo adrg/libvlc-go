@@ -461,7 +461,7 @@ func (p *Player) AudioDelay() (time.Duration, error) {
 // SetAudioDelay delays the current audio track according to the
 // specified duration, with microsecond precision.
 // The delay can be either positive (the audio track is played later) or
-// negative (the audio track is played earlier) and it defaults to zero.
+// negative (the audio track is played earlier), and it defaults to zero.
 // NOTE: The audio delay is set to zero each time the player media changes.
 func (p *Player) SetAudioDelay(d time.Duration) error {
 	if err := p.assertInit(); err != nil {
@@ -489,7 +489,7 @@ func (p *Player) SubtitleDelay() (time.Duration, error) {
 // SetSubtitleDelay delays the current subtitle track according to the
 // specified duration, with microsecond precision.
 // The delay can be either positive (the subtitle track is displayed later) or
-// negative (the subtitle track is displayed earlier) and it defaults to zero.
+// negative (the subtitle track is displayed earlier), and it defaults to zero.
 // NOTE: The subtitle delay is set to zero each time the player media changes.
 func (p *Player) SetSubtitleDelay(d time.Duration) error {
 	if err := p.assertInit(); err != nil {
