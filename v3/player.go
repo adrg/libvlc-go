@@ -518,7 +518,7 @@ func (p *Player) VideoTrackCount() (int, error) {
 	return count, nil
 }
 
-// VideoTrackDescriptors returns a descriptors list of the available
+// VideoTrackDescriptors returns a descriptor list of the available
 // video tracks for the current player media.
 func (p *Player) VideoTrackDescriptors() ([]*MediaTrackDescriptor, error) {
 	if err := p.assertInit(); err != nil {
@@ -568,7 +568,7 @@ func (p *Player) AudioTrackCount() (int, error) {
 	return count, nil
 }
 
-// AudioTrackDescriptors returns a descriptors list of the available
+// AudioTrackDescriptors returns a descriptor list of the available
 // audio tracks for the current player media.
 func (p *Player) AudioTrackDescriptors() ([]*MediaTrackDescriptor, error) {
 	if err := p.assertInit(); err != nil {
@@ -616,6 +616,17 @@ func (p *Player) SubtitleTrackCount() (int, error) {
 	}
 
 	return count, nil
+}
+
+// SubtitleTrackDescriptors returns a descriptor list of the available
+// subtitle tracks for the current player media.
+func (p *Player) SubtitleTrackDescriptors() ([]*MediaTrackDescriptor, error) {
+	if err := p.assertInit(); err != nil {
+		return nil, err
+	}
+
+	cDescriptors := C.libvlc_video_get_spu_description(p.player)
+	return parseMediaTrackDescriptorList(cDescriptors)
 }
 
 // SubtitleTrackID returns the ID of the current subtitle track of the player.
