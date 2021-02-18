@@ -546,6 +546,21 @@ func (p *Player) SetVideoTrack(trackID int) error {
 	return nil
 }
 
+// AudioTrackCount returns the number of audio tracks available
+// in the current media of the player.
+func (p *Player) AudioTrackCount() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	count := int(C.libvlc_audio_get_track_count(p.player))
+	if count < 0 {
+		return 0, errOrDefault(getError(), ErrMediaTrackNotInitialized)
+	}
+
+	return count, nil
+}
+
 // AudioTrackID returns the ID of the current audio track of the player.
 func (p *Player) AudioTrackID() (int, error) {
 	if err := p.assertInit(); err != nil {
