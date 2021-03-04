@@ -307,9 +307,9 @@ func (p *Player) LoadMediaFromReadSeeker(r io.ReadSeeker) (*Media, error) {
 	return m, nil
 }
 
-// SetAudioOutput selects an audio output module.
-// Any change will take be effect only after playback is stopped and restarted.
-// Audio output cannot be changed while playing.
+// SetAudioOutput selects the audio output used by the player. Any change will
+// take effect only after playback is stopped and restarted. The audio output
+// cannot be changed while playing.
 func (p *Player) SetAudioOutput(output string) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -319,7 +319,7 @@ func (p *Player) SetAudioOutput(output string) error {
 	defer C.free(unsafe.Pointer(cOutput))
 
 	if C.libvlc_audio_output_set(p.player, cOutput) != 0 {
-		return getError()
+		return errOrDefault(getError(), ErrAudioOutputSet)
 	}
 
 	return nil

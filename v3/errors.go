@@ -49,6 +49,7 @@ var (
 // Audio/Video errors.
 var (
 	ErrAudioOutputListMissing = errors.New("could not get audio output list")
+	ErrAudioOutputSet         = errors.New("could not set audio output")
 	ErrFilterListMissing      = errors.New("could not get filter list")
 )
 
