@@ -51,3 +51,10 @@ var (
 	ErrFilterListMissing      = errors.New("could not get filter list")
 	ErrStereoModeSet          = errors.New("could not set stereo mode")
 )
+
+// Equalizer errors.
+var (
+	ErrEqualizerCreate         = errors.New("could not create equalizer")
+	ErrEqualizerNotInitialized = errors.New("equalizer not initialized")
+	ErrEqualizerAmpValueSet    = errors.New("could not set equalizer amplification value")
+)
