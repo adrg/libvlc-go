@@ -51,6 +51,7 @@ var (
 	ErrAudioOutputListMissing = errors.New("could not get audio output list")
 	ErrAudioOutputSet         = errors.New("could not set audio output")
 	ErrFilterListMissing      = errors.New("could not get filter list")
+	ErrStereoModeSet          = errors.New("could not set stereo mode")
 )
 
 // Renderer discoverer errors.

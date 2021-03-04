@@ -325,6 +325,29 @@ func (p *Player) SetAudioOutput(output string) error {
 	return nil
 }
 
+// StereoMode returns the stereo mode of the audio output used by the player.
+func (p *Player) StereoMode() (StereoMode, error) {
+	if err := p.assertInit(); err != nil {
+		return StereoModeError, err
+	}
+
+	return StereoMode(C.libvlc_audio_get_channel(p.player)), getError()
+}
+
+// SetStereoMode sets the stereo mode of the audio output used by the player.
+// NOTE: The audio output might not support all stereo modes.
+func (p *Player) SetStereoMode(mode StereoMode) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	if C.libvlc_audio_set_channel(p.player, C.int(mode)) != 0 {
+		return errOrDefault(getError(), ErrStereoModeSet)
+	}
+
+	return nil
+}
+
 // MediaLength returns media length in milliseconds.
 func (p *Player) MediaLength() (int, error) {
 	if err := p.assertInit(); err != nil {
