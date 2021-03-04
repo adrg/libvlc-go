@@ -97,6 +97,7 @@ However, consider switching to modules.
 * [Retrieve media information](https://github.com/adrg/libvlc-go-examples/blob/master/v3/media_information/media_information.go)
 * [Display screen as player media](https://github.com/adrg/libvlc-go-examples/blob/master/v3/display_screen_media/display_screen_media.go)
 * [Stream media to Chromecast](https://github.com/adrg/libvlc-go-examples/blob/master/v3/chromecast_streaming/chromecast_streaming.go)
+* [Player equalizer usage](https://github.com/adrg/libvlc-go-examples/blob/master/v3/equalizer/equalizer.go).
 
 Examples for the older version of the API can be found [here](https://github.com/adrg/libvlc-go-examples/tree/master/v2).
 
