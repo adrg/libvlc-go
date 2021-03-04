@@ -62,3 +62,10 @@ var (
 	ErrRendererDiscovererStart          = errors.New("could not start renderer discoverer")
 	ErrRendererNotInitialized           = errors.New("renderer not initialized")
 )
+
+// Equalizer errors.
+var (
+	ErrEqualizerCreate         = errors.New("could not create equalizer")
+	ErrEqualizerNotInitialized = errors.New("equalizer not initialized")
+	ErrEqualizerAmpValueSet    = errors.New("could not set equalizer amplification value")
+)
