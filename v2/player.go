@@ -290,9 +290,9 @@ func (p *Player) LoadMediaFromURL(url string) (*Media, error) {
 	return p.loadMedia(url, false)
 }
 
-// SetAudioOutput selects the audio output used by the player. Any change will
-// take effect only after playback is stopped and restarted. The audio output
-// cannot be changed while playing.
+// SetAudioOutput sets the audio output to be used by the player. Any change
+// will take effect only after playback is stopped and restarted. The audio
+// output cannot be changed while playing.
 func (p *Player) SetAudioOutput(output string) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -662,7 +662,7 @@ func (p *Player) SetSubtitleTrack(trackID int) error {
 // SetEqualizer sets an equalizer for the player. The equalizer can be applied
 // at any moment (whether media playback is started or not) and it will be used
 // for subsequently played media instances as well. In order to revert to the
-// default equalizer, pass in `nil` as the equalizer argument.
+// default equalizer, pass in `nil` as the equalizer parameter.
 func (p *Player) SetEqualizer(e *Equalizer) error {
 	if err := p.assertInit(); err != nil {
 		return err
