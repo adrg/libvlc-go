@@ -14,6 +14,7 @@ var (
 	ErrPlayerCreate             = errors.New("could not create player")
 	ErrPlayerNotInitialized     = errors.New("player not initialized")
 	ErrPlayerSetRenderer        = errors.New("could not set player renderer")
+	ErrPlayerSetEqualizer       = errors.New("could not set player equalizer")
 	ErrListPlayerCreate         = errors.New("could not create list player")
 	ErrListPlayerNotInitialized = errors.New("list player not initialized")
 )
@@ -49,7 +50,9 @@ var (
 // Audio/Video errors.
 var (
 	ErrAudioOutputListMissing = errors.New("could not get audio output list")
+	ErrAudioOutputSet         = errors.New("could not set audio output")
 	ErrFilterListMissing      = errors.New("could not get filter list")
+	ErrStereoModeSet          = errors.New("could not set stereo mode")
 )
 
 // Renderer discoverer errors.
@@ -59,4 +62,11 @@ var (
 	ErrRendererDiscovererNotInitialized = errors.New("renderer discoverer not initialized")
 	ErrRendererDiscovererStart          = errors.New("could not start renderer discoverer")
 	ErrRendererNotInitialized           = errors.New("renderer not initialized")
+)
+
+// Equalizer errors.
+var (
+	ErrEqualizerCreate         = errors.New("could not create equalizer")
+	ErrEqualizerNotInitialized = errors.New("equalizer not initialized")
+	ErrEqualizerAmpValueSet    = errors.New("could not set equalizer amplification value")
 )

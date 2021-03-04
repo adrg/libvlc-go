@@ -13,6 +13,7 @@ var (
 var (
 	ErrPlayerCreate             = errors.New("could not create player")
 	ErrPlayerNotInitialized     = errors.New("player not initialized")
+	ErrPlayerSetEqualizer       = errors.New("could not set player equalizer")
 	ErrListPlayerCreate         = errors.New("could not create list player")
 	ErrListPlayerNotInitialized = errors.New("list player not initialized")
 )
@@ -47,5 +48,14 @@ var (
 // Audio/Video errors.
 var (
 	ErrAudioOutputListMissing = errors.New("could not get audio output list")
+	ErrAudioOutputSet         = errors.New("could not set audio output")
 	ErrFilterListMissing      = errors.New("could not get filter list")
+	ErrStereoModeSet          = errors.New("could not set stereo mode")
+)
+
+// Equalizer errors.
+var (
+	ErrEqualizerCreate         = errors.New("could not create equalizer")
+	ErrEqualizerNotInitialized = errors.New("equalizer not initialized")
+	ErrEqualizerAmpValueSet    = errors.New("could not set equalizer amplification value")
 )

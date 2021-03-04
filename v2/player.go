@@ -290,9 +290,9 @@ func (p *Player) LoadMediaFromURL(url string) (*Media, error) {
 	return p.loadMedia(url, false)
 }
 
-// SetAudioOutput selects an audio output module.
-// Any change will take be effect only after playback is stopped and restarted.
-// Audio output cannot be changed while playing.
+// SetAudioOutput sets the audio output to be used by the player. Any change
+// will take effect only after playback is stopped and restarted. The audio
+// output cannot be changed while playing.
 func (p *Player) SetAudioOutput(output string) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -302,7 +302,30 @@ func (p *Player) SetAudioOutput(output string) error {
 	defer C.free(unsafe.Pointer(cOutput))
 
 	if C.libvlc_audio_output_set(p.player, cOutput) != 0 {
-		return getError()
+		return errOrDefault(getError(), ErrAudioOutputSet)
+	}
+
+	return nil
+}
+
+// StereoMode returns the stereo mode of the audio output used by the player.
+func (p *Player) StereoMode() (StereoMode, error) {
+	if err := p.assertInit(); err != nil {
+		return StereoModeError, err
+	}
+
+	return StereoMode(C.libvlc_audio_get_channel(p.player)), getError()
+}
+
+// SetStereoMode sets the stereo mode of the audio output used by the player.
+// NOTE: The audio output might not support all stereo modes.
+func (p *Player) SetStereoMode(mode StereoMode) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	if C.libvlc_audio_set_channel(p.player, C.int(mode)) != 0 {
+		return errOrDefault(getError(), ErrStereoModeSet)
 	}
 
 	return nil
@@ -631,6 +654,25 @@ func (p *Player) SetSubtitleTrack(trackID int) error {
 
 	if C.libvlc_video_set_spu(p.player, C.int(trackID)) != 0 {
 		return errOrDefault(getError(), ErrInvalidMediaTrack)
+	}
+
+	return nil
+}
+
+// SetEqualizer sets an equalizer for the player. The equalizer can be applied
+// at any moment (whether media playback is started or not) and it will be used
+// for subsequently played media instances as well. In order to revert to the
+// default equalizer, pass in `nil` as the equalizer parameter.
+func (p *Player) SetEqualizer(e *Equalizer) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+	if e == nil {
+		e = &Equalizer{}
+	}
+
+	if C.libvlc_media_player_set_equalizer(p.player, e.equalizer) != 0 {
+		return errOrDefault(getError(), ErrPlayerSetEqualizer)
 	}
 
 	return nil

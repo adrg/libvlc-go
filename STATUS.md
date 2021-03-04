@@ -94,22 +94,22 @@ Reference: [libVLC media player](https://www.videolan.org/developers/vlc/doc/dox
 | ☒ | libvlc_audio_get_track_description              | Player.AudioTrackDescriptors | `v2`, `v3` |
 | ☒ | libvlc_audio_get_track                          | Player.AudioTrackID          | `v2`, `v3` |
 | ☒ | libvlc_audio_set_track                          | Player.SetAudioTrack         | `v2`, `v3` |
-| ☐ | libvlc_audio_get_channel                        |                              | `v2`, `v3` |
-| ☐ | libvlc_audio_set_channel                        |                              | `v2`, `v3` |
+| ☒ | libvlc_audio_get_channel                        | Player.StereoMode            | `v2`, `v3` |
+| ☒ | libvlc_audio_set_channel                        | Player.SetStereoMode         | `v2`, `v3` |
 | ☒ | libvlc_audio_get_delay                          | Player.AudioDelay            | `v2`, `v3` |
 | ☒ | libvlc_audio_set_delay                          | Player.SetAudioDelay         | `v2`, `v3` |
-| ☐ | libvlc_audio_equalizer_get_preset_count         |                              | `v2`, `v3` |
-| ☐ | libvlc_audio_equalizer_get_preset_name          |                              | `v2`, `v3` |
-| ☐ | libvlc_audio_equalizer_get_band_count           |                              | `v2`, `v3` |
-| ☐ | libvlc_audio_equalizer_get_band_frequency       |                              | `v2`, `v3` |
-| ☐ | libvlc_audio_equalizer_new                      |                              | `v2`, `v3` |
-| ☐ | libvlc_audio_equalizer_new_from_preset          |                              | `v2`, `v3` |
-| ☐ | libvlc_audio_equalizer_release                  |                              | `v2`, `v3` |
-| ☐ | libvlc_audio_equalizer_set_preamp               |                              | `v2`, `v3` |
-| ☐ | libvlc_audio_equalizer_get_preamp               |                              | `v2`, `v3` |
-| ☐ | libvlc_audio_equalizer_set_amp_at_index         |                              | `v2`, `v3` |
-| ☐ | libvlc_audio_equalizer_get_amp_at_index         |                              | `v2`, `v3` |
-| ☐ | libvlc_media_player_set_equalizer               |                              | `v2`, `v3` |
+| ☒ | libvlc_audio_equalizer_get_preset_count         | vlc.EqualizerPresetCount     | `v2`, `v3` |
+| ☒ | libvlc_audio_equalizer_get_preset_name          | vlc.EqualizerPresetName      | `v2`, `v3` |
+| ☒ | libvlc_audio_equalizer_get_band_count           | vlc.EqualizerBandCount       | `v2`, `v3` |
+| ☒ | libvlc_audio_equalizer_get_band_frequency       | vlc.EqualizerBandFrequency   | `v2`, `v3` |
+| ☒ | libvlc_audio_equalizer_new                      | vlc.NewEqualizer             | `v2`, `v3` |
+| ☒ | libvlc_audio_equalizer_new_from_preset          | vlc.NewEqualizerFromPreset   | `v2`, `v3` |
+| ☒ | libvlc_audio_equalizer_release                  | Equalizer.Release            | `v2`, `v3` |
+| ☒ | libvlc_audio_equalizer_set_preamp               | Equalizer.SetPreampValue     | `v2`, `v3` |
+| ☒ | libvlc_audio_equalizer_get_preamp               | Equalizer.PreampValue        | `v2`, `v3` |
+| ☒ | libvlc_audio_equalizer_set_amp_at_index         | Equalizer.SetAmpValueAtIndex | `v2`, `v3` |
+| ☒ | libvlc_audio_equalizer_get_amp_at_index         | Equalizer.AmpValueAtIndex    | `v2`, `v3` |
+| ☒ | libvlc_media_player_set_equalizer               | Player.SetEqualizer          | `v2`, `v3` |
 | ☐ | libvlc_media_player_get_role                    |                              | `v3`       |
 | ☐ | libvlc_media_player_set_role                    |                              | `v3`       |
 
@@ -269,3 +269,16 @@ Reference: [libVLC events](https://www.videolan.org/developers/vlc/doc/doxygen/h
 | ☒ | libvlc_renderer_discoverer_list_get      | ListRendererDiscoverers    | `v3`       |
 
 Reference: [libVLC renderer discoverer](https://www.videolan.org/developers/vlc/doc/doxygen/html/group__libvlc__renderer__discoverer.html).
+
+| ☐ | Binding                                  | Implementation             | Versions   |
+|---|:-----------------------------------------|:---------------------------|:-----------|
+| ☐ | libvlc_media_discoverer_new              |                            | `v3`       |
+| ☐ | libvlc_media_discoverer_start            |                            | `v3`       |
+| ☐ | libvlc_media_discoverer_stop             |                            | `v3`       |
+| ☐ | libvlc_media_discoverer_release          |                            | `v3`       |
+| ☐ | libvlc_media_discoverer_media_list       |                            | `v3`       |
+| ☐ | libvlc_media_discoverer_is_running       |                            | `v3`       |
+| ☐ | libvlc_media_discoverer_list_get         |                            | `v3`       |
+| ☐ | libvlc_media_discoverer_list_release     |                            | `v3`       |
+
+Reference: [libVLC media discovery](https://www.videolan.org/developers/vlc/doc/doxygen/html/group__libvlc__media__discoverer.html).

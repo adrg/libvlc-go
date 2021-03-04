@@ -108,7 +108,7 @@ func (mt MediaMetaKey) Validate() error {
 type MediaParseOption uint
 
 // Media parse options.
-var (
+const (
 	// Parse media if it is a local file.
 	MediaParseLocal MediaParseOption = 0x00
 
