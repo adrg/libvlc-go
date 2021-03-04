@@ -659,6 +659,25 @@ func (p *Player) SetSubtitleTrack(trackID int) error {
 	return nil
 }
 
+// SetEqualizer sets an equalizer for the player. The equalizer can be applied
+// at any moment (whether media playback is started or not) and it will be used
+// for subsequently played media instances as well. In order to revert to the
+// default equalizer, pass in `nil` as the equalizer argument.
+func (p *Player) SetEqualizer(e *Equalizer) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+	if e == nil {
+		e = &Equalizer{}
+	}
+
+	if C.libvlc_media_player_set_equalizer(p.player, e.equalizer) != 0 {
+		return errOrDefault(getError(), ErrPlayerSetEqualizer)
+	}
+
+	return nil
+}
+
 // XWindow returns the identifier of the X window the media player is
 // configured to render its video output to, or 0 if no window is set.
 // The window can be set using the SetXWindow method.

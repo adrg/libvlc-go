@@ -13,6 +13,7 @@ var (
 var (
 	ErrPlayerCreate             = errors.New("could not create player")
 	ErrPlayerNotInitialized     = errors.New("player not initialized")
+	ErrPlayerSetEqualizer       = errors.New("could not set player equalizer")
 	ErrListPlayerCreate         = errors.New("could not create list player")
 	ErrListPlayerNotInitialized = errors.New("list player not initialized")
 )
