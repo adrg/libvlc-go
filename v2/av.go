@@ -5,6 +5,20 @@ package vlc
 // #include <stdlib.h>
 import "C"
 
+// StereoMode defines stereo modes which can be used by an audio output.
+type StereoMode int
+
+// Stereo modes.
+const (
+	StereoModeError StereoMode = iota - 1
+	StereoModeNotSet
+	StereoModeNormal
+	StereoModeReverse
+	StereoModeLeft
+	StereoModeRight
+	StereoModeDolbySurround
+)
+
 // AudioOutput is an abstraction for rendering decoded (or pass-through)
 // audio samples.
 type AudioOutput struct {
