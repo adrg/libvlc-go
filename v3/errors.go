@@ -64,6 +64,14 @@ var (
 	ErrRendererNotInitialized           = errors.New("renderer not initialized")
 )
 
+// Media discoverer errors.
+var (
+	ErrMediaDiscovererParse          = errors.New("could not parse media discoverer")
+	ErrMediaDiscovererCreate         = errors.New("could not create media discoverer")
+	ErrMediaDiscovererNotInitialized = errors.New("media discoverer not initialized")
+	ErrMediaDiscovererStart          = errors.New("could not start media discoverer")
+)
+
 // Equalizer errors.
 var (
 	ErrEqualizerCreate         = errors.New("could not create equalizer")

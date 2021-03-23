@@ -198,7 +198,7 @@ func (rd *RendererDiscoverer) Start(cb RendererDiscoveryCallback) error {
 		manager.Detach(eventIDs...)
 
 		// Stop discovery service.
-		C.libvlc_renderer_discoverer_start(rd.discoverer)
+		C.libvlc_renderer_discoverer_stop(rd.discoverer)
 	}
 
 	return nil
