@@ -272,13 +272,12 @@ Reference: [libVLC renderer discoverer](https://www.videolan.org/developers/vlc/
 
 | ☐ | Binding                                  | Implementation             | Versions   |
 |---|:-----------------------------------------|:---------------------------|:-----------|
-| ☐ | libvlc_media_discoverer_new              |                            | `v3`       |
-| ☐ | libvlc_media_discoverer_start            |                            | `v3`       |
-| ☐ | libvlc_media_discoverer_stop             |                            | `v3`       |
-| ☐ | libvlc_media_discoverer_release          |                            | `v3`       |
-| ☐ | libvlc_media_discoverer_media_list       |                            | `v3`       |
-| ☐ | libvlc_media_discoverer_is_running       |                            | `v3`       |
-| ☐ | libvlc_media_discoverer_list_get         |                            | `v3`       |
-| ☐ | libvlc_media_discoverer_list_release     |                            | `v3`       |
+| ☒ | libvlc_media_discoverer_new              | vlc.NewMediaDiscoverer     | `v3`       |
+| ☒ | libvlc_media_discoverer_start            | MediaDiscoverer.Start      | `v3`       |
+| ☒ | libvlc_media_discoverer_stop             | MediaDiscoverer.Stop       | `v3`       |
+| ☒ | libvlc_media_discoverer_release          | MediaDiscoverer.Release    | `v3`       |
+| ☒ | libvlc_media_discoverer_media_list       | MediaDiscoverer.MediaList  | `v3`       |
+| ☒ | libvlc_media_discoverer_is_running       | MediaDiscoverer.IsRunning  | `v3`       |
+| ☒ | libvlc_media_discoverer_list_get         | vlc.ListMediaDiscoverers   | `v3`       |
 
 Reference: [libVLC media discovery](https://www.videolan.org/developers/vlc/doc/doxygen/html/group__libvlc__media__discoverer.html).

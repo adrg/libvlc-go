@@ -10,6 +10,10 @@ import (
 
 // RendererDiscoveryCallback is used by renderer discovery services to
 // report discovery events.
+//
+// The available events are:
+//   - RendererDiscovererItemAdded
+//   - RendererDiscovererItemDeleted
 type RendererDiscoveryCallback func(Event, *Renderer)
 
 // RendererDiscovererDescriptor contains information about a renderer
@@ -198,7 +202,7 @@ func (rd *RendererDiscoverer) Start(cb RendererDiscoveryCallback) error {
 		manager.Detach(eventIDs...)
 
 		// Stop discovery service.
-		C.libvlc_renderer_discoverer_start(rd.discoverer)
+		C.libvlc_renderer_discoverer_stop(rd.discoverer)
 	}
 
 	return nil
