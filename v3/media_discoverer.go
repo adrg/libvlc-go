@@ -8,10 +8,11 @@ import (
 	"unsafe"
 )
 
-// MediaDiscoveryCallback is used by media discovery services to
-// report discovery events. The callback provides the event, the
-// media instance, and the index at which the action takes place
-// in the media list of the discovery service.
+// MediaDiscoveryCallback is used by media discovery services to report
+// discovery events. The callback provides the event, the media instance,
+// and the index at which the action takes place in the media list of the
+// discovery service.
+//
 // The available events are:
 //   - MediaListWillAddItem
 //   - MediaListItemAdded
