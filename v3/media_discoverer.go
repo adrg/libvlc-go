@@ -243,7 +243,7 @@ func (md *MediaDiscoverer) Stop() error {
 	return nil
 }
 
-// IsRunning returns true if the service discovery is running.
+// IsRunning returns true if the media discovery service is running.
 func (md *MediaDiscoverer) IsRunning() bool {
 	if err := md.assertInit(); err != nil {
 		return false
