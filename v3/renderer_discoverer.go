@@ -10,6 +10,10 @@ import (
 
 // RendererDiscoveryCallback is used by renderer discovery services to
 // report discovery events.
+//
+// The available events are:
+//   - RendererDiscovererItemAdded
+//   - RendererDiscovererItemDeleted
 type RendererDiscoveryCallback func(Event, *Renderer)
 
 // RendererDiscovererDescriptor contains information about a renderer

@@ -9,7 +9,14 @@ import (
 )
 
 // MediaDiscoveryCallback is used by media discovery services to
-// report discovery events.
+// report discovery events. The callback provides the event, the
+// media instance, and the index at which the action takes place
+// in the media list of the discovery service.
+// The available events are:
+//   - MediaListWillAddItem
+//   - MediaListItemAdded
+//   - MediaListWillDeleteItem
+//   - MediaListItemDeleted
 type MediaDiscoveryCallback func(Event, *Media, int)
 
 // MediaDiscoveryCategory defines categories of media discovery services.
