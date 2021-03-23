@@ -50,6 +50,7 @@ Example applications:
 
 * [GUI media player](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_player)
 * [GUI screen recorder](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_screen_recorder)
+* [GUI media discovery](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_media_discovery)
 
 ## Prerequisites
 
@@ -88,6 +89,7 @@ However, consider switching to modules.
 
 * [GTK 3 media player](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_player) (using [gotk3](https://github.com/gotk3/gotk3))
 * [GTK 3 screen recorder](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_screen_recorder) (using [gotk3](https://github.com/gotk3/gotk3))
+* [GTK 3 media discovery](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_media_discovery) (using [gotk3](https://github.com/gotk3/gotk3))
 * [GTK 2 media player](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk2_player) (using [go-gtk](https://github.com/mattn/go-gtk))
 * [GTK 2 screen recorder](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk2_screen_recorder) (using [go-gtk](https://github.com/mattn/go-gtk))
 * [Basic player usage](https://github.com/adrg/libvlc-go-examples/blob/master/v3/player/player.go)
