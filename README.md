@@ -44,7 +44,17 @@ mirror each supported major version of [libVLC](https://www.videolan.org/vlc/lib
 Documentation for v3, which implements bindings for libVLC 3.X, can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v3) and on [GoDoc](https://godoc.org/github.com/adrg/libvlc-go/v3).  
 Documentation for v2, which implements bindings for libVLC 2.X, can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v2) and on [GoDoc](https://godoc.org/github.com/adrg/libvlc-go/v2).
 
-![libvlc-go examples](https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/libvlc-go-examples.jpg)
+<p align="center">
+    <a href="https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_player">
+      <img align="center" width="49%" alt="libvlc-go media player" src="https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/gtk3-media-player-example/libvlc-gtk3-media-player.jpg">
+    </a>
+    <a href="https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_screen_recorder">
+      <img align="center" width="49%" alt="libvlc-go screen recorder" src="https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/gtk3-screen-recorder-example/libvlc-gtk3-screen-recorder.jpg">
+    </a>
+    <a href="https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_media_discovery">
+      <img align="center" width="49%" alt="libvlc-go media discovery" src="https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/gtk3-media-discovery-example/libvlc-gtk3-media-discovery.jpg">
+    </a>
+</p>
 
 Example applications:
 
