@@ -51,6 +51,9 @@ Documentation for v2, which implements bindings for libVLC 2.X, can be found on 
     <a href="https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_screen_recorder">
       <img align="center" width="49%" alt="libvlc-go screen recorder" src="https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/gtk3-screen-recorder-example/libvlc-gtk3-screen-recorder.jpg">
     </a>
+    <a href="https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_equalizer">
+      <img align="center" width="49%" alt="libvlc-go equalizer" src="https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/gtk3-equalizer-example/libvlc-gtk3-equalizer.jpg">
+    </a>
     <a href="https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_media_discovery">
       <img align="center" width="49%" alt="libvlc-go media discovery" src="https://raw.githubusercontent.com/adrg/adrg.github.io/master/assets/projects/libvlc-go/gtk3-media-discovery-example/libvlc-gtk3-media-discovery.jpg">
     </a>
@@ -60,6 +63,7 @@ Example applications:
 
 * [GUI media player](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_player)
 * [GUI screen recorder](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_screen_recorder)
+* [GUI equalizer](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_equalizer)
 * [GUI media discovery](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_media_discovery)
 
 ## Prerequisites
@@ -100,6 +104,7 @@ However, consider switching to modules.
 * [GTK 3 media player](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_player) (using [gotk3](https://github.com/gotk3/gotk3))
 * [GTK 3 screen recorder](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_screen_recorder) (using [gotk3](https://github.com/gotk3/gotk3))
 * [GTK 3 media discovery](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_media_discovery) (using [gotk3](https://github.com/gotk3/gotk3))
+* [GTK 3 equalizer](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_equalizer) (using [gotk3](https://github.com/gotk3/gotk3))
 * [GTK 2 media player](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk2_player) (using [go-gtk](https://github.com/mattn/go-gtk))
 * [GTK 2 screen recorder](https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk2_screen_recorder) (using [go-gtk](https://github.com/mattn/go-gtk))
 * [Basic player usage](https://github.com/adrg/libvlc-go-examples/blob/master/v3/player/player.go)
