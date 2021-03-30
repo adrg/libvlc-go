@@ -361,6 +361,21 @@ func (p *Player) SetAudioOutput(output string) error {
 	return nil
 }
 
+// AudioOutputDevices returns the list of available devices for the
+// audio output used by the media player.
+// NOTE: Not all audio outputs support this. An empty list of devices does
+// not imply that the audio output used by the player does not work.
+// Some audio output devices in the list might not work in some circumstances.
+// By default, it is recommended to not specify any explicit audio device.
+func (p *Player) AudioOutputDevices() ([]*AudioOutputDevice, error) {
+	if err := p.assertInit(); err != nil {
+		return nil, err
+	}
+
+	cDevices := C.libvlc_audio_output_device_enum(p.player)
+	return parseAudioOutputDeviceList(cDevices)
+}
+
 // StereoMode returns the stereo mode of the audio output used by the player.
 func (p *Player) StereoMode() (StereoMode, error) {
 	if err := p.assertInit(); err != nil {

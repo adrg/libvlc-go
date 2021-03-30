@@ -67,6 +67,7 @@ type AudioOutputDevice struct {
 // NOTE: Not all audio outputs support this. An empty list of devices does
 // not imply that the specified audio output does not work.
 // Some audio output devices in the list might not work in some circumstances.
+// By default, it is recommended to not specify any explicit audio device.
 func ListAudioOutputDevices(output string) ([]*AudioOutputDevice, error) {
 	if err := inst.assertInit(); err != nil {
 		return nil, err
