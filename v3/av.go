@@ -23,8 +23,7 @@ const (
 	StereoModeHeadphones
 )
 
-// AudioOutput is an abstraction for rendering decoded (or pass-through)
-// audio samples.
+// AudioOutput contains information regarding an audio output.
 type AudioOutput struct {
 	Name        string
 	Description string

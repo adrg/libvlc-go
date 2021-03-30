@@ -376,6 +376,28 @@ func (p *Player) AudioOutputDevices() ([]*AudioOutputDevice, error) {
 	return parseAudioOutputDeviceList(cDevices)
 }
 
+// AudioOutputDevice returns the name of the current audio output device
+// used by the media player.
+// NOTE: The initial value for the current audio output device identifier
+// may not be set or may be an unknown value. Applications should compare
+// the returned value against the known device identifiers to find the
+// current audio output device. It is possible for the audio output device
+// to be changed externally. That may make the method unsuitable to use for
+// applications which are attempting to track audio device changes.
+func (p *Player) AudioOutputDevice() (string, error) {
+	if err := p.assertInit(); err != nil {
+		return "", err
+	}
+
+	cName := C.libvlc_audio_output_device_get(p.player)
+	if cName == nil {
+		return "", ErrAudioOutputDeviceMissing
+	}
+	defer C.free(unsafe.Pointer(cName))
+
+	return C.GoString(cName), nil
+}
+
 // StereoMode returns the stereo mode of the audio output used by the player.
 func (p *Player) StereoMode() (StereoMode, error) {
 	if err := p.assertInit(); err != nil {
