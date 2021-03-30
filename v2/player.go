@@ -308,6 +308,50 @@ func (p *Player) SetAudioOutput(output string) error {
 	return nil
 }
 
+// AudioOutputDevices returns the list of available devices for the
+// audio output used by the media player.
+// NOTE: Not all audio outputs support this. An empty list of devices does
+// not imply that the audio output used by the player does not work.
+// Some audio output devices in the list might not work in some circumstances.
+// By default, it is recommended to not specify any explicit audio device.
+func (p *Player) AudioOutputDevices() ([]*AudioOutputDevice, error) {
+	if err := p.assertInit(); err != nil {
+		return nil, err
+	}
+
+	cDevices := C.libvlc_audio_output_device_enum(p.player)
+	return parseAudioOutputDeviceList(cDevices)
+}
+
+// SetAudioOutputDevice sets the audio output device to be used by the
+// media player. The list of available devices can be obtained using the
+// Player.AudioOutputDevices method. Pass in an empty string as the `output`
+// parameter in order to move the current audio output to the specified
+// device immediately. This is the recommended usage.
+// NOTE: Passing an empty string as the `output` parameter is only supported
+// for libVLC 2.2.0 or later.
+// The syntax for the `device` parameter depends on the audio output.
+// Some audio output modules require further parameters.
+// Due to a design bug in libVLC, the method does not return an error if the
+// passed in device could not be set.
+func (p *Player) SetAudioOutputDevice(device, output string) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	var cOutput *C.char
+	if output != "" {
+		cOutput = C.CString(output)
+		defer C.free(unsafe.Pointer(cOutput))
+	}
+
+	cDevice := C.CString(device)
+	defer C.free(unsafe.Pointer(cDevice))
+
+	C.libvlc_audio_output_device_set(p.player, cOutput, cDevice)
+	return getError()
+}
+
 // StereoMode returns the stereo mode of the audio output used by the player.
 func (p *Player) StereoMode() (StereoMode, error) {
 	if err := p.assertInit(); err != nil {

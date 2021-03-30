@@ -62,7 +62,8 @@ type AudioOutputDevice struct {
 
 // ListAudioOutputDevices returns the list of available devices for the
 // specified audio output. Use the AudioOutputList method in order to obtain
-// the list of available audio outputs.
+// the list of available audio outputs. In order to change the audio output
+// device of a media player instance, use Player.SetAudioOutputDevice.
 // NOTE: Not all audio outputs support this. An empty list of devices does
 // not imply that the specified audio output does not work.
 // Some audio output devices in the list might not work in some circumstances.
