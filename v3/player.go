@@ -10,6 +10,42 @@ import (
 	"unsafe"
 )
 
+// PlayerRole defines the intended usage of a media player.
+type PlayerRole uint
+
+// Player roles.
+const (
+	// No role has been set.
+	PlayerRoleNone PlayerRole = iota
+
+	// Music (or radio) playback.
+	PlayerRoleMusic
+
+	// Video playback.
+	PlayerRoleVideo
+
+	// Speech, real-time communication.
+	PlayerRoleCommunication
+
+	// Video games.
+	PlayerRoleGame
+
+	// User interaction feedback.
+	PlayerRoleNotification
+
+	// Embedded animations (e.g. in a web page).
+	PlayerRoleAnimation
+
+	// Editing or production.
+	PlayerRoleProduction
+
+	// Accessibility.
+	PlayerRoleAccessibility
+
+	// Testing.
+	PlayerRoleTest
+)
+
 // Player is a media player used to play a single media file.
 // For playing media lists (playlists) use ListPlayer instead.
 type Player struct {
