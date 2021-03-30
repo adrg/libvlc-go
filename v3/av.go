@@ -4,6 +4,9 @@ package vlc
 // #include <vlc/vlc.h>
 // #include <stdlib.h>
 import "C"
+import (
+	"unsafe"
+)
 
 // StereoMode defines stereo modes which can be used by an audio output.
 type StereoMode int
@@ -27,8 +30,9 @@ type AudioOutput struct {
 	Description string
 }
 
-// AudioOutputList returns a list of audio output devices that can be used
-// with an instance of a player.
+// AudioOutputList returns the list of available audio outputs.
+// In order to change the audio output of a media player instance,
+// use the Player.SetAudioOutput method.
 func AudioOutputList() ([]*AudioOutput, error) {
 	if err := inst.assertInit(); err != nil {
 		return nil, err
@@ -49,6 +53,47 @@ func AudioOutputList() ([]*AudioOutput, error) {
 
 	C.libvlc_audio_output_list_release(cOutputs)
 	return outputs, getError()
+}
+
+// AudioOutputDevice contains information regarding an audio output device.
+type AudioOutputDevice struct {
+	Name        string
+	Description string
+}
+
+// ListAudioOutputDevices returns the list of available devices for the
+// specified audio output. Use the AudioOutputList method in order to obtain
+// the list of available audio outputs.
+// NOTE: Not all audio outputs support this. An empty list of devices does
+// not imply that the specified audio output does not work.
+// Some audio output devices in the list might not work in some circumstances.
+func ListAudioOutputDevices(output string) ([]*AudioOutputDevice, error) {
+	if err := inst.assertInit(); err != nil {
+		return nil, err
+	}
+
+	cOutput := C.CString(output)
+	defer C.free(unsafe.Pointer(cOutput))
+
+	cDevices := C.libvlc_audio_output_device_list_get(inst.handle, cOutput)
+	return parseAudioOutputDeviceList(cDevices)
+}
+
+func parseAudioOutputDeviceList(cDevices *C.libvlc_audio_output_device_t) ([]*AudioOutputDevice, error) {
+	if cDevices == nil {
+		return nil, errOrDefault(getError(), ErrAudioOutputDeviceListMissing)
+	}
+
+	var devices []*AudioOutputDevice
+	for n := cDevices; n != nil; n = n.p_next {
+		devices = append(devices, &AudioOutputDevice{
+			Name:        C.GoString(n.psz_device),
+			Description: C.GoString(n.psz_description),
+		})
+	}
+
+	C.libvlc_audio_output_device_list_release(cDevices)
+	return devices, getError()
 }
 
 // ModuleDescription contains information about a libVLC module.
