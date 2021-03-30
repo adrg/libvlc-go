@@ -15,6 +15,7 @@ var (
 	ErrPlayerNotInitialized     = errors.New("player not initialized")
 	ErrPlayerSetRenderer        = errors.New("could not set player renderer")
 	ErrPlayerSetEqualizer       = errors.New("could not set player equalizer")
+	ErrPlayerInvalidRole        = errors.New("invalid player role")
 	ErrListPlayerCreate         = errors.New("could not create list player")
 	ErrListPlayerNotInitialized = errors.New("list player not initialized")
 )

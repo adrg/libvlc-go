@@ -749,6 +749,33 @@ func (p *Player) SetEqualizer(e *Equalizer) error {
 	return nil
 }
 
+// Role returns the role of the player.
+func (p *Player) Role() (PlayerRole, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	role := C.libvlc_media_player_get_role(p.player)
+	if role < 0 {
+		return 0, errOrDefault(getError(), ErrPlayerInvalidRole)
+	}
+
+	return PlayerRole(role), nil
+}
+
+// SetRole sets the role of the player.
+func (p *Player) SetRole(role PlayerRole) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	if C.libvlc_media_player_set_role(p.player, C.uint(role)) != 0 {
+		return errOrDefault(getError(), ErrPlayerInvalidRole)
+	}
+
+	return nil
+}
+
 // XWindow returns the identifier of the X window the media player is
 // configured to render its video output to, or 0 if no window is set.
 // The window can be set using the SetXWindow method.
