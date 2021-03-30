@@ -39,7 +39,7 @@ func AudioOutputList() ([]*AudioOutput, error) {
 	}
 
 	var outputs []*AudioOutput
-	for n := cOutputs; n != nil; n = (*C.libvlc_audio_output_t)(n.p_next) {
+	for n := cOutputs; n != nil; n = n.p_next {
 		outputs = append(outputs, &AudioOutput{
 			Name:        C.GoString(n.psz_name),
 			Description: C.GoString(n.psz_description),
@@ -82,7 +82,7 @@ func parseFilterList(cFilters *C.libvlc_module_description_t) ([]*ModuleDescript
 	}
 
 	var filters []*ModuleDescription
-	for n := cFilters; n != nil; n = (*C.libvlc_module_description_t)(n.p_next) {
+	for n := cFilters; n != nil; n = n.p_next {
 		filters = append(filters, &ModuleDescription{
 			Name:      C.GoString(n.psz_name),
 			ShortName: C.GoString(n.psz_shortname),

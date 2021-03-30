@@ -150,7 +150,7 @@ func parseMediaTrackDescriptorList(cDescriptors *C.libvlc_track_description_t) (
 	}
 
 	var descriptors []*MediaTrackDescriptor
-	for n := cDescriptors; n != nil; n = (*C.libvlc_track_description_t)(n.p_next) {
+	for n := cDescriptors; n != nil; n = n.p_next {
 		descriptors = append(descriptors, &MediaTrackDescriptor{
 			ID:          int(n.i_id),
 			Description: C.GoString(n.psz_name),
