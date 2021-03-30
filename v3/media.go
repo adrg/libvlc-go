@@ -683,7 +683,7 @@ func (m *Media) getUserData() (objectID, *mediaData) {
 	if err := inst.assertInit(); err != nil {
 		return nil, nil
 	}
-	id := objectID(C.libvlc_media_get_user_data(m.media))
+	id := C.libvlc_media_get_user_data(m.media)
 
 	obj, ok := inst.objects.get(id)
 	if !ok {

@@ -177,7 +177,7 @@ func (rd *RendererDiscoverer) Start(cb RendererDiscoveryCallback) error {
 		RendererDiscovererItemAdded, RendererDiscovererItemDeleted,
 	}
 
-	var eventIDs []EventID
+	eventIDs := make([]EventID, 0, len(events))
 	for _, event := range events {
 		eventID, err := manager.attach(event, nil, eventCallback, nil)
 		if err != nil {
