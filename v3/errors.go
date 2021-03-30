@@ -53,6 +53,7 @@ var (
 	ErrAudioOutputListMissing       = errors.New("could not get audio output list")
 	ErrAudioOutputSet               = errors.New("could not set audio output")
 	ErrAudioOutputDeviceListMissing = errors.New("could not get audio output device list")
+	ErrAudioOutputDeviceMissing     = errors.New("could not get audio output device")
 	ErrFilterListMissing            = errors.New("could not get filter list")
 	ErrStereoModeSet                = errors.New("could not set stereo mode")
 )

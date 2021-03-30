@@ -398,6 +398,23 @@ func (p *Player) AudioOutputDevice() (string, error) {
 	return C.GoString(cName), nil
 }
 
+// SetAudioOutputDevice sets the audio output device to be used by the
+// media player. The list of available devices can be obtained using the
+// Player.AudioOutputDevices method.
+// NOTE: The syntax for the device parameter depends on the audio output.
+// Some audio output modules require further parameters.
+func (p *Player) SetAudioOutputDevice(device string) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	cDevice := C.CString(device)
+	C.libvlc_audio_output_device_set(p.player, nil, cDevice)
+	C.free(unsafe.Pointer(cDevice))
+
+	return getError()
+}
+
 // StereoMode returns the stereo mode of the audio output used by the player.
 func (p *Player) StereoMode() (StereoMode, error) {
 	if err := p.assertInit(); err != nil {
