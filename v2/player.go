@@ -332,7 +332,7 @@ func (p *Player) AudioOutputDevices() ([]*AudioOutputDevice, error) {
 // The syntax for the `device` parameter depends on the audio output.
 // Some audio output modules require further parameters.
 // Due to a design bug in libVLC, the method does not return an error if the
-// passed in device could not be set.
+// passed in device cannot be set.
 func (p *Player) SetAudioOutputDevice(device, output string) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -738,7 +738,7 @@ func (p *Player) VideoDimensions() (uint, uint, error) {
 	return uint(w), uint(h), nil
 }
 
-// CursorPosition returns the X and Y coordinates of the mouse cursor,
+// CursorPosition returns the X and Y coordinates of the mouse cursor
 // relative to the rendered area of the currently playing video.
 // NOTE: The coordinates are expressed in terms of the decoded video
 // resolution, not in terms of pixels on the screen. Either coordinate may
