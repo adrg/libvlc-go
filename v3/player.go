@@ -10,6 +10,42 @@ import (
 	"unsafe"
 )
 
+// PlayerRole defines the intended usage of a media player.
+type PlayerRole uint
+
+// Player roles.
+const (
+	// No role has been set.
+	PlayerRoleNone PlayerRole = iota
+
+	// Music (or radio) playback.
+	PlayerRoleMusic
+
+	// Video playback.
+	PlayerRoleVideo
+
+	// Speech, real-time communication.
+	PlayerRoleCommunication
+
+	// Video games.
+	PlayerRoleGame
+
+	// User interaction feedback.
+	PlayerRoleNotification
+
+	// Embedded animations (e.g. in a web page).
+	PlayerRoleAnimation
+
+	// Editing or production.
+	PlayerRoleProduction
+
+	// Accessibility.
+	PlayerRoleAccessibility
+
+	// Testing.
+	PlayerRoleTest
+)
+
 // Player is a media player used to play a single media file.
 // For playing media lists (playlists) use ListPlayer instead.
 type Player struct {
@@ -323,6 +359,70 @@ func (p *Player) SetAudioOutput(output string) error {
 	}
 
 	return nil
+}
+
+// AudioOutputDevices returns the list of available devices for the
+// audio output used by the media player.
+// NOTE: Not all audio outputs support this. An empty list of devices does
+// not imply that the audio output used by the player does not work.
+// Some audio output devices in the list might not work in some circumstances.
+// By default, it is recommended to not specify any explicit audio device.
+func (p *Player) AudioOutputDevices() ([]*AudioOutputDevice, error) {
+	if err := p.assertInit(); err != nil {
+		return nil, err
+	}
+
+	return parseAudioOutputDeviceList(C.libvlc_audio_output_device_enum(p.player))
+}
+
+// AudioOutputDevice returns the name of the current audio output device
+// used by the media player.
+// NOTE: The initial value for the current audio output device identifier
+// may not be set or may be an unknown value. Applications should compare
+// the returned value against the known device identifiers to find the
+// current audio output device. It is possible for the audio output device
+// to be changed externally. That may make the method unsuitable to use for
+// applications which are attempting to track audio device changes.
+func (p *Player) AudioOutputDevice() (string, error) {
+	if err := p.assertInit(); err != nil {
+		return "", err
+	}
+
+	cName := C.libvlc_audio_output_device_get(p.player)
+	if cName == nil {
+		return "", ErrAudioOutputDeviceMissing
+	}
+	defer C.free(unsafe.Pointer(cName))
+
+	return C.GoString(cName), nil
+}
+
+// SetAudioOutputDevice sets the audio output device to be used by the
+// media player. The list of available devices can be obtained using the
+// Player.AudioOutputDevices method. Pass in an empty string as the `output`
+// parameter in order to move the current audio output to the specified
+// device immediately. This is the recommended usage.
+// NOTE: The syntax for the `device` parameter depends on the audio output.
+// Some audio output modules require further parameters.
+// Due to a design bug in libVLC, the method does not return an error if the
+// passed in device cannot be set. Use the Player.AudioOutputDevice method
+// to check if the device has been set.
+func (p *Player) SetAudioOutputDevice(device, output string) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	var cOutput *C.char
+	if output != "" {
+		cOutput = C.CString(output)
+		defer C.free(unsafe.Pointer(cOutput))
+	}
+
+	cDevice := C.CString(device)
+	defer C.free(unsafe.Pointer(cDevice))
+
+	C.libvlc_audio_output_device_set(p.player, cOutput, cDevice)
+	return getError()
 }
 
 // StereoMode returns the stereo mode of the audio output used by the player.
@@ -695,7 +795,7 @@ func (p *Player) SetRenderer(r *Renderer) error {
 }
 
 // SetEqualizer sets an equalizer for the player. The equalizer can be applied
-// at any moment (whether media playback is started or not) and it will be used
+// at any time (whether media playback is started or not) and it will be used
 // for subsequently played media instances as well. In order to revert to the
 // default equalizer, pass in `nil` as the equalizer parameter.
 func (p *Player) SetEqualizer(e *Equalizer) error {
@@ -711,6 +811,106 @@ func (p *Player) SetEqualizer(e *Equalizer) error {
 	}
 
 	return nil
+}
+
+// Role returns the role of the player.
+func (p *Player) Role() (PlayerRole, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	role := C.libvlc_media_player_get_role(p.player)
+	if role < 0 {
+		return 0, errOrDefault(getError(), ErrPlayerInvalidRole)
+	}
+
+	return PlayerRole(role), nil
+}
+
+// SetRole sets the role of the player.
+func (p *Player) SetRole(role PlayerRole) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	if C.libvlc_media_player_set_role(p.player, C.uint(role)) != 0 {
+		return errOrDefault(getError(), ErrPlayerInvalidRole)
+	}
+
+	return nil
+}
+
+// VideoDimensions returns the width and height of the current media of
+// the player, in pixels.
+// NOTE: The dimensions can only be obtained for parsed media instances.
+// Either play the media or call one of the media parsing methods first.
+func (p *Player) VideoDimensions() (uint, uint, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, 0, err
+	}
+
+	var w, h C.uint
+	if C.libvlc_video_get_size(p.player, 0, &w, &h) != 0 {
+		return 0, 0, errOrDefault(getError(), ErrMissingMediaDimensions)
+	}
+
+	return uint(w), uint(h), nil
+}
+
+// UpdateVideoViewpoint updates the viewpoint of the current media of the
+// player. This method only works with 360° videos. If `absolute` is true,
+// the passed in viewpoint replaces the current one. Otherwise, the current
+// viewpoint is updated using the specified viewpoint values.
+// NOTE: It is safe to call this method before media playback is started.
+func (p *Player) UpdateVideoViewpoint(vp *VideoViewpoint, absolute bool) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+	if vp == nil {
+		return ErrVideoViewpointSet
+	}
+
+	// Create new viewpoint.
+	cVp := C.libvlc_video_new_viewpoint()
+	if cVp == nil {
+		return errOrDefault(getError(), ErrVideoViewpointSet)
+	}
+	defer C.free(unsafe.Pointer(cVp))
+
+	// Copy viewpoint data.
+	cVp.f_yaw = C.float(vp.Yaw)
+	cVp.f_pitch = C.float(vp.Pitch)
+	cVp.f_roll = C.float(vp.Roll)
+	cVp.f_field_of_view = C.float(vp.FOV)
+
+	// Update viewpoint.
+	if C.libvlc_video_update_viewpoint(p.player, cVp, C.bool(absolute)) != 0 {
+		return errOrDefault(getError(), ErrVideoViewpointSet)
+	}
+
+	return nil
+}
+
+// CursorPosition returns the X and Y coordinates of the mouse cursor
+// relative to the rendered area of the currently playing video.
+// NOTE: The coordinates are expressed in terms of the decoded video
+// resolution, not in terms of pixels on the screen. Either coordinate may
+// be negative or larger than the corresponding dimension of the video, if
+// the cursor is outside the rendering area.
+// The coordinates may be out of date if the pointer is not located on the
+// video rendering area. libVLC does not track the pointer if it is outside
+// of the video widget. Also, libVLC does not support multiple cursors.
+func (p *Player) CursorPosition() (int, int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, 0, err
+	}
+
+	var x, y C.int
+	if C.libvlc_video_get_cursor(p.player, 0, &x, &y) != 0 {
+		return 0, 0, errOrDefault(getError(), ErrCursorPositionMissing)
+	}
+
+	return int(x), int(y), nil
 }
 
 // XWindow returns the identifier of the X window the media player is

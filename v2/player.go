@@ -308,6 +308,49 @@ func (p *Player) SetAudioOutput(output string) error {
 	return nil
 }
 
+// AudioOutputDevices returns the list of available devices for the
+// audio output used by the media player.
+// NOTE: Not all audio outputs support this. An empty list of devices does
+// not imply that the audio output used by the player does not work.
+// Some audio output devices in the list might not work in some circumstances.
+// By default, it is recommended to not specify any explicit audio device.
+func (p *Player) AudioOutputDevices() ([]*AudioOutputDevice, error) {
+	if err := p.assertInit(); err != nil {
+		return nil, err
+	}
+
+	return parseAudioOutputDeviceList(C.libvlc_audio_output_device_enum(p.player))
+}
+
+// SetAudioOutputDevice sets the audio output device to be used by the
+// media player. The list of available devices can be obtained using the
+// Player.AudioOutputDevices method. Pass in an empty string as the `output`
+// parameter in order to move the current audio output to the specified
+// device immediately. This is the recommended usage.
+// NOTE: Passing an empty string as the `output` parameter is only supported
+// for libVLC 2.2.0 or later.
+// The syntax for the `device` parameter depends on the audio output.
+// Some audio output modules require further parameters.
+// Due to a design bug in libVLC, the method does not return an error if the
+// passed in device cannot be set.
+func (p *Player) SetAudioOutputDevice(device, output string) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	var cOutput *C.char
+	if output != "" {
+		cOutput = C.CString(output)
+		defer C.free(unsafe.Pointer(cOutput))
+	}
+
+	cDevice := C.CString(device)
+	defer C.free(unsafe.Pointer(cDevice))
+
+	C.libvlc_audio_output_device_set(p.player, cOutput, cDevice)
+	return getError()
+}
+
 // StereoMode returns the stereo mode of the audio output used by the player.
 func (p *Player) StereoMode() (StereoMode, error) {
 	if err := p.assertInit(); err != nil {
@@ -660,7 +703,7 @@ func (p *Player) SetSubtitleTrack(trackID int) error {
 }
 
 // SetEqualizer sets an equalizer for the player. The equalizer can be applied
-// at any moment (whether media playback is started or not) and it will be used
+// at any time (whether media playback is started or not) and it will be used
 // for subsequently played media instances as well. In order to revert to the
 // default equalizer, pass in `nil` as the equalizer parameter.
 func (p *Player) SetEqualizer(e *Equalizer) error {
@@ -676,6 +719,45 @@ func (p *Player) SetEqualizer(e *Equalizer) error {
 	}
 
 	return nil
+}
+
+// VideoDimensions returns the width and height of the current media of
+// the player, in pixels.
+// NOTE: The dimensions can only be obtained for parsed media instances.
+// Either play the media or call one of the media parsing methods first.
+func (p *Player) VideoDimensions() (uint, uint, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, 0, err
+	}
+
+	var w, h C.uint
+	if C.libvlc_video_get_size(p.player, 0, &w, &h) != 0 {
+		return 0, 0, errOrDefault(getError(), ErrMissingMediaDimensions)
+	}
+
+	return uint(w), uint(h), nil
+}
+
+// CursorPosition returns the X and Y coordinates of the mouse cursor
+// relative to the rendered area of the currently playing video.
+// NOTE: The coordinates are expressed in terms of the decoded video
+// resolution, not in terms of pixels on the screen. Either coordinate may
+// be negative or larger than the corresponding dimension of the video, if
+// the cursor is outside the rendering area.
+// The coordinates may be out of date if the pointer is not located on the
+// video rendering area. libVLC does not track the pointer if it is outside
+// of the video widget. Also, libVLC does not support multiple cursors.
+func (p *Player) CursorPosition() (int, int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, 0, err
+	}
+
+	var x, y C.int
+	if C.libvlc_video_get_cursor(p.player, 0, &x, &y) != 0 {
+		return 0, 0, errOrDefault(getError(), ErrCursorPositionMissing)
+	}
+
+	return int(x), int(y), nil
 }
 
 // XWindow returns the identifier of the X window the media player is

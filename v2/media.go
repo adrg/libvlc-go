@@ -373,9 +373,9 @@ func (m *Media) Parse() error {
 }
 
 // ParseAsync fetches local art, metadata and track information asynchronously.
-// Listen to MediaParsedChanged event on the media event manager the track when
-// the parsing has finished. However, if the media was already parsed, the
-// event will not be sent.
+// Listen to the MediaParsedChanged event on the media event manager the track
+// when the parsing has finished. However, if the media was already parsed,
+// the event is not sent.
 func (m *Media) ParseAsync() error {
 	if err := m.assertInit(); err != nil {
 		return err
@@ -514,7 +514,7 @@ func (m *Media) getUserData() (objectID, *mediaData) {
 	if err := inst.assertInit(); err != nil {
 		return nil, nil
 	}
-	id := objectID(C.libvlc_media_get_user_data(m.media))
+	id := C.libvlc_media_get_user_data(m.media)
 
 	obj, ok := inst.objects.get(id)
 	if !ok {

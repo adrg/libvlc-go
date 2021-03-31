@@ -4,6 +4,9 @@ package vlc
 // #include <vlc/vlc.h>
 // #include <stdlib.h>
 import "C"
+import (
+	"unsafe"
+)
 
 // StereoMode defines stereo modes which can be used by an audio output.
 type StereoMode int
@@ -20,15 +23,15 @@ const (
 	StereoModeHeadphones
 )
 
-// AudioOutput is an abstraction for rendering decoded (or pass-through)
-// audio samples.
+// AudioOutput contains information regarding an audio output.
 type AudioOutput struct {
 	Name        string
 	Description string
 }
 
-// AudioOutputList returns a list of audio output devices that can be used
-// with an instance of a player.
+// AudioOutputList returns the list of available audio outputs.
+// In order to change the audio output of a media player instance,
+// use the Player.SetAudioOutput method.
 func AudioOutputList() ([]*AudioOutput, error) {
 	if err := inst.assertInit(); err != nil {
 		return nil, err
@@ -40,7 +43,7 @@ func AudioOutputList() ([]*AudioOutput, error) {
 	}
 
 	var outputs []*AudioOutput
-	for n := cOutputs; n != nil; n = (*C.libvlc_audio_output_t)(n.p_next) {
+	for n := cOutputs; n != nil; n = n.p_next {
 		outputs = append(outputs, &AudioOutput{
 			Name:        C.GoString(n.psz_name),
 			Description: C.GoString(n.psz_description),
@@ -49,6 +52,47 @@ func AudioOutputList() ([]*AudioOutput, error) {
 
 	C.libvlc_audio_output_list_release(cOutputs)
 	return outputs, getError()
+}
+
+// AudioOutputDevice contains information regarding an audio output device.
+type AudioOutputDevice struct {
+	Name        string
+	Description string
+}
+
+// ListAudioOutputDevices returns the list of available devices for the
+// specified audio output. Use the AudioOutputList method in order to obtain
+// the list of available audio outputs. In order to change the audio output
+// device of a media player instance, use Player.SetAudioOutputDevice.
+// NOTE: Not all audio outputs support this. An empty list of devices does
+// not imply that the specified audio output does not work.
+// Some audio output devices in the list might not work in some circumstances.
+// By default, it is recommended to not specify any explicit audio device.
+func ListAudioOutputDevices(output string) ([]*AudioOutputDevice, error) {
+	if err := inst.assertInit(); err != nil {
+		return nil, err
+	}
+
+	cOutput := C.CString(output)
+	defer C.free(unsafe.Pointer(cOutput))
+	return parseAudioOutputDeviceList(C.libvlc_audio_output_device_list_get(inst.handle, cOutput))
+}
+
+func parseAudioOutputDeviceList(cDevices *C.libvlc_audio_output_device_t) ([]*AudioOutputDevice, error) {
+	if cDevices == nil {
+		return nil, errOrDefault(getError(), ErrAudioOutputDeviceListMissing)
+	}
+
+	var devices []*AudioOutputDevice
+	for n := cDevices; n != nil; n = n.p_next {
+		devices = append(devices, &AudioOutputDevice{
+			Name:        C.GoString(n.psz_device),
+			Description: C.GoString(n.psz_description),
+		})
+	}
+
+	C.libvlc_audio_output_device_list_release(cDevices)
+	return devices, getError()
 }
 
 // ModuleDescription contains information about a libVLC module.
@@ -83,7 +127,7 @@ func parseFilterList(cFilters *C.libvlc_module_description_t) ([]*ModuleDescript
 	}
 
 	var filters []*ModuleDescription
-	for n := cFilters; n != nil; n = (*C.libvlc_module_description_t)(n.p_next) {
+	for n := cFilters; n != nil; n = n.p_next {
 		filters = append(filters, &ModuleDescription{
 			Name:      C.GoString(n.psz_name),
 			ShortName: C.GoString(n.psz_shortname),
