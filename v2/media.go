@@ -373,9 +373,9 @@ func (m *Media) Parse() error {
 }
 
 // ParseAsync fetches local art, metadata and track information asynchronously.
-// Listen to MediaParsedChanged event on the media event manager the track when
-// the parsing has finished. However, if the media was already parsed, the
-// event will not be sent.
+// Listen to the MediaParsedChanged event on the media event manager the track
+// when the parsing has finished. However, if the media was already parsed,
+// the event is not sent.
 func (m *Media) ParseAsync() error {
 	if err := m.assertInit(); err != nil {
 		return err
