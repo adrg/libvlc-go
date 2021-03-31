@@ -4,7 +4,7 @@
   </div>
 </h1>
 
-<h3 align="center">Go bindings for libVLC 2.X/3.X/4.X and high-level media player interface.</h3>
+<h3 align="center">Go bindings for libVLC and high-level media player interface.</h3>
 
 <p align="center">
     <a href="https://pkg.go.dev/github.com/adrg/libvlc-go/v3">
@@ -210,6 +210,10 @@ See [CONTRIBUTING.MD](CONTRIBUTING.md).
 [danielpellon](https://github.com/danielpellon),
 [patknight](https://github.com/patknight),
 [sndnvaps](https://github.com/sndnvaps).
+
+## Discord server
+
+libvlc-go is part of the libVLC Discord Community server. Feel free to come say [hello](https://discord.gg/3h3K3JF)!
 
 ## References
 
