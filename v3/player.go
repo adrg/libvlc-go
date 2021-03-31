@@ -892,6 +892,28 @@ func (p *Player) UpdateVideoViewpoint(vp *VideoViewpoint, absolute bool) error {
 	return nil
 }
 
+// CursorPosition returns the X and Y coordinates of the mouse cursor,
+// relative to the rendered area of the currently playing video.
+// NOTE: The coordinates are expressed in terms of the decoded video
+// resolution, not in terms of pixels on the screen. Either coordinate may
+// be negative or larger than the corresponding dimension of the video, if
+// the cursor is outside the rendering area.
+// The coordinates may be out of date if the pointer is not located on the
+// video rendering area. libVLC does not track the pointer if it is outside
+// of the video widget. Also, libVLC does not support multiple pointers.
+func (p *Player) CursorPosition() (int, int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, 0, err
+	}
+
+	var x, y C.int
+	if C.libvlc_video_get_cursor(p.player, 0, &x, &y) != 0 {
+		return 0, 0, errOrDefault(getError(), ErrCursorPositionMissing)
+	}
+
+	return int(x), int(y), nil
+}
+
 // XWindow returns the identifier of the X window the media player is
 // configured to render its video output to, or 0 if no window is set.
 // The window can be set using the SetXWindow method.
