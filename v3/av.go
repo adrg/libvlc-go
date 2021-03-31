@@ -75,9 +75,7 @@ func ListAudioOutputDevices(output string) ([]*AudioOutputDevice, error) {
 
 	cOutput := C.CString(output)
 	defer C.free(unsafe.Pointer(cOutput))
-
-	cDevices := C.libvlc_audio_output_device_list_get(inst.handle, cOutput)
-	return parseAudioOutputDeviceList(cDevices)
+	return parseAudioOutputDeviceList(C.libvlc_audio_output_device_list_get(inst.handle, cOutput))
 }
 
 func parseAudioOutputDeviceList(cDevices *C.libvlc_audio_output_device_t) ([]*AudioOutputDevice, error) {

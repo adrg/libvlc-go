@@ -372,8 +372,7 @@ func (p *Player) AudioOutputDevices() ([]*AudioOutputDevice, error) {
 		return nil, err
 	}
 
-	cDevices := C.libvlc_audio_output_device_enum(p.player)
-	return parseAudioOutputDeviceList(cDevices)
+	return parseAudioOutputDeviceList(C.libvlc_audio_output_device_enum(p.player))
 }
 
 // AudioOutputDevice returns the name of the current audio output device
@@ -868,7 +867,7 @@ func (p *Player) UpdateVideoViewpoint(vp *VideoViewpoint, absolute bool) error {
 		return err
 	}
 	if vp == nil {
-		return ErrVideoViewpointNotInitialized
+		return ErrVideoViewpointSet
 	}
 
 	// Create new viewpoint.
@@ -900,7 +899,7 @@ func (p *Player) UpdateVideoViewpoint(vp *VideoViewpoint, absolute bool) error {
 // the cursor is outside the rendering area.
 // The coordinates may be out of date if the pointer is not located on the
 // video rendering area. libVLC does not track the pointer if it is outside
-// of the video widget. Also, libVLC does not support multiple pointers.
+// of the video widget. Also, libVLC does not support multiple cursors.
 func (p *Player) CursorPosition() (int, int, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, 0, err
