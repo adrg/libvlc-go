@@ -841,6 +841,39 @@ func (p *Player) SetRole(role PlayerRole) error {
 	return nil
 }
 
+// UpdateVideoViewpoint updates the viewpoint of 360° videos. If `absolute`
+// is true, the passed in viewpoint replaces the current one. Otherwise, the
+// current viewpoint is updated using the specified viewpoint values.
+// NOTE: It is safe to call this method before media playback is started.
+func (p *Player) UpdateVideoViewpoint(vp *VideoViewpoint, absolute bool) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+	if vp == nil {
+		return ErrVideoViewpointNotInitialized
+	}
+
+	// Create new viewpoint.
+	cVp := C.libvlc_video_new_viewpoint()
+	if cVp == nil {
+		return errOrDefault(getError(), ErrVideoViewpointSet)
+	}
+	defer C.free(unsafe.Pointer(cVp))
+
+	// Copy viewpoint data.
+	cVp.f_yaw = C.float(vp.Yaw)
+	cVp.f_pitch = C.float(vp.Pitch)
+	cVp.f_roll = C.float(vp.Roll)
+	cVp.f_field_of_view = C.float(vp.FOV)
+
+	// Update viewpoint.
+	if C.libvlc_video_update_viewpoint(p.player, cVp, C.bool(absolute)) != 0 {
+		return errOrDefault(getError(), ErrVideoViewpointSet)
+	}
+
+	return nil
+}
+
 // XWindow returns the identifier of the X window the media player is
 // configured to render its video output to, or 0 if no window is set.
 // The window can be set using the SetXWindow method.

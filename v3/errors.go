@@ -56,6 +56,8 @@ var (
 	ErrAudioOutputDeviceMissing     = errors.New("could not get audio output device")
 	ErrFilterListMissing            = errors.New("could not get filter list")
 	ErrStereoModeSet                = errors.New("could not set stereo mode")
+	ErrVideoViewpointSet            = errors.New("could not set video viewpoint")
+	ErrVideoViewpointNotInitialized = errors.New("video viewpoint not initialized")
 )
 
 // Renderer discoverer errors.
