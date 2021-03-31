@@ -796,7 +796,7 @@ func (p *Player) SetRenderer(r *Renderer) error {
 }
 
 // SetEqualizer sets an equalizer for the player. The equalizer can be applied
-// at any moment (whether media playback is started or not) and it will be used
+// at any time (whether media playback is started or not) and it will be used
 // for subsequently played media instances as well. In order to revert to the
 // default equalizer, pass in `nil` as the equalizer parameter.
 func (p *Player) SetEqualizer(e *Equalizer) error {
@@ -841,9 +841,27 @@ func (p *Player) SetRole(role PlayerRole) error {
 	return nil
 }
 
-// UpdateVideoViewpoint updates the viewpoint of 360° videos. If `absolute`
-// is true, the passed in viewpoint replaces the current one. Otherwise, the
-// current viewpoint is updated using the specified viewpoint values.
+// VideoDimensions returns the width and height of the current media of
+// the player, in pixels.
+// NOTE: The dimensions can only be obtained for parsed media instances.
+// Either play the media or call one of the media parsing methods first.
+func (p *Player) VideoDimensions() (uint, uint, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, 0, err
+	}
+
+	var w, h C.uint
+	if C.libvlc_video_get_size(p.player, 0, &w, &h) != 0 {
+		return 0, 0, errOrDefault(getError(), ErrMissingMediaDimensions)
+	}
+
+	return uint(w), uint(h), nil
+}
+
+// UpdateVideoViewpoint updates the viewpoint of the current media of the
+// player. This method only works with 360° videos. If `absolute` is true,
+// the passed in viewpoint replaces the current one. Otherwise, the current
+// viewpoint is updated using the specified viewpoint values.
 // NOTE: It is safe to call this method before media playback is started.
 func (p *Player) UpdateVideoViewpoint(vp *VideoViewpoint, absolute bool) error {
 	if err := p.assertInit(); err != nil {

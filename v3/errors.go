@@ -31,6 +31,7 @@ var (
 	ErrMissingMediaStats       = errors.New("could not get media statistics")
 	ErrInvalidMediaStats       = errors.New("invalid media statistics")
 	ErrMissingMediaLocation    = errors.New("could not get media location")
+	ErrMissingMediaDimensions  = errors.New("could not get media dimensions")
 	ErrMediaMetaSave           = errors.New("could not save media metadata")
 	ErrMediaParse              = errors.New("could not parse media")
 )
