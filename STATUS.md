@@ -81,10 +81,10 @@ Reference: [libVLC media player](https://www.videolan.org/developers/vlc/doc/dox
 |---|:------------------------------------------------|:-----------------------------|:-----------|
 | ☒ | libvlc_audio_output_list_get                    | vlc.AudioOutputList          | `v2`, `v3` |
 | ☒ | libvlc_audio_output_set                         | Player.SetAudioOutput        | `v2`, `v3` |
-| ☐ | libvlc_audio_output_device_enum                 |                              | `v2`, `v3` |
-| ☐ | libvlc_audio_output_device_list_get             |                              | `v2`, `v3` |
-| ☐ | libvlc_audio_output_device_set                  |                              | `v2`, `v3` |
-| ☐ | libvlc_audio_output_device_get                  |                              | `v3`       |
+| ☒ | libvlc_audio_output_device_enum                 | Player.AudioOutputDevices    | `v2`, `v3` |
+| ☒ | libvlc_audio_output_device_list_get             | vlc.ListAudioOutputDevices   | `v2`, `v3` |
+| ☒ | libvlc_audio_output_device_set                  | vlc.SetAudioOutputDevice     | `v2`, `v3` |
+| ☒ | libvlc_audio_output_device_get                  | vlc.AudioOutputDevice        | `v3`       |
 | ☒ | libvlc_audio_toggle_mute                        | Player.ToggleMute            | `v2`, `v3` |
 | ☒ | libvlc_audio_get_mute                           | Player.IsMuted               | `v2`, `v3` |
 | ☒ | libvlc_audio_set_mute                           | Player.SetMute               | `v2`, `v3` |
@@ -110,8 +110,8 @@ Reference: [libVLC media player](https://www.videolan.org/developers/vlc/doc/dox
 | ☒ | libvlc_audio_equalizer_set_amp_at_index         | Equalizer.SetAmpValueAtIndex | `v2`, `v3` |
 | ☒ | libvlc_audio_equalizer_get_amp_at_index         | Equalizer.AmpValueAtIndex    | `v2`, `v3` |
 | ☒ | libvlc_media_player_set_equalizer               | Player.SetEqualizer          | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_role                    |                              | `v3`       |
-| ☐ | libvlc_media_player_set_role                    |                              | `v3`       |
+| ☒ | libvlc_media_player_get_role                    | Player.Role                  | `v3`       |
+| ☒ | libvlc_media_player_set_role                    | Player.SetRole               | `v3`       |
 
 Reference: [libVLC audio controls](https://www.videolan.org/developers/vlc/doc/doxygen/html/group__libvlc__audio.html).
 
@@ -124,14 +124,13 @@ Reference: [libVLC audio controls](https://www.videolan.org/developers/vlc/doc/d
 | ☒ | libvlc_get_fullscreen                             | Player.IsFullScreen             | `v2`, `v3` |
 | ☒ | libvlc_video_set_key_input                        | Player.SetKeyInput              | `v2`, `v3` |
 | ☒ | libvlc_video_set_mouse_input                      | Player.SetMouseInput            | `v2`, `v3` |
-| ☐ | libvlc_video_get_size                             |                                 | `v2`, `v3` |
-| ☐ | libvlc_video_get_cursor                           |                                 | `v2`, `v3` |
+| ☒ | libvlc_video_get_size                             | Player.VideoDimensions          | `v2`, `v3` |
+| ☒ | libvlc_video_get_cursor                           | Player.CursorPosition           | `v2`, `v3` |
 | ☒ | libvlc_video_get_scale                            | Player.Scale                    | `v2`, `v3` |
 | ☒ | libvlc_video_set_scale                            | Player.SetScale                 | `v2`, `v3` |
 | ☒ | libvlc_video_get_aspect_ratio                     | Player.AspectRatio              | `v2`, `v3` |
 | ☒ | libvlc_video_set_aspect_ratio                     | Player.SetAspectRatio           | `v2`, `v3` |
-| ☐ | libvlc_video_new_viewpoint                        |                                 | `v3`       |
-| ☐ | libvlc_video_update_viewpoint                     |                                 | `v3`       |
+| ☒ | libvlc_video_update_viewpoint                     | Player.UpdateVideoViewpoint     | `v3`       |
 | ☒ | libvlc_video_get_spu                              | Player.SubtitleTrackID          | `v2`, `v3` |
 | ☒ | libvlc_video_get_spu_count                        | Player.SubtitleTrackCount       | `v2`, `v3` |
 | ☒ | libvlc_video_get_spu_description                  | Player.SubtitleTrackDescriptors | `v2`, `v3` |
