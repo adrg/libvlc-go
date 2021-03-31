@@ -213,7 +213,7 @@ See [CONTRIBUTING.MD](CONTRIBUTING.md).
 
 ## Discord server
 
-libvlc-go is part of the libVLC Discord Community server. Feel free to come say [hello](https://discord.gg/3h3K3JF)!
+libvlc-go is part of the libVLC Discord Community [server](https://discord.gg/3h3K3JF). Feel free to come say hello!
 
 ## References
 
