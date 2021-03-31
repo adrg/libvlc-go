@@ -704,7 +704,7 @@ func (p *Player) SetSubtitleTrack(trackID int) error {
 }
 
 // SetEqualizer sets an equalizer for the player. The equalizer can be applied
-// at any moment (whether media playback is started or not) and it will be used
+// at any time (whether media playback is started or not) and it will be used
 // for subsequently played media instances as well. In order to revert to the
 // default equalizer, pass in `nil` as the equalizer parameter.
 func (p *Player) SetEqualizer(e *Equalizer) error {
@@ -720,6 +720,45 @@ func (p *Player) SetEqualizer(e *Equalizer) error {
 	}
 
 	return nil
+}
+
+// VideoDimensions returns the width and height of the current media of
+// the player, in pixels.
+// NOTE: The dimensions can only be obtained for parsed media instances.
+// Either play the media or call one of the media parsing methods first.
+func (p *Player) VideoDimensions() (uint, uint, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, 0, err
+	}
+
+	var w, h C.uint
+	if C.libvlc_video_get_size(p.player, 0, &w, &h) != 0 {
+		return 0, 0, errOrDefault(getError(), ErrMissingMediaDimensions)
+	}
+
+	return uint(w), uint(h), nil
+}
+
+// CursorPosition returns the X and Y coordinates of the mouse cursor,
+// relative to the rendered area of the currently playing video.
+// NOTE: The coordinates are expressed in terms of the decoded video
+// resolution, not in terms of pixels on the screen. Either coordinate may
+// be negative or larger than the corresponding dimension of the video, if
+// the cursor is outside the rendering area.
+// The coordinates may be out of date if the pointer is not located on the
+// video rendering area. libVLC does not track the pointer if it is outside
+// of the video widget. Also, libVLC does not support multiple pointers.
+func (p *Player) CursorPosition() (int, int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, 0, err
+	}
+
+	var x, y C.int
+	if C.libvlc_video_get_cursor(p.player, 0, &x, &y) != 0 {
+		return 0, 0, errOrDefault(getError(), ErrCursorPositionMissing)
+	}
+
+	return int(x), int(y), nil
 }
 
 // XWindow returns the identifier of the X window the media player is
