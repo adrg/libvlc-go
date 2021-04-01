@@ -11,6 +11,9 @@ jobs:
     strategy:
       matrix:
         go: ['1.16']
+    defaults:
+      run:
+        working-directory: ./v3
     steps:
     - name: Setup
       uses: actions/setup-go@v2
@@ -34,8 +37,7 @@ jobs:
 
     - name: Vet
       run: |
-        go vet -unsafeptr=false ./v2
-        go vet -unsafeptr=false ./v3
+        go vet -unsafeptr=false ./...
 
     - name: Test
       run: go test -v  -coverprofile=coverage.txt -covermode=atomic ./...
