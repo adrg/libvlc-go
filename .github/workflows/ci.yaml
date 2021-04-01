@@ -27,8 +27,6 @@ jobs:
     - name: Dependencies
       run: |
         go version
-        GO111MODULE=on go get -v -t -d ./v2
-        GO111MODULE=on go get -v -t -d ./v3
         GO111MODULE=on go install golang.org/x/lint/golint@latest
 
     - name: Lint
