@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: ['1.16']
+    steps:
+    - name: Setup
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ matrix.go }}
+
+    - name: Prerequisites
+      run: |
+        sudo apt-get -y install libvlc-dev vlc-plugin-base vlc-plugin-video-output vlc-plugin-access-extra
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Dependencies
+      run: |
+        go version
+        go get -v -t -d ./...
+        go get -u golang.org/x/lint/golint
+
+    - name: Lint
+      run: golint -set_exit_status=1 ./...
+
+    - name: Vet
+      run: go vet ./...
+
+    - name: Test
+      run: go test -v  -coverprofile=coverage.txt -covermode=atomic ./...
+
+    - name: Coverage
+      uses: codecov/codecov-action@v1
