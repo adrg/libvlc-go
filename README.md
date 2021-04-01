@@ -7,6 +7,9 @@
 <h3 align="center">Go bindings for libVLC and high-level media player interface.</h3>
 
 <p align="center">
+    <a href="https://github.com/adrg/libvlc-go/actions?query=workflow%3ACI">
+        <img alt="Build status" src="https://github.com/adrg/libvlc-go/workflows/CI/badge.svg">
+    </a>
     <a href="https://pkg.go.dev/github.com/adrg/libvlc-go/v3">
         <img alt="pkg.go.dev documentation" src="https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white">
     </a>
