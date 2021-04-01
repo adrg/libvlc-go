@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: ['1.15']
+        go: ['1.16']
     steps:
     - name: Setup
       uses: actions/setup-go@v2
@@ -28,7 +28,7 @@ jobs:
       run: |
         go version
         go get -v -t -d ./...
-        go get -u golang.org/x/lint/golint
+        go install golang.org/x/lint/golint@latest
 
     - name: Lint
       run: golint -set_exit_status=1 ./...
