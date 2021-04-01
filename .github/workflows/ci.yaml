@@ -35,8 +35,9 @@ jobs:
       run: golint -set_exit_status=1 ./...
 
     - name: Vet
-      run: go vet -unsafeptr=false ./v2
-      run: go vet -unsafeptr=false ./v3
+      run: |
+        go vet -unsafeptr=false ./v2
+        go vet -unsafeptr=false ./v3
 
     - name: Test
       run: go test -v  -coverprofile=coverage.txt -covermode=atomic ./...
