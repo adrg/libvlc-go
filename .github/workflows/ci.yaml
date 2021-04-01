@@ -41,7 +41,7 @@ jobs:
 
     - name: Test
       working-directory: ./v3
-      run: go test -v  -coverprofile=coverage.txt -covermode=atomic ./...
+      run: go test -v -coverprofile=coverage.txt -covermode=atomic ./...
 
     - name: Coverage
       uses: codecov/codecov-action@v1
