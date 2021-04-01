@@ -1,4 +1,4 @@
-name: CI
+name: CI v2
 
 on:
   push:
@@ -25,22 +25,22 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Dependencies
-      working-directory: ./v3
+      working-directory: ./v2
       run: |
         go version
         go get -v -t -d ./...
         go install golang.org/x/lint/golint@latest
 
     - name: Lint
-      working-directory: ./v3
+      working-directory: ./v2
       run: golint -set_exit_status=1 ./...
 
     - name: Vet
-      working-directory: ./v3
+      working-directory: ./v2
       run: go vet -unsafeptr=false ./...
 
     - name: Test
-      working-directory: ./v3
+      working-directory: ./v2
       run: go test -v  -coverprofile=coverage.txt -covermode=atomic ./...
 
     - name: Coverage
