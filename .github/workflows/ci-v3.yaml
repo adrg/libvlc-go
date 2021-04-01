@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: ['1.15']
+        go: ['1.16']
     steps:
     - name: Setup
       uses: actions/setup-go@v2
@@ -25,18 +25,22 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Dependencies
+      working-directory: ./v3
       run: |
         go version
         go get -v -t -d ./...
-        go get -u golang.org/x/lint/golint
+        go install golang.org/x/lint/golint@latest
 
     - name: Lint
+      working-directory: ./v3
       run: golint -set_exit_status=1 ./...
 
     - name: Vet
+      working-directory: ./v3
       run: go vet -unsafeptr=false ./...
 
     - name: Test
+      working-directory: ./v3
       run: go test -v  -coverprofile=coverage.txt -covermode=atomic ./...
 
     - name: Coverage
