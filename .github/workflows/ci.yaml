@@ -28,7 +28,7 @@ jobs:
       run: |
         go version
         go get -v -t -d ./...
-        go install golang.org/x/lint/golint@latest
+        GO111MODULE=on go install golang.org/x/lint/golint@latest
 
     - name: Lint
       run: golint -set_exit_status=1 ./...
