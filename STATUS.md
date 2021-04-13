@@ -11,67 +11,63 @@
 | ☒ | libvlc_get_version                     | vlc.Version.Runtime    | `v2`, `v3` |
 | ☒ | libvlc_get_compiler                    | vlc.Version.Compiler   | `v2`, `v3` |
 | ☒ | libvlc_get_changeset                   | vlc.Version.Changeset  | `v2`, `v3` |
-| ☒ | libvlc_audio_filter_list_get           | vlc.ListAudioFilters   | `v2`, `v3` |
-| ☒ | libvlc_video_filter_list_get           | vlc.ListVideoFilters   | `v2`, `v3` |
 
 Reference: [libVLC core](https://www.videolan.org/developers/vlc/doc/doxygen/html/group__libvlc__core.html).
 
 ## Player
 
-| ☐ | Binding                                         | Implementation             | Versions   |
-|---|:------------------------------------------------|:---------------------------|:-----------|
-| ☒ | libvlc_media_player_new                         | vlc.NewPlayer              | `v2`, `v3` |
-| ☐ | libvlc_media_player_new_from_media              |                            | `v2`, `v3` |
-| ☒ | libvlc_media_player_release                     | Player.Release             | `v2`, `v3` |
-| ☒ | libvlc_media_player_set_media                   | Player.SetMedia            | `v2`, `v3` |
-| ☒ | libvlc_media_player_get_media                   | Player.Media               | `v2`, `v3` |
-| ☒ | libvlc_media_player_event_manager               | Player.EventManager        | `v2`, `v3` |
-| ☒ | libvlc_media_player_is_playing                  | Player.IsPlaying           | `v2`, `v3` |
-| ☒ | libvlc_media_player_play                        | Player.Play                | `v2`, `v3` |
-| ☒ | libvlc_media_player_set_pause                   | Player.SetPause            | `v2`, `v3` |
-| ☒ | libvlc_media_player_pause                       | Player.TogglePause         | `v2`, `v3` |
-| ☒ | libvlc_media_player_stop                        | Player.Stop                | `v2`, `v3` |
-| ☒ | libvlc_media_player_set_renderer                | Player.SetRenderer         | `v3`       |
-| ☐ | libvlc_video_set_callbacks                      |                            | `v2`, `v3` |
-| ☐ | libvlc_video_set_format                         |                            | `v2`, `v3` |
-| ☐ | libvlc_video_set_format_callbacks               |                            | `v2`, `v3` |
-| ☒ | libvlc_media_player_set_nsobject                | Player.SetNSObject         | `v2`, `v3` |
-| ☒ | libvlc_media_player_get_nsobject                | Player.NSObject            | `v2`, `v3` |
-| ☒ | libvlc_media_player_set_xwindow                 | Player.SetXWindow          | `v2`, `v3` |
-| ☒ | libvlc_media_player_get_xwindow                 | Player.XWindow             | `v2`, `v3` |
-| ☒ | libvlc_media_player_set_hwnd                    | Player.SetHWND             | `v2`, `v3` |
-| ☒ | libvlc_media_player_get_hwnd                    | Player.HWND                | `v2`, `v3` |
-| ☐ | libvlc_media_player_set_android_context         |                            | `v2`, `v3` |
-| ☐ | libvlc_audio_set_callbacks                      |                            | `v2`, `v3` |
-| ☐ | libvlc_audio_set_volume_callback                |                            | `v2`, `v3` |
-| ☐ | libvlc_audio_set_format_callbacks               |                            | `v2`, `v3` |
-| ☐ | libvlc_audio_set_format                         |                            | `v2`, `v3` |
-| ☒ | libvlc_media_player_get_length                  | Player.MediaLength         | `v2`, `v3` |
-| ☒ | libvlc_media_player_get_time                    | Player.MediaTime           | `v2`, `v3` |
-| ☒ | libvlc_media_player_set_time                    | Player.SetMediaTime        | `v2`, `v3` |
-| ☒ | libvlc_media_player_get_position                | Player.MediaPosition       | `v2`, `v3` |
-| ☒ | libvlc_media_player_set_position                | Player.SetMediaPosition    | `v2`, `v3` |
-| ☐ | libvlc_media_player_set_chapter                 |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_chapter                 |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_chapter_count           |                            | `v2`, `v3` |
-| ☒ | libvlc_media_player_will_play                   | Player.WillPlay            | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_chapter_count_for_title |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_set_title                   |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_title                   |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_title_count             |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_previous_chapter            |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_next_chapter                |                            | `v2`, `v3` |
-| ☒ | libvlc_media_player_get_rate                    | Player.SetPlaybackRate     | `v2`, `v3` |
-| ☒ | libvlc_media_player_set_rate                    | Player.PlaybackRate        | `v2`, `v3` |
-| ☒ | libvlc_media_player_get_state                   | Player.MediaState          | `v2`, `v3` |
-| ☒ | libvlc_media_player_has_vout                    | Player.VideoOutputCount    | `v2`, `v3` |
-| ☒ | libvlc_media_player_is_seekable                 | Player.IsSeekable          | `v2`, `v3` |
-| ☒ | libvlc_media_player_can_pause                   | Player.CanPause            | `v2`, `v3` |
-| ☒ | libvlc_media_player_program_scrambled           | Player.IsScrambled         | `v2`, `v3` |
-| ☒ | libvlc_media_player_next_frame                  | Player.NextFrame           | `v2`, `v3` |
-| ☐ | libvlc_media_player_navigate                    |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_set_video_title_display     |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_add_slave                   |                            | `v2`, `v3` |
+| ☐ | Binding                                           | Implementation             | Versions   |
+|---|:--------------------------------------------------|:---------------------------|:-----------|
+| ☒ | libvlc_media_player_new                           | vlc.NewPlayer              | `v2`, `v3` |
+| ☐ | libvlc_media_player_new_from_media                |                            | `v2`, `v3` |
+| ☒ | libvlc_media_player_release                       | Player.Release             | `v2`, `v3` |
+| ☒ | libvlc_media_player_set_media                     | Player.SetMedia            | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_media                     | Player.Media               | `v2`, `v3` |
+| ☒ | libvlc_media_player_event_manager                 | Player.EventManager        | `v2`, `v3` |
+| ☒ | libvlc_media_player_is_playing                    | Player.IsPlaying           | `v2`, `v3` |
+| ☒ | libvlc_media_player_play                          | Player.Play                | `v2`, `v3` |
+| ☒ | libvlc_media_player_set_pause                     | Player.SetPause            | `v2`, `v3` |
+| ☒ | libvlc_media_player_pause                         | Player.TogglePause         | `v2`, `v3` |
+| ☒ | libvlc_media_player_stop                          | Player.Stop                | `v2`, `v3` |
+| ☒ | libvlc_media_player_set_renderer                  | Player.SetRenderer         | `v3`       |
+| ☒ | libvlc_media_player_set_nsobject                  | Player.SetNSObject         | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_nsobject                  | Player.NSObject            | `v2`, `v3` |
+| ☒ | libvlc_media_player_set_xwindow                   | Player.SetXWindow          | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_xwindow                   | Player.XWindow             | `v2`, `v3` |
+| ☒ | libvlc_media_player_set_hwnd                      | Player.SetHWND             | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_hwnd                      | Player.HWND                | `v2`, `v3` |
+| ☐ | libvlc_media_player_set_android_context           |                            | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_length                    | Player.MediaLength         | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_time                      | Player.MediaTime           | `v2`, `v3` |
+| ☒ | libvlc_media_player_set_time                      | Player.SetMediaTime        | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_position                  | Player.MediaPosition       | `v2`, `v3` |
+| ☒ | libvlc_media_player_set_position                  | Player.SetMediaPosition    | `v2`, `v3` |
+| ☐ | libvlc_media_player_set_chapter                   |                            | `v2`, `v3` |
+| ☐ | libvlc_media_player_get_chapter                   |                            | `v2`, `v3` |
+| ☐ | libvlc_media_player_get_chapter_count             |                            | `v2`, `v3` |
+| ☒ | libvlc_media_player_will_play                     | Player.WillPlay            | `v2`, `v3` |
+| ☐ | libvlc_media_player_get_chapter_count_for_title   |                            | `v2`, `v3` |
+| ☐ | libvlc_media_player_set_title                     |                            | `v2`, `v3` |
+| ☐ | libvlc_media_player_get_title                     |                            | `v2`, `v3` |
+| ☐ | libvlc_media_player_get_title_count               |                            | `v2`, `v3` |
+| ☐ | libvlc_media_player_previous_chapter              |                            | `v2`, `v3` |
+| ☐ | libvlc_media_player_next_chapter                  |                            | `v2`, `v3` |
+| ☐ | libvlc_media_player_get_full_title_descriptions   |                            | `v3`       |
+| ☐ | libvlc_media_player_get_full_chapter_descriptions |                            | `v3`       |
+| ☒ | libvlc_media_player_get_rate                      | Player.SetPlaybackRate     | `v2`, `v3` |
+| ☒ | libvlc_media_player_set_rate                      | Player.PlaybackRate        | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_state                     | Player.MediaState          | `v2`, `v3` |
+| ☒ | libvlc_media_player_has_vout                      | Player.VideoOutputCount    | `v2`, `v3` |
+| ☒ | libvlc_media_player_is_seekable                   | Player.IsSeekable          | `v2`, `v3` |
+| ☒ | libvlc_media_player_can_pause                     | Player.CanPause            | `v2`, `v3` |
+| ☒ | libvlc_media_player_program_scrambled             | Player.IsScrambled         | `v2`, `v3` |
+| ☒ | libvlc_media_player_next_frame                    | Player.NextFrame           | `v2`, `v3` |
+| ☒ | libvlc_media_player_set_equalizer                 | Player.SetEqualizer        | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_role                      | Player.Role                | `v3`       |
+| ☒ | libvlc_media_player_set_role                      | Player.SetRole             | `v3`       |
+| ☐ | libvlc_media_player_navigate                      |                            | `v2`, `v3` |
+| ☐ | libvlc_media_player_set_video_title_display       |                            | `v2`, `v3` |
+| ☐ | libvlc_media_player_add_slave                     |                            | `v2`, `v3` |
 
 Reference: [libVLC media player](https://www.videolan.org/developers/vlc/doc/doxygen/html/group__libvlc__media__player.html).
 
@@ -80,6 +76,7 @@ Reference: [libVLC media player](https://www.videolan.org/developers/vlc/doc/dox
 | ☐ | Binding                                         | Implementation               | Versions   |
 |---|:------------------------------------------------|:-----------------------------|:-----------|
 | ☒ | libvlc_audio_output_list_get                    | vlc.AudioOutputList          | `v2`, `v3` |
+| ☒ | libvlc_audio_filter_list_get                    | vlc.ListAudioFilters         | `v2`, `v3` |
 | ☒ | libvlc_audio_output_set                         | Player.SetAudioOutput        | `v2`, `v3` |
 | ☒ | libvlc_audio_output_device_enum                 | Player.AudioOutputDevices    | `v2`, `v3` |
 | ☒ | libvlc_audio_output_device_list_get             | vlc.ListAudioOutputDevices   | `v2`, `v3` |
@@ -109,9 +106,10 @@ Reference: [libVLC media player](https://www.videolan.org/developers/vlc/doc/dox
 | ☒ | libvlc_audio_equalizer_get_preamp               | Equalizer.PreampValue        | `v2`, `v3` |
 | ☒ | libvlc_audio_equalizer_set_amp_at_index         | Equalizer.SetAmpValueAtIndex | `v2`, `v3` |
 | ☒ | libvlc_audio_equalizer_get_amp_at_index         | Equalizer.AmpValueAtIndex    | `v2`, `v3` |
-| ☒ | libvlc_media_player_set_equalizer               | Player.SetEqualizer          | `v2`, `v3` |
-| ☒ | libvlc_media_player_get_role                    | Player.Role                  | `v3`       |
-| ☒ | libvlc_media_player_set_role                    | Player.SetRole               | `v3`       |
+| ☐ | libvlc_audio_set_callbacks                      |                              | `v2`, `v3` |
+| ☐ | libvlc_audio_set_volume_callback                |                              | `v2`, `v3` |
+| ☐ | libvlc_audio_set_format_callbacks               |                              | `v2`, `v3` |
+| ☐ | libvlc_audio_set_format                         |                              | `v2`, `v3` |
 
 Reference: [libVLC audio controls](https://www.videolan.org/developers/vlc/doc/doxygen/html/group__libvlc__audio.html).
 
@@ -119,6 +117,7 @@ Reference: [libVLC audio controls](https://www.videolan.org/developers/vlc/doc/d
 
 | ☐ | Binding                                           | Implementation                  | Versions   |
 |---|:--------------------------------------------------|:--------------------------------|:-----------|
+| ☒ | libvlc_video_filter_list_get                      | vlc.ListVideoFilters            | `v2`, `v3` |
 | ☒ | libvlc_toggle_fullscreen                          | Player.ToggleFullScreen         | `v2`, `v3` |
 | ☒ | libvlc_set_fullscreen                             | Player.SetFullScreen            | `v2`, `v3` |
 | ☒ | libvlc_get_fullscreen                             | Player.IsFullScreen             | `v2`, `v3` |
@@ -137,8 +136,6 @@ Reference: [libVLC audio controls](https://www.videolan.org/developers/vlc/doc/d
 | ☒ | libvlc_video_set_spu                              | Player.SetSubtitleTrack         | `v2`, `v3` |
 | ☒ | libvlc_video_get_spu_delay                        | Player.SubtitleDelay            | `v2`, `v3` |
 | ☒ | libvlc_video_set_spu_delay                        | Player.SetSubtitleDelay         | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_full_title_descriptions   |                                 | `v3`       |
-| ☐ | libvlc_media_player_get_full_chapter_descriptions |                                 | `v3`       |
 | ☐ | libvlc_video_get_teletext                         |                                 | `v2`, `v3` |
 | ☐ | libvlc_video_set_teletext                         |                                 | `v2`, `v3` |
 | ☒ | libvlc_video_get_track_count                      | Player.VideoTrackCount          | `v2`, `v3` |
@@ -156,6 +153,9 @@ Reference: [libVLC audio controls](https://www.videolan.org/developers/vlc/doc/d
 | ☐ | libvlc_video_set_adjust_int                       |                                 | `v2`, `v3` |
 | ☐ | libvlc_video_get_adjust_float                     |                                 | `v2`, `v3` |
 | ☐ | libvlc_video_set_adjust_float                     |                                 | `v2`, `v3` |
+| ☐ | libvlc_video_set_callbacks                        |                                 | `v2`, `v3` |
+| ☐ | libvlc_video_set_format                           |                                 | `v2`, `v3` |
+| ☐ | libvlc_video_set_format_callbacks                 |                                 | `v2`, `v3` |
 
 Reference: [libVLC video controls](https://www.videolan.org/developers/vlc/doc/doxygen/html/group__libvlc__video.html).
 
