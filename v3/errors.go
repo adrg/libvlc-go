@@ -58,6 +58,7 @@ var (
 	ErrFilterListMissing            = errors.New("could not get filter list")
 	ErrStereoModeSet                = errors.New("could not set stereo mode")
 	ErrVideoViewpointSet            = errors.New("could not set video viewpoint")
+	ErrVideoSnapshot                = errors.New("could not take video snapshot")
 	ErrCursorPositionMissing        = errors.New("could not get cursor position")
 )
 

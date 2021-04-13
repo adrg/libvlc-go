@@ -913,6 +913,28 @@ func (p *Player) CursorPosition() (int, int, error) {
 	return int(x), int(y), nil
 }
 
+// TakeSnapshot takes a snapshot of the current video and saves it at the
+// specified output path. If the specified width is 0, the snapshot width
+// will be calculated based on the specified height in order to preserve the
+// original aspect ratio. Similarly, if the specified height is 0, the snapshot
+// height will be calculated based on the specified width in order to preserve
+// the original aspect ratio. If both the width and height values are 0, the
+// original video size dimensions are used for the snapshot.
+func (p *Player) TakeSnapshot(outputPath string, width, height uint) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	cOutputPath := C.CString(outputPath)
+	defer C.free(unsafe.Pointer(cOutputPath))
+
+	if C.libvlc_video_take_snapshot(p.player, 0, cOutputPath, C.uint(width), C.uint(height)) != 0 {
+		return errOrDefault(getError(), ErrVideoSnapshot)
+	}
+
+	return nil
+}
+
 // XWindow returns the identifier of the X window the media player is
 // configured to render its video output to, or 0 if no window is set.
 // The window can be set using the SetXWindow method.
