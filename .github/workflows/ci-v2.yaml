@@ -19,6 +19,7 @@ jobs:
 
     - name: Prerequisites
       run: |
+        sudo apt-get update
         sudo apt-get -y install libvlc-dev vlc-plugin-base vlc-plugin-video-output vlc-plugin-access-extra
 
     - name: Checkout
