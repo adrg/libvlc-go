@@ -1,0 +1,20 @@
+version: 2
+updates:
+  - package-ecosystem: "gomod"
+    directory: "/v3"
+    schedule:
+      interval: "daily"
+    reviewers:
+      - "adrg"
+  - package-ecosystem: "gomod"
+    directory: "/v2"
+    schedule:
+      interval: "daily"
+    reviewers:
+      - "adrg"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    reviewers:
+      - "adrg"
