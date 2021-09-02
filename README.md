@@ -44,8 +44,8 @@ The package can be useful for adding multimedia capabilities to applications
 through the provided player interfaces. It relies on Go modules in order to
 mirror each supported major version of [libVLC](https://www.videolan.org/vlc/libvlc.html).
 
-Documentation for v3, which implements bindings for libVLC 3.X, can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v3) and on [GoDoc](https://godoc.org/github.com/adrg/libvlc-go/v3).  
-Documentation for v2, which implements bindings for libVLC 2.X, can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v2) and on [GoDoc](https://godoc.org/github.com/adrg/libvlc-go/v2).
+Documentation for v3, which implements bindings for libVLC 3.X, can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v3).  
+Documentation for v2, which implements bindings for libVLC 2.X, can be found on [pkg.go.dev](https://pkg.go.dev/github.com/adrg/libvlc-go/v2).
 
 <p align="center">
     <a href="https://github.com/adrg/libvlc-go-examples/tree/master/v3/gtk3_player">
@@ -119,7 +119,7 @@ However, consider switching to modules.
 * [Stream media to Chromecast](https://github.com/adrg/libvlc-go-examples/blob/master/v3/chromecast_streaming/chromecast_streaming.go)
 * [Player equalizer usage](https://github.com/adrg/libvlc-go-examples/blob/master/v3/equalizer/equalizer.go)
 
-Examples for the older version of the API can be found [here](https://github.com/adrg/libvlc-go-examples/tree/master/v2).
+Examples for all supported API versions can be found at https://github.com/adrg/libvlc-go-examples.
 
 ## Usage
 
