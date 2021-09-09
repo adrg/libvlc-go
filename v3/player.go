@@ -956,13 +956,37 @@ func (p *Player) ChapterCount() (int, error) {
 }
 
 // SetChapter sets the media chapter with the specified number to be played.
-// This method has no effect if the currently playing media has no chapters.
+// NOTE: The method has no effect if the current player media has no chapters.
 func (p *Player) SetChapter(chapter int) error {
 	if err := p.assertInit(); err != nil {
 		return err
 	}
 
 	C.libvlc_media_player_set_chapter(p.player, C.int(chapter))
+	return getError()
+}
+
+// NextChapter sets the next chapter to be played, if applicable to the
+// current player media instance.
+// NOTE: The method has no effect if the current player media has no chapters.
+func (p *Player) NextChapter() error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_next_chapter(p.player)
+	return getError()
+}
+
+// PreviousChapter sets the previous chapter to be played, if applicable to
+// the current player media instance.
+// NOTE: The method has no effect if the current player media has no chapters.
+func (p *Player) PreviousChapter() error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_previous_chapter(p.player)
 	return getError()
 }
 
