@@ -935,6 +935,37 @@ func (p *Player) TakeSnapshot(outputPath string, width, height uint) error {
 	return nil
 }
 
+// Chapter returns the number of the currently playing media chapter.
+// The method returns -1 if the player does not have a media instance.
+func (p *Player) Chapter() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return int(C.libvlc_media_player_get_chapter(p.player)), getError()
+}
+
+// ChapterCount returns the number of chapters the currently playing media has.
+// The method returns -1 if the player does not have a media instance.
+func (p *Player) ChapterCount() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return int(C.libvlc_media_player_get_chapter_count(p.player)), getError()
+}
+
+// SetChapter sets the media chapter with the specified number to be played.
+// This method has no effect if the currently playing media has no chapters.
+func (p *Player) SetChapter(chapter int) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_set_chapter(p.player, C.int(chapter))
+	return getError()
+}
+
 // XWindow returns the identifier of the X window the media player is
 // configured to render its video output to, or 0 if no window is set.
 // The window can be set using the SetXWindow method.
