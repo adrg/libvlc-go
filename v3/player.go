@@ -935,9 +935,9 @@ func (p *Player) TakeSnapshot(outputPath string, width, height uint) error {
 	return nil
 }
 
-// Chapter returns the number of the currently playing media chapter.
-// The method returns -1 if the player does not have a media instance.
-func (p *Player) Chapter() (int, error) {
+// ChapterNumber returns the number of the currently playing media chapter.
+// NOTE: The method returns -1 if the player does not have a media instance.
+func (p *Player) ChapterNumber() (int, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
 	}
@@ -946,7 +946,7 @@ func (p *Player) Chapter() (int, error) {
 }
 
 // ChapterCount returns the number of chapters the currently playing media has.
-// The method returns -1 if the player does not have a media instance.
+// NOTE: The method returns -1 if the player does not have a media instance.
 func (p *Player) ChapterCount() (int, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
@@ -955,9 +955,10 @@ func (p *Player) ChapterCount() (int, error) {
 	return int(C.libvlc_media_player_get_chapter_count(p.player)), getError()
 }
 
-// SetChapter sets the media chapter with the specified number to be played.
+// SetChapterNumber sets the chapter with the specified number to be
+// played, if applicable to the current player media instance.
 // NOTE: The method has no effect if the current player media has no chapters.
-func (p *Player) SetChapter(chapter int) error {
+func (p *Player) SetChapterNumber(chapter int) error {
 	if err := p.assertInit(); err != nil {
 		return err
 	}
@@ -987,6 +988,28 @@ func (p *Player) PreviousChapter() error {
 	}
 
 	C.libvlc_media_player_previous_chapter(p.player)
+	return getError()
+}
+
+// TitleNumber returns the number of the currently playing media title.
+// NOTE: The method returns -1 if the player does not have a media instance.
+func (p *Player) TitleNumber() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return int(C.libvlc_media_player_get_title(p.player)), getError()
+}
+
+// SetTitleNumber sets the media title with the specified number to be played,
+// if applicable to the current player media instance.
+// NOTE: The method has no effect if the current player media has no titles.
+func (p *Player) SetTitleNumber(title int) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_set_title(p.player, C.int(title))
 	return getError()
 }
 
