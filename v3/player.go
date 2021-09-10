@@ -1001,6 +1001,26 @@ func (p *Player) TitleNumber() (int, error) {
 	return int(C.libvlc_media_player_get_title(p.player)), getError()
 }
 
+// TitleCount returns the number of titles the currently playing media has.
+// NOTE: The method returns -1 if the player does not have a media instance.
+func (p *Player) TitleCount() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return int(C.libvlc_media_player_get_title_count(p.player)), getError()
+}
+
+// TitleChapterCount returns the number of chapters the current media title has.
+// NOTE: The method returns -1 if the player does not have a media instance.
+func (p *Player) TitleChapterCount(title int) (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return int(C.libvlc_media_player_get_chapter_count_for_title(p.player, C.int(title))), getError()
+}
+
 // SetTitleNumber sets the media title with the specified number to be played,
 // if applicable to the current player media instance.
 // NOTE: The method has no effect if the current player media has no titles.
