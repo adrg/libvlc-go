@@ -955,15 +955,15 @@ func (p *Player) ChapterCount() (int, error) {
 	return int(C.libvlc_media_player_get_chapter_count(p.player)), getError()
 }
 
-// SetChapterIndex sets the chapter with the specified index to be played,
+// SetChapter sets the chapter with the specified index to be played,
 // if applicable to the current player media instance.
 // NOTE: The method has no effect if the current player media has no chapters.
-func (p *Player) SetChapterIndex(chapterIdx int) error {
+func (p *Player) SetChapter(chapterIndex int) error {
 	if err := p.assertInit(); err != nil {
 		return err
 	}
 
-	C.libvlc_media_player_set_chapter(p.player, C.int(chapterIdx))
+	C.libvlc_media_player_set_chapter(p.player, C.int(chapterIndex))
 	return getError()
 }
 
@@ -1021,15 +1021,15 @@ func (p *Player) TitleChapterCount(title int) (int, error) {
 	return int(C.libvlc_media_player_get_chapter_count_for_title(p.player, C.int(title))), getError()
 }
 
-// SetTitleIndex sets the media title with the specified index to be played,
+// SetTitle sets the media title with the specified index to be played,
 // if applicable to the current player media instance.
 // NOTE: The method has no effect if the current player media has no titles.
-func (p *Player) SetTitleIndex(titleIdx int) error {
+func (p *Player) SetTitle(titleIndex int) error {
 	if err := p.assertInit(); err != nil {
 		return err
 	}
 
-	C.libvlc_media_player_set_title(p.player, C.int(titleIdx))
+	C.libvlc_media_player_set_title(p.player, C.int(titleIndex))
 	return getError()
 }
 
