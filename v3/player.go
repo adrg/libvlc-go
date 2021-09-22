@@ -1041,7 +1041,7 @@ func (p *Player) ChapterIndex() (int, error) {
 	return int(C.libvlc_media_player_get_chapter(p.player)), getError()
 }
 
-// ChapterCount returns the number of chapters the currently playing media has.
+// ChapterCount returns the number of chapters in the currently playing media.
 // NOTE: The method returns -1 if the player does not have a media instance.
 func (p *Player) ChapterCount() (int, error) {
 	if err := p.assertInit(); err != nil {
@@ -1087,46 +1087,53 @@ func (p *Player) PreviousChapter() error {
 	return getError()
 }
 
-// TitleIndex returns the index of the currently playing media title.
+// TitleChapterCount returns the number of chapters available within the media
+// title with the specified index.
 // NOTE: The method returns -1 if the player does not have a media instance.
-func (p *Player) TitleIndex() (int, error) {
+func (p *Player) TitleChapterCount(titleIndex int) (int, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_title(p.player)), getError()
+	return int(C.libvlc_media_player_get_chapter_count_for_title(p.player, C.int(titleIndex))), getError()
 }
 
-// TitleCount returns the number of titles the currently playing media has.
+// TitleChapters returns the list of chapters available within the media title
+// with the specified index.
 // NOTE: The method returns -1 if the player does not have a media instance.
-func (p *Player) TitleCount() (int, error) {
+func (p *Player) TitleChapters(titleIndex int) ([]*ChapterInfo, error) {
 	if err := p.assertInit(); err != nil {
-		return 0, err
+		return nil, err
 	}
 
-	return int(C.libvlc_media_player_get_title_count(p.player)), getError()
-}
+	// Get chapters.
+	var cChapters **C.libvlc_chapter_description_t
 
-// TitleChapterCount returns the number of chapters the current media title has.
-// NOTE: The method returns -1 if the player does not have a media instance.
-func (p *Player) TitleChapterCount(title int) (int, error) {
-	if err := p.assertInit(); err != nil {
-		return 0, err
+	count := int(C.libvlc_media_player_get_full_chapter_descriptions(p.player, C.int(titleIndex), &cChapters))
+	if count <= 0 || cChapters == nil {
+		return nil, nil
+	}
+	defer C.libvlc_chapter_descriptions_release(cChapters, C.uint(count))
+
+	// Parse chapters.
+	chapters := make([]*ChapterInfo, 0, count)
+	for i := 0; i < count; i++ {
+		// Get current chapter pointer.
+		cChapterPtr := unsafe.Pointer(uintptr(unsafe.Pointer(cChapters)) +
+			uintptr(i)*unsafe.Sizeof(*cChapters))
+		if cChapterPtr == nil {
+			return nil, ErrPlayerChapterNotInitialized
+		}
+
+		cChapter := *(**C.libvlc_chapter_description_t)(cChapterPtr)
+		chapters = append(chapters, &ChapterInfo{
+			Name:     C.GoString(cChapter.psz_name),
+			Duration: time.Duration(cChapter.i_duration) * time.Millisecond,
+			Offset:   time.Duration(cChapter.i_time_offset) * time.Millisecond,
+		})
 	}
 
-	return int(C.libvlc_media_player_get_chapter_count_for_title(p.player, C.int(title))), getError()
-}
-
-// SetTitle sets the media title with the specified index to be played,
-// if applicable to the current player media instance.
-// NOTE: The method has no effect if the current player media has no titles.
-func (p *Player) SetTitle(titleIndex int) error {
-	if err := p.assertInit(); err != nil {
-		return err
-	}
-
-	C.libvlc_media_player_set_title(p.player, C.int(titleIndex))
-	return getError()
+	return chapters, nil
 }
 
 // XWindow returns the identifier of the X window the media player is
