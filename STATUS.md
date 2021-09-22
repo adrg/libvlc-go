@@ -42,18 +42,18 @@ Reference: [libVLC core](https://www.videolan.org/developers/vlc/doc/doxygen/htm
 | ☒ | libvlc_media_player_set_time                      | Player.SetMediaTime        | `v2`, `v3` |
 | ☒ | libvlc_media_player_get_position                  | Player.MediaPosition       | `v2`, `v3` |
 | ☒ | libvlc_media_player_set_position                  | Player.SetMediaPosition    | `v2`, `v3` |
-| ☐ | libvlc_media_player_set_chapter                   |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_chapter                   |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_chapter_count             |                            | `v2`, `v3` |
+| ☒ | libvlc_media_player_set_chapter                   | Player.SetChapter          | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_chapter                   | Player.ChapterIndex        | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_chapter_count             | Player.ChapterCount        | `v2`, `v3` |
 | ☒ | libvlc_media_player_will_play                     | Player.WillPlay            | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_chapter_count_for_title   |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_set_title                     |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_title                     |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_title_count               |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_previous_chapter              |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_next_chapter                  |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_full_title_descriptions   |                            | `v3`       |
-| ☐ | libvlc_media_player_get_full_chapter_descriptions |                            | `v3`       |
+| ☒ | libvlc_media_player_get_chapter_count_for_title   | Player.TitleChapterCount   | `v2`, `v3` |
+| ☒ | libvlc_media_player_set_title                     | Player.SetTitle            | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_title                     | Player.TitleIndex          | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_title_count               | Player.TitleCount          | `v2`, `v3` |
+| ☒ | libvlc_media_player_previous_chapter              | Player.PreviousChapter     | `v2`, `v3` |
+| ☒ | libvlc_media_player_next_chapter                  | Player.NextChapter         | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_full_title_descriptions   | Player.Titles              | `v3`       |
+| ☒ | libvlc_media_player_get_full_chapter_descriptions | Player.TitleChapters       | `v3`       |
 | ☒ | libvlc_media_player_get_rate                      | Player.SetPlaybackRate     | `v2`, `v3` |
 | ☒ | libvlc_media_player_set_rate                      | Player.PlaybackRate        | `v2`, `v3` |
 | ☒ | libvlc_media_player_get_state                     | Player.MediaState          | `v2`, `v3` |
