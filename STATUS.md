@@ -66,7 +66,7 @@ Reference: [libVLC core](https://www.videolan.org/developers/vlc/doc/doxygen/htm
 | ☒ | libvlc_media_player_get_role                      | Player.Role                | `v3`       |
 | ☒ | libvlc_media_player_set_role                      | Player.SetRole             | `v3`       |
 | ☒ | libvlc_media_player_navigate                      | Player.Navigate            | `v2`, `v3` |
-| ☐ | libvlc_media_player_set_video_title_display       |                            | `v2`, `v3` |
+| ☒ | libvlc_media_player_set_video_title_display       | Player.SetTitleDisplayMode | `v2`, `v3` |
 | ☐ | libvlc_media_player_add_slave                     |                            | `v2`, `v3` |
 
 Reference: [libVLC media player](https://www.videolan.org/developers/vlc/doc/doxygen/html/group__libvlc__media__player.html).
