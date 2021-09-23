@@ -46,7 +46,7 @@ const (
 	PlayerRoleTest
 )
 
-// TitleFlag represents a property of a media title.
+// TitleFlag defines properties of media titles.
 type TitleFlag uint
 
 // Title flags.
@@ -55,7 +55,7 @@ const (
 	TitleFlagInteractive
 )
 
-// TitleInfo contains information regarding a title within a media instance.
+// TitleInfo contains information regarding a media title.
 // DVD and Blu-ray formats have their content split into titles.
 type TitleInfo struct {
 	Name     string        // Name of the title.
@@ -63,7 +63,7 @@ type TitleInfo struct {
 	Flags    TitleFlag     // Flags describing title properties.
 }
 
-// ChapterInfo contains information regarding a media chapter instance.
+// ChapterInfo contains information regarding a media chapter.
 // DVD and Blu-ray formats have their content split into titles and chapters.
 // However, chapters are supported by other media formats as well.
 type ChapterInfo struct {

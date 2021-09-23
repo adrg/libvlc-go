@@ -23,7 +23,7 @@ const (
 	StereoModeHeadphones
 )
 
-// Position defines predefined locations of entities inside a container.
+// Position defines locations of entities inside a container.
 type Position int
 
 // Positions.
