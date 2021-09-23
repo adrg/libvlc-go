@@ -1171,6 +1171,18 @@ func (p *Player) Navigate(action NavigationAction) error {
 	return getError()
 }
 
+// SetTitleDisplayMode configures if and how the video title will be displayed.
+// Pass in `vlc.PositionDisable` in order to prevent the video title from being
+// displayed. The title is displayed after the specified `timeout`.
+func (p *Player) SetTitleDisplayMode(position Position, timeout time.Duration) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_set_video_title_display(p.player, C.libvlc_position_t(position), C.uint(timeout.Milliseconds()))
+	return getError()
+}
+
 // XWindow returns the identifier of the X window the media player is
 // configured to render its video output to, or 0 if no window is set.
 // The window can be set using the SetXWindow method.
