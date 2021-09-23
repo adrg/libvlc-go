@@ -22,7 +22,7 @@ const (
 	StereoModeDolbySurround
 )
 
-// Position defines locations of entities inside a container.
+// Position defines locations of entities relative to a container.
 type Position int
 
 // Positions.
