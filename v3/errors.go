@@ -11,11 +11,17 @@ var (
 
 // Player errors.
 var (
-	ErrPlayerCreate             = errors.New("could not create player")
-	ErrPlayerNotInitialized     = errors.New("player not initialized")
-	ErrPlayerSetRenderer        = errors.New("could not set player renderer")
-	ErrPlayerSetEqualizer       = errors.New("could not set player equalizer")
-	ErrPlayerInvalidRole        = errors.New("invalid player role")
+	ErrPlayerCreate                = errors.New("could not create player")
+	ErrPlayerNotInitialized        = errors.New("player not initialized")
+	ErrPlayerSetRenderer           = errors.New("could not set player renderer")
+	ErrPlayerSetEqualizer          = errors.New("could not set player equalizer")
+	ErrPlayerInvalidRole           = errors.New("invalid player role")
+	ErrPlayerTitleNotInitialized   = errors.New("player title not initialized")
+	ErrPlayerChapterNotInitialized = errors.New("player chapter not initialized")
+)
+
+// List player errors.
+var (
 	ErrListPlayerCreate         = errors.New("could not create list player")
 	ErrListPlayerNotInitialized = errors.New("list player not initialized")
 )

@@ -23,6 +23,23 @@ const (
 	StereoModeHeadphones
 )
 
+// Position defines locations of entities relative to a container.
+type Position int
+
+// Positions.
+const (
+	PositionDisable Position = iota - 1
+	PositionCenter
+	PositionLeft
+	PositionRight
+	PositionTop
+	PositionTopLeft
+	PositionTopRight
+	PositionBottom
+	PositionBottomLeft
+	PositionBottomRight
+)
+
 // AudioOutput contains information regarding an audio output.
 type AudioOutput struct {
 	Name        string

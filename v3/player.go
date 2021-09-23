@@ -46,6 +46,60 @@ const (
 	PlayerRoleTest
 )
 
+// TitleFlag defines properties of media titles. DVD and Blu-ray formats
+// have their content split into titles.
+type TitleFlag uint
+
+// Title flags.
+const (
+	// Title item is a menu.
+	TitleFlagMenu TitleFlag = iota + 0x01
+
+	// Title item content is interactive.
+	TitleFlagInteractive
+)
+
+// TitleInfo contains information regarding a media title.
+// DVD and Blu-ray formats have their content split into titles.
+type TitleInfo struct {
+	Name     string        // Name of the title.
+	Duration time.Duration // Duration of the title.
+	Flags    TitleFlag     // Flags describing title properties.
+}
+
+// ChapterInfo contains information regarding a media chapter.
+// DVD and Blu-ray formats have their content split into titles and chapters.
+// However, chapters are supported by other media formats as well.
+type ChapterInfo struct {
+	Name     string        // Name of the chapter.
+	Duration time.Duration // Duration of the chapter.
+	Offset   time.Duration // Offset from the start of the media or media title.
+}
+
+// NavigationAction defines actions for navigating menus of VCDs, DVDs and BDs.
+type NavigationAction uint
+
+// Navigation actions.
+const (
+	// Activate selected navigation item.
+	NavigationActionActivate NavigationAction = iota
+
+	// Move selection up.
+	NavigationActionUp
+
+	// Move selection down.
+	NavigationActionDown
+
+	// Move selection left.
+	NavigationActionLeft
+
+	// Move selection right.
+	NavigationActionRight
+
+	// Activate the popup menu.
+	NavigationActionPopup
+)
+
 // Player is a media player used to play a single media file.
 // For playing media lists (playlists) use ListPlayer instead.
 type Player struct {
@@ -933,6 +987,204 @@ func (p *Player) TakeSnapshot(outputPath string, width, height uint) error {
 	}
 
 	return nil
+}
+
+// Titles returns the list of titles available within the currently playing
+// media instance, if any. DVD and Blu-ray formats have their content split
+// into titles.
+func (p *Player) Titles() ([]*TitleInfo, error) {
+	if err := p.assertInit(); err != nil {
+		return nil, err
+	}
+
+	// Get titles.
+	var cTitles **C.libvlc_title_description_t
+
+	count := int(C.libvlc_media_player_get_full_title_descriptions(p.player, &cTitles))
+	if count <= 0 || cTitles == nil {
+		return nil, nil
+	}
+	defer C.libvlc_title_descriptions_release(cTitles, C.uint(count))
+
+	// Parse titles.
+	titles := make([]*TitleInfo, 0, count)
+	for i := 0; i < count; i++ {
+		// Get current title pointer.
+		cTitlePtr := unsafe.Pointer(uintptr(unsafe.Pointer(cTitles)) +
+			uintptr(i)*unsafe.Sizeof(*cTitles))
+		if cTitlePtr == nil {
+			return nil, ErrPlayerTitleNotInitialized
+		}
+
+		cTitle := *(**C.libvlc_title_description_t)(cTitlePtr)
+		titles = append(titles, &TitleInfo{
+			Name:     C.GoString(cTitle.psz_name),
+			Duration: time.Duration(cTitle.i_duration) * time.Millisecond,
+			Flags:    TitleFlag(cTitle.i_flags),
+		})
+	}
+
+	return titles, nil
+}
+
+// TitleCount returns the number of titles in the currently playing media.
+// NOTE: The method returns -1 if the player does not have a media instance.
+func (p *Player) TitleCount() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return int(C.libvlc_media_player_get_title_count(p.player)), getError()
+}
+
+// TitleIndex returns the index of the currently playing media title.
+// NOTE: The method returns -1 if the player does not have a media instance.
+func (p *Player) TitleIndex() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return int(C.libvlc_media_player_get_title(p.player)), getError()
+}
+
+// SetTitle sets the title with the specified index to be played,
+// if applicable to the current player media instance.
+// NOTE: The method has no effect if the current player media has no titles.
+func (p *Player) SetTitle(titleIndex int) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_set_title(p.player, C.int(titleIndex))
+	return getError()
+}
+
+// ChapterIndex returns the index of the currently playing media chapter.
+// NOTE: The method returns -1 if the player does not have a media instance.
+func (p *Player) ChapterIndex() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return int(C.libvlc_media_player_get_chapter(p.player)), getError()
+}
+
+// ChapterCount returns the number of chapters in the currently playing media.
+// NOTE: The method returns -1 if the player does not have a media instance.
+func (p *Player) ChapterCount() (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return int(C.libvlc_media_player_get_chapter_count(p.player)), getError()
+}
+
+// SetChapter sets the chapter with the specified index to be played,
+// if applicable to the current player media instance.
+// NOTE: The method has no effect if the current player media has no chapters.
+func (p *Player) SetChapter(chapterIndex int) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_set_chapter(p.player, C.int(chapterIndex))
+	return getError()
+}
+
+// NextChapter sets the next chapter to be played, if applicable to the
+// current player media instance.
+// NOTE: The method has no effect if the current player media has no chapters.
+func (p *Player) NextChapter() error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_next_chapter(p.player)
+	return getError()
+}
+
+// PreviousChapter sets the previous chapter to be played, if applicable to
+// the current player media instance.
+// NOTE: The method has no effect if the current player media has no chapters.
+func (p *Player) PreviousChapter() error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_previous_chapter(p.player)
+	return getError()
+}
+
+// TitleChapterCount returns the number of chapters available within the media
+// title with the specified index.
+// NOTE: The method returns -1 if the player does not have a media instance.
+func (p *Player) TitleChapterCount(titleIndex int) (int, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return int(C.libvlc_media_player_get_chapter_count_for_title(p.player, C.int(titleIndex))), getError()
+}
+
+// TitleChapters returns the list of chapters available within the media title
+// with the specified index.
+// NOTE: The method returns -1 if the player does not have a media instance.
+func (p *Player) TitleChapters(titleIndex int) ([]*ChapterInfo, error) {
+	if err := p.assertInit(); err != nil {
+		return nil, err
+	}
+
+	// Get chapters.
+	var cChapters **C.libvlc_chapter_description_t
+
+	count := int(C.libvlc_media_player_get_full_chapter_descriptions(p.player, C.int(titleIndex), &cChapters))
+	if count <= 0 || cChapters == nil {
+		return nil, nil
+	}
+	defer C.libvlc_chapter_descriptions_release(cChapters, C.uint(count))
+
+	// Parse chapters.
+	chapters := make([]*ChapterInfo, 0, count)
+	for i := 0; i < count; i++ {
+		// Get current chapter pointer.
+		cChapterPtr := unsafe.Pointer(uintptr(unsafe.Pointer(cChapters)) +
+			uintptr(i)*unsafe.Sizeof(*cChapters))
+		if cChapterPtr == nil {
+			return nil, ErrPlayerChapterNotInitialized
+		}
+
+		cChapter := *(**C.libvlc_chapter_description_t)(cChapterPtr)
+		chapters = append(chapters, &ChapterInfo{
+			Name:     C.GoString(cChapter.psz_name),
+			Duration: time.Duration(cChapter.i_duration) * time.Millisecond,
+			Offset:   time.Duration(cChapter.i_time_offset) * time.Millisecond,
+		})
+	}
+
+	return chapters, nil
+}
+
+// Navigate executes the specified action in order to navigate
+// menus of VCDs, DVDs and BDs.
+func (p *Player) Navigate(action NavigationAction) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_navigate(p.player, C.uint(action))
+	return getError()
+}
+
+// SetTitleDisplayMode configures if and how the video title will be displayed.
+// Pass in `vlc.PositionDisable` in order to prevent the video title from being
+// displayed. The title is displayed after the specified `timeout`.
+func (p *Player) SetTitleDisplayMode(position Position, timeout time.Duration) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_set_video_title_display(p.player, C.libvlc_position_t(position), C.uint(timeout.Milliseconds()))
+	return getError()
 }
 
 // XWindow returns the identifier of the X window the media player is

@@ -42,18 +42,18 @@ Reference: [libVLC core](https://www.videolan.org/developers/vlc/doc/doxygen/htm
 | ☒ | libvlc_media_player_set_time                      | Player.SetMediaTime        | `v2`, `v3` |
 | ☒ | libvlc_media_player_get_position                  | Player.MediaPosition       | `v2`, `v3` |
 | ☒ | libvlc_media_player_set_position                  | Player.SetMediaPosition    | `v2`, `v3` |
-| ☐ | libvlc_media_player_set_chapter                   |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_chapter                   |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_chapter_count             |                            | `v2`, `v3` |
+| ☒ | libvlc_media_player_set_chapter                   | Player.SetChapter          | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_chapter                   | Player.ChapterIndex        | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_chapter_count             | Player.ChapterCount        | `v2`, `v3` |
 | ☒ | libvlc_media_player_will_play                     | Player.WillPlay            | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_chapter_count_for_title   |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_set_title                     |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_title                     |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_title_count               |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_previous_chapter              |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_next_chapter                  |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_get_full_title_descriptions   |                            | `v3`       |
-| ☐ | libvlc_media_player_get_full_chapter_descriptions |                            | `v3`       |
+| ☒ | libvlc_media_player_get_chapter_count_for_title   | Player.TitleChapterCount   | `v2`, `v3` |
+| ☒ | libvlc_media_player_set_title                     | Player.SetTitle            | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_title                     | Player.TitleIndex          | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_title_count               | Player.TitleCount          | `v2`, `v3` |
+| ☒ | libvlc_media_player_previous_chapter              | Player.PreviousChapter     | `v2`, `v3` |
+| ☒ | libvlc_media_player_next_chapter                  | Player.NextChapter         | `v2`, `v3` |
+| ☒ | libvlc_media_player_get_full_title_descriptions   | Player.Titles              | `v3`       |
+| ☒ | libvlc_media_player_get_full_chapter_descriptions | Player.TitleChapters       | `v3`       |
 | ☒ | libvlc_media_player_get_rate                      | Player.SetPlaybackRate     | `v2`, `v3` |
 | ☒ | libvlc_media_player_set_rate                      | Player.PlaybackRate        | `v2`, `v3` |
 | ☒ | libvlc_media_player_get_state                     | Player.MediaState          | `v2`, `v3` |
@@ -65,8 +65,8 @@ Reference: [libVLC core](https://www.videolan.org/developers/vlc/doc/doxygen/htm
 | ☒ | libvlc_media_player_set_equalizer                 | Player.SetEqualizer        | `v2`, `v3` |
 | ☒ | libvlc_media_player_get_role                      | Player.Role                | `v3`       |
 | ☒ | libvlc_media_player_set_role                      | Player.SetRole             | `v3`       |
-| ☐ | libvlc_media_player_navigate                      |                            | `v2`, `v3` |
-| ☐ | libvlc_media_player_set_video_title_display       |                            | `v2`, `v3` |
+| ☒ | libvlc_media_player_navigate                      | Player.Navigate            | `v2`, `v3` |
+| ☒ | libvlc_media_player_set_video_title_display       | Player.SetTitleDisplayMode | `v2`, `v3` |
 | ☐ | libvlc_media_player_add_slave                     |                            | `v2`, `v3` |
 
 Reference: [libVLC media player](https://www.videolan.org/developers/vlc/doc/doxygen/html/group__libvlc__media__player.html).
@@ -142,7 +142,7 @@ Reference: [libVLC audio controls](https://www.videolan.org/developers/vlc/doc/d
 | ☒ | libvlc_video_get_track_description                | Player.VideoTrackDescriptors    | `v2`, `v3` |
 | ☒ | libvlc_video_get_track                            | Player.VideoTrackID             | `v2`, `v3` |
 | ☒ | libvlc_video_set_track                            | Player.SetVideoTrack            | `v2`, `v3` |
-| ☐ | libvlc_video_take_snapshot                        |                                 | `v2`, `v3` |
+| ☒ | libvlc_video_take_snapshot                        | Player.TakeSnapshot             | `v2`, `v3` |
 | ☐ | libvlc_video_get_marquee_int                      |                                 | `v2`, `v3` |
 | ☐ | libvlc_video_set_marquee_int                      |                                 | `v2`, `v3` |
 | ☐ | libvlc_video_set_marquee_string                   |                                 | `v2`, `v3` |

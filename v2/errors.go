@@ -11,9 +11,13 @@ var (
 
 // Player errors.
 var (
-	ErrPlayerCreate             = errors.New("could not create player")
-	ErrPlayerNotInitialized     = errors.New("player not initialized")
-	ErrPlayerSetEqualizer       = errors.New("could not set player equalizer")
+	ErrPlayerCreate         = errors.New("could not create player")
+	ErrPlayerNotInitialized = errors.New("player not initialized")
+	ErrPlayerSetEqualizer   = errors.New("could not set player equalizer")
+)
+
+// List player errors.
+var (
 	ErrListPlayerCreate         = errors.New("could not create list player")
 	ErrListPlayerNotInitialized = errors.New("list player not initialized")
 )
@@ -53,6 +57,7 @@ var (
 	ErrAudioOutputDeviceListMissing = errors.New("could not get audio output device list")
 	ErrFilterListMissing            = errors.New("could not get filter list")
 	ErrStereoModeSet                = errors.New("could not set stereo mode")
+	ErrVideoSnapshot                = errors.New("could not take video snapshot")
 	ErrCursorPositionMissing        = errors.New("could not get cursor position")
 )
 
