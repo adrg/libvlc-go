@@ -52,7 +52,10 @@ type TitleFlag uint
 
 // Title flags.
 const (
+	// Title item is a menu.
 	TitleFlagMenu TitleFlag = iota + 0x01
+
+	// Title item content is interactive.
 	TitleFlagInteractive
 )
 

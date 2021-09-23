@@ -9,33 +9,6 @@ import (
 	"unsafe"
 )
 
-// TitleFlag defines properties of media titles. DVD and Blu-ray formats
-// have their content split into titles.
-type TitleFlag uint
-
-// Title flags.
-const (
-	TitleFlagMenu TitleFlag = iota + 0x01
-	TitleFlagInteractive
-)
-
-// TitleInfo contains information regarding a media title.
-// DVD and Blu-ray formats have their content split into titles.
-type TitleInfo struct {
-	Name     string        // Name of the title.
-	Duration time.Duration // Duration of the title.
-	Flags    TitleFlag     // Flags describing title properties.
-}
-
-// ChapterInfo contains information regarding a media chapter.
-// DVD and Blu-ray formats have their content split into titles and chapters.
-// However, chapters are supported by other media formats as well.
-type ChapterInfo struct {
-	Name     string        // Name of the chapter.
-	Duration time.Duration // Duration of the chapter.
-	Offset   time.Duration // Offset from the start of the media or media title.
-}
-
 // NavigationAction defines actions for navigating menus of VCDs, DVDs and BDs.
 type NavigationAction uint
 
