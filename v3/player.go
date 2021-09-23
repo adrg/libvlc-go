@@ -46,7 +46,8 @@ const (
 	PlayerRoleTest
 )
 
-// TitleFlag defines properties of media titles.
+// TitleFlag defines properties of media titles. DVD and Blu-ray formats
+// have their content split into titles.
 type TitleFlag uint
 
 // Title flags.
