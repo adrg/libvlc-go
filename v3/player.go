@@ -47,12 +47,12 @@ const (
 )
 
 // TitleFlag represents a property of a media title.
-type TitleFlag int
+type TitleFlag uint
 
 // Title flags.
 const (
-	TitleMenu TitleFlag = iota + 0x01
-	TitleInteractive
+	TitleFlagMenu TitleFlag = iota + 0x01
+	TitleFlagInteractive
 )
 
 // TitleInfo contains information regarding a title within a media instance.
@@ -71,6 +71,30 @@ type ChapterInfo struct {
 	Duration time.Duration // Duration of the chapter.
 	Offset   time.Duration // Offset from the start of the media or media title.
 }
+
+// NavigationAction defines actions for navigating menus of VCDs, DVDs and BDs.
+type NavigationAction uint
+
+// Navigation actions.
+const (
+	// Activate selected navigation item.
+	NavigationActionActivate NavigationAction = iota
+
+	// Move selection up.
+	NavigationActionUp
+
+	// Move selection down.
+	NavigationActionDown
+
+	// Move selection left.
+	NavigationActionLeft
+
+	// Move selection right.
+	NavigationActionRight
+
+	// Activate the popup menu.
+	NavigationActionPopup
+)
 
 // Player is a media player used to play a single media file.
 // For playing media lists (playlists) use ListPlayer instead.
@@ -1134,6 +1158,17 @@ func (p *Player) TitleChapters(titleIndex int) ([]*ChapterInfo, error) {
 	}
 
 	return chapters, nil
+}
+
+// Navigate executes the specified action in order to navigate
+// menus of VCDs, DVDs and BDs.
+func (p *Player) Navigate(action NavigationAction) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_media_player_navigate(p.player, C.uint(action))
+	return getError()
 }
 
 // XWindow returns the identifier of the X window the media player is

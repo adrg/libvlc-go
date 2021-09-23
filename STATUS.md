@@ -65,7 +65,7 @@ Reference: [libVLC core](https://www.videolan.org/developers/vlc/doc/doxygen/htm
 | ☒ | libvlc_media_player_set_equalizer                 | Player.SetEqualizer        | `v2`, `v3` |
 | ☒ | libvlc_media_player_get_role                      | Player.Role                | `v3`       |
 | ☒ | libvlc_media_player_set_role                      | Player.SetRole             | `v3`       |
-| ☐ | libvlc_media_player_navigate                      |                            | `v2`, `v3` |
+| ☒ | libvlc_media_player_navigate                      | Player.Navigate            | `v2`, `v3` |
 | ☐ | libvlc_media_player_set_video_title_display       |                            | `v2`, `v3` |
 | ☐ | libvlc_media_player_add_slave                     |                            | `v2`, `v3` |
 
@@ -142,7 +142,7 @@ Reference: [libVLC audio controls](https://www.videolan.org/developers/vlc/doc/d
 | ☒ | libvlc_video_get_track_description                | Player.VideoTrackDescriptors    | `v2`, `v3` |
 | ☒ | libvlc_video_get_track                            | Player.VideoTrackID             | `v2`, `v3` |
 | ☒ | libvlc_video_set_track                            | Player.SetVideoTrack            | `v2`, `v3` |
-| ☐ | libvlc_video_take_snapshot                        |                                 | `v2`, `v3` |
+| ☒ | libvlc_video_take_snapshot                        | Player.TakeSnapshot             | `v2`, `v3` |
 | ☐ | libvlc_video_get_marquee_int                      |                                 | `v2`, `v3` |
 | ☐ | libvlc_video_set_marquee_int                      |                                 | `v2`, `v3` |
 | ☐ | libvlc_video_set_marquee_string                   |                                 | `v2`, `v3` |
