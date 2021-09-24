@@ -168,9 +168,9 @@ func NewMediaFromURL(url string) (*Media, error) {
 
 // NewMediaFromScreen creates a media instance from the current computer
 // screen, using the specified options.
-// NOTE: This functionality requires the VLC screen module to be installed.
-// See installation instructions at https://github.com/adrg/libvlc-go/wiki.
-// See https://wiki.videolan.org/Documentation:Modules/screen.
+//   NOTE: This functionality requires the VLC screen module to be installed.
+//   See installation instructions at https://github.com/adrg/libvlc-go/wiki.
+//   See https://wiki.videolan.org/Documentation:Modules/screen.
 func NewMediaFromScreen(opts *MediaScreenOptions) (*Media, error) {
 	media, err := newMedia("screen://", false)
 	if err != nil {
@@ -224,8 +224,8 @@ func (m *Media) Release() error {
 }
 
 // Duplicate duplicates the current media instance.
-// NOTE: Call the Release method on the returned media in order to free
-// the allocated resources.
+//   NOTE: Call the Release method on the returned media in order to
+//   free the allocated resources.
 func (m *Media) Duplicate() (*Media, error) {
 	if err := m.assertInit(); err != nil {
 		return nil, err
@@ -304,8 +304,8 @@ func (m *Media) Location() (string, error) {
 }
 
 // Duration returns the media duration in milliseconds.
-// NOTE: The duration can only be obtained for parsed media instances. Either
-// play the media once or call one of the parsing methods first.
+//   NOTE: The duration can only be obtained for parsed media instances.
+//   Either play the media once or call one of the parsing methods first.
 func (m *Media) Duration() (time.Duration, error) {
 	if err := m.assertInit(); err != nil {
 		return 0, err
@@ -397,8 +397,8 @@ func (m *Media) IsParsed() (bool, error) {
 // SubItems returns a media list containing the sub-items of the current
 // media instance. If the media does not have any sub-items, an empty media
 // list is returned.
-// NOTE: Call the Release method on the returned media list in order to free
-// the allocated resources.
+//   NOTE: Call the Release method on the returned media list in order to
+//   free the allocated resources.
 func (m *Media) SubItems() (*MediaList, error) {
 	if err := m.assertInit(); err != nil {
 		return nil, err
@@ -413,8 +413,8 @@ func (m *Media) SubItems() (*MediaList, error) {
 }
 
 // Tracks returns the tracks (audio, video, subtitle) of the current media.
-// NOTE: The tracks can only be obtained for parsed media instances. Either
-// play the media once or call one of the parsing methods first.
+//   NOTE: The tracks can only be obtained for parsed media instances.
+//   Either play the media once or call one of the parsing methods first.
 func (m *Media) Tracks() ([]*MediaTrack, error) {
 	if err := m.assertInit(); err != nil {
 		return nil, err
@@ -452,7 +452,7 @@ func (m *Media) Tracks() ([]*MediaTrack, error) {
 }
 
 // UserData returns the user data associated with the media instance.
-// NOTE: the method returns `nil` if no user data is found.
+//   NOTE: the method returns `nil` if no user data is found.
 func (m *Media) UserData() (interface{}, error) {
 	if err := m.assertInit(); err != nil {
 		return nil, err

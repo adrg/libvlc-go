@@ -115,11 +115,11 @@ type MediaTrack struct {
 	OriginalCodec uint
 
 	// Codec profile (real audio flavor, MPEG audio layer, H264 profile, etc.).
-	// Profile values are codec specific.
+	// NOTE: Profile values are codec specific.
 	Profile int
 
 	// Stream restriction level (resolution, bitrate, codec features, etc.).
-	// Level values are codec specific.
+	// NOTE: Level values are codec specific.
 	Level int
 
 	Language    string // Media track language name.
