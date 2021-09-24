@@ -123,7 +123,7 @@ func (rd *RendererDiscoverer) Release() error {
 
 // Start starts the renderer discovery service and reports discovery
 // events through the specified callback function.
-//   NOTE: the Stop and Release methods should not be called from the callback
+//   NOTE: The Stop and Release methods should not be called from the callback
 //   function. Doing so will result in undefined behavior.
 func (rd *RendererDiscoverer) Start(cb RendererDiscoveryCallback) error {
 	if cb == nil {

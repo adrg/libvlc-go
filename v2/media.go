@@ -452,7 +452,7 @@ func (m *Media) Tracks() ([]*MediaTrack, error) {
 }
 
 // UserData returns the user data associated with the media instance.
-//   NOTE: the method returns `nil` if no user data is found.
+//   NOTE: The method returns `nil` if no user data is found.
 func (m *Media) UserData() (interface{}, error) {
 	if err := m.assertInit(); err != nil {
 		return nil, err

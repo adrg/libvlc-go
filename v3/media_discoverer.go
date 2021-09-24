@@ -254,7 +254,7 @@ func (md *MediaDiscoverer) IsRunning() bool {
 
 // MediaList returns the media list associated with the discovery service,
 // which contains the found media instances.
-//   NOTE: the returned media list is read-only.
+//   NOTE: The returned media list is read-only.
 func (md *MediaDiscoverer) MediaList() (*MediaList, error) {
 	if err := md.assertInit(); err != nil {
 		return nil, err
