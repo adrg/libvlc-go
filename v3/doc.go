@@ -1,5 +1,5 @@
 /*
-Package vlc provides Golang bindings for libVLC version 2.X/3.X/4.X.
+Package vlc provides Golang bindings for libVLC version 3.X.
 
 Usage
 
