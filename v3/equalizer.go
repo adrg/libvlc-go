@@ -59,8 +59,8 @@ func EqualizerBandFrequencies() []float64 {
 	return frequencies
 }
 
-// Equalizer represents an audio equalizer.
-// NOTE: Use Player.SetEqualizer to assign the equalizer to a player instance.
+// Equalizer represents an audio equalizer. Use Player.SetEqualizer to assign
+// the equalizer to a player instance.
 type Equalizer struct {
 	equalizer *C.libvlc_equalizer_t
 }
