@@ -77,8 +77,8 @@ type RendererDiscoverer struct {
 // NewRendererDiscoverer instantiates the renderer discovery service
 // identified by the specified name. Use the ListRendererDiscoverers
 // method to obtain the list of available discovery service descriptors.
-// NOTE: Call the Release method on the discovery service instance in
-// order to free the allocated resources.
+//   NOTE: Call the Release method on the discovery service instance in
+//   order to free the allocated resources.
 func NewRendererDiscoverer(name string) (*RendererDiscoverer, error) {
 	if err := inst.assertInit(); err != nil {
 		return nil, err
@@ -123,8 +123,8 @@ func (rd *RendererDiscoverer) Release() error {
 
 // Start starts the renderer discovery service and reports discovery
 // events through the specified callback function.
-// NOTE: the Stop and Release methods should not be called from the callback
-// function. Doing so will result in undefined behavior.
+//   NOTE: the Stop and Release methods should not be called from the callback
+//   function. Doing so will result in undefined behavior.
 func (rd *RendererDiscoverer) Start(cb RendererDiscoveryCallback) error {
 	if cb == nil {
 		return ErrInvalidEventCallback
