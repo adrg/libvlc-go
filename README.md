@@ -84,7 +84,7 @@ In order to support multiple versions of libVLC, the package contains a Go
 module for each major version of the API. Choose an installation option
 depending on the version of libVLC you want to use.
 
-**libVLC v3.X or later**
+**libVLC v3.X**
 
 ```bash
 go get github.com/adrg/libvlc-go/v3
