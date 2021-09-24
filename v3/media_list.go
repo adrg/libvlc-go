@@ -214,8 +214,8 @@ func (ml *MediaList) MediaAtIndex(index uint) (*Media, error) {
 }
 
 // IndexOfMedia returns the index of the specified media item in the list.
-// NOTE: The same instance of a media item can be present multiple times
-// in the list. The method returns the first matched index.
+//   NOTE: The same instance of a media item can be present multiple times
+//   in the list. The method returns the first matched index.
 func (ml *MediaList) IndexOfMedia(m *Media) (int, error) {
 	if err := m.assertInit(); err != nil {
 		return 0, err
@@ -266,7 +266,7 @@ func (ml *MediaList) IsReadOnly() (bool, error) {
 // AssociatedMedia returns the media instance associated with the list,
 // if one exists. A media instance is automatically associated with the
 // list of its sub-items.
-// NOTE: Do not call Release on the returned media instance.
+//   NOTE: Do not call Release on the returned media instance.
 func (ml *MediaList) AssociatedMedia() (*Media, error) {
 	if err := ml.assertInit(); err != nil {
 		return nil, err
@@ -285,8 +285,8 @@ func (ml *MediaList) AssociatedMedia() (*Media, error) {
 }
 
 // AssociateMedia associates the specified media with the media list instance.
-// NOTE: If another media instance is already associated with the list, it
-// will be released.
+//   NOTE: If another media instance is already associated with the list,
+//   it will be released.
 func (ml *MediaList) AssociateMedia(m *Media) error {
 	if err := ml.assertInit(); err != nil {
 		return err
