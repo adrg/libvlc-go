@@ -23,7 +23,7 @@ jobs:
         sudo apt-get -y install libvlc-dev vlc-plugin-base vlc-plugin-video-output vlc-plugin-access-extra
 
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Dependencies
       working-directory: ./v2
