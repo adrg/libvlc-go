@@ -1,8 +1,10 @@
 package vlc
 
-// #cgo LDFLAGS: -lvlc
-// #include <vlc/vlc.h>
-// #include <stdlib.h>
+/*
+#cgo LDFLAGS: -lvlc
+#include <vlc/vlc.h>
+#include <stdlib.h>
+*/
 import "C"
 import (
 	"io"
@@ -1187,6 +1189,11 @@ func (p *Player) SetTitleDisplayMode(position Position, timeout time.Duration) e
 
 	C.libvlc_media_player_set_video_title_display(p.player, C.libvlc_position_t(position), C.uint(timeout.Milliseconds()))
 	return getError()
+}
+
+// Marquee returns the marquee of the player.
+func (p *Player) Marquee() *Marquee {
+	return newMarquee(p)
 }
 
 // XWindow returns the identifier of the X window the media player is
