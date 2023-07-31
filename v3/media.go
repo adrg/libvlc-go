@@ -201,7 +201,7 @@ type MediaScreenOptions struct {
 	// Screen capture frame rate. Default: 0.
 	FPS float64
 
-	// Follow the mouse when capturing a subscreen. Default value: false.
+	// Follow the mouse when capturing a subscreen. Default: false.
 	FollowMouse bool
 
 	// Mouse cursor image to use. If specified, the cursor will be overlayed
