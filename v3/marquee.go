@@ -14,7 +14,7 @@ import (
 
 // Marquee represents a marquee text displayed over a media, along with its
 // visual properties.
-// For more information see http://wiki.videolan.org/index.php?title=Documentation:Modules/marq.
+//   For more information see http://wiki.videolan.org/index.php?title=Documentation:Modules/marq.
 type Marquee struct {
 	player *Player
 }
@@ -40,9 +40,9 @@ func (m *Marquee) Text() (string, error) {
 // The specified text can contain time format string sequences which are
 // converted to the requested time values at runtime. Most of the time
 // conversion specifiers supported by the `strftime` C function can be used.
-// Common time format string sequences:
-// %Y = year, %m = month, %d = day, %H = hour, %M = minute, %S = second.
-// For more information see https://en.cppreference.com/w/c/chrono/strftime.
+//   Common time format string sequences:
+//   %Y = year, %m = month, %d = day, %H = hour, %M = minute, %S = second.
+//   For more information see https://en.cppreference.com/w/c/chrono/strftime.
 func (m *Marquee) SetText(text string) error {
 	return m.setString(C.libvlc_marquee_Text, text)
 }

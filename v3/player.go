@@ -625,7 +625,151 @@ func (p *Player) SetAspectRatio(aspectRatio string) error {
 	cAspectRatio := C.CString(aspectRatio)
 	C.libvlc_video_set_aspect_ratio(p.player, cAspectRatio)
 	C.free(unsafe.Pointer(cAspectRatio))
-	return getError()
+	return nil
+}
+
+// SetDeinterlaceMode sets the deinterlace mode to use when rendering videos.
+//   NOTE: pass in `vlc.DeinterlaceModeDisable` to disable deinterlacing.
+func (p *Player) SetDeinterlaceMode(mode DeinterlaceMode) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	cMode := C.CString(string(mode))
+	C.libvlc_video_set_deinterlace(p.player, cMode)
+	C.free(unsafe.Pointer(cMode))
+	return nil
+}
+
+// EnableVideoAdjustments enables or disables video adjustments. By default,
+// video adjustments are not enabled.
+func (p *Player) EnableVideoAdjustments(enable bool) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_int(p.player, C.libvlc_adjust_Enable, C.int(boolToInt(enable)))
+	return nil
+}
+
+// Contrast returns the contrast set to be used when rendering videos.
+// The returned contrast is a value between 0.0 and 2.0.
+// Default: 1.0.
+func (p *Player) Contrast() (float64, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return float64(C.libvlc_video_get_adjust_float(p.player, C.libvlc_adjust_Contrast)), nil
+}
+
+// SetContrast sets the contrast to be used when rendering videos. The specified
+// contrast must be a value between 0.0 and 2.0.
+//   NOTE: this method has no effect if video adjustments are not enabled. The
+//   adjustments can be enabled using the Player.EnableVideoAdjustments method.
+func (p *Player) SetContrast(contrast float64) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_float(p.player, C.libvlc_adjust_Contrast, C.float(contrast))
+	return nil
+}
+
+// Brightness returns the brightness set to be used when rendering videos.
+// The returned brightness is a value between 0.0 and 2.0.
+// Default: 1.0.
+func (p *Player) Brightness() (float64, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return float64(C.libvlc_video_get_adjust_float(p.player, C.libvlc_adjust_Brightness)), nil
+}
+
+// SetBrightness sets the brightness to be used when rendering videos. The
+// specified brightness must be a value between 0.0 and 2.0.
+//   NOTE: this method has no effect if video adjustments are not enabled. The
+//   adjustments can be enabled using the Player.EnableVideoAdjustments method.
+func (p *Player) SetBrightness(brightness float64) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_float(p.player, C.libvlc_adjust_Brightness, C.float(brightness))
+	return nil
+}
+
+// Hue returns the hue set to be used when rendering videos.
+// The returned hue is a value between -180.0 and 180.0.
+// Default: 0.0.
+func (p *Player) Hue() (float64, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return float64(C.libvlc_video_get_adjust_float(p.player, C.libvlc_adjust_Hue)), nil
+}
+
+// SetHue sets the hue to be used when rendering videos. The specified hue
+// must be a value between -180.0 and 180.0.
+//   NOTE: this method has no effect if video adjustments are not enabled. The
+//   adjustments can be enabled using the Player.EnableVideoAdjustments method.
+func (p *Player) SetHue(hue float64) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_float(p.player, C.libvlc_adjust_Hue, C.float(hue))
+	return nil
+}
+
+// Saturation returns the saturation set to be used when rendering videos.
+// The returned saturation is a value between 0.0 and 3.0.
+// Default: 1.0.
+func (p *Player) Saturation() (float64, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return float64(C.libvlc_video_get_adjust_float(p.player, C.libvlc_adjust_Saturation)), nil
+}
+
+// SetSaturation sets the saturation to be used when rendering videos. The
+// specified saturation must be a value between 0.0 and 3.0.
+//   NOTE: this method has no effect if video adjustments are not enabled. The
+//   adjustments can be enabled using the Player.EnableVideoAdjustments method.
+func (p *Player) SetSaturation(saturation float64) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_float(p.player, C.libvlc_adjust_Saturation, C.float(saturation))
+	return nil
+}
+
+// Gamma returns the gamma set to be used when rendering videos.
+// The returned gamma is a value between 0.01 and 10.0.
+// Default: 1.0.
+func (p *Player) Gamma() (float64, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return float64(C.libvlc_video_get_adjust_float(p.player, C.libvlc_adjust_Gamma)), nil
+}
+
+// SetGamma sets the gamma to be used when rendering videos. The specified
+// gamma must be a value between 0.01 and 10.0.
+//   NOTE: this method has no effect if video adjustments are not enabled. The
+//   adjustments can be enabled using the Player.EnableVideoAdjustments method.
+func (p *Player) SetGamma(gamma float64) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_float(p.player, C.libvlc_adjust_Gamma, C.float(gamma))
+	return nil
 }
 
 // AudioDelay returns the delay of the current audio track,
@@ -836,7 +980,7 @@ func (p *Player) SetSubtitleTrack(trackID int) error {
 
 // SetRenderer sets a renderer for the player media (e.g. Chromecast).
 //   NOTE: This method must be called before starting media playback in order
-// to take effect.
+//   to take effect.
 func (p *Player) SetRenderer(r *Renderer) error {
 	if err := p.assertInit(); err != nil {
 		return err
