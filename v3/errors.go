@@ -13,6 +13,7 @@ var (
 var (
 	ErrPlayerCreate                = errors.New("could not create player")
 	ErrPlayerNotInitialized        = errors.New("player not initialized")
+	ErrPlayerPlay                  = errors.New("cannot play the requested media")
 	ErrPlayerSetRenderer           = errors.New("could not set player renderer")
 	ErrPlayerSetEqualizer          = errors.New("could not set player equalizer")
 	ErrPlayerInvalidRole           = errors.New("invalid player role")
@@ -53,6 +54,7 @@ var (
 var (
 	ErrMissingEventManager  = errors.New("could not get event manager instance")
 	ErrInvalidEventCallback = errors.New("invalid event callback")
+	ErrEventAttach          = errors.New("could not attach event")
 )
 
 // Audio/Video errors.

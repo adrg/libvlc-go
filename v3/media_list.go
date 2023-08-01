@@ -32,8 +32,7 @@ func (ml *MediaList) Release() error {
 
 	C.libvlc_media_list_release(ml.list)
 	ml.list = nil
-
-	return getError()
+	return nil
 }
 
 // AddMedia adds the provided Media instance at the end of the media list.

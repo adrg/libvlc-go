@@ -320,7 +320,7 @@ func (m *Media) Release() error {
 	}
 
 	m.release()
-	return getError()
+	return nil
 }
 
 // Duplicate duplicates the current media instance.

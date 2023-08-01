@@ -134,7 +134,7 @@ func (md *MediaDiscoverer) Release() error {
 	C.libvlc_media_discoverer_release(md.discoverer)
 	md.discoverer = nil
 
-	return getError()
+	return nil
 }
 
 // Start starts the media discovery service and reports discovery

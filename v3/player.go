@@ -130,8 +130,7 @@ func (p *Player) Release() error {
 
 	C.libvlc_media_player_release(p.player)
 	p.player = nil
-
-	return getError()
+	return nil
 }
 
 // Play plays the current media.
@@ -144,7 +143,7 @@ func (p *Player) Play() error {
 	}
 
 	if C.libvlc_media_player_play(p.player) < 0 {
-		return getError()
+		return errOrDefault(getError(), ErrPlayerPlay)
 	}
 
 	return nil
@@ -181,7 +180,7 @@ func (p *Player) Stop() error {
 }
 
 // SetPause sets the pause state of the media player.
-// Pass in true to pause the current media, or false to resume it.
+// Pass in `true` to pause the current media, or `false` to resume it.
 func (p *Player) SetPause(pause bool) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -258,18 +257,18 @@ func (p *Player) SetPlaybackRate(rate float32) error {
 	}
 
 	C.libvlc_media_player_set_rate(p.player, C.float(rate))
-	return getError()
+	return nil
 }
 
 // SetFullScreen sets the fullscreen state of the media player.
-// Pass in true to enable fullscreen, or false to disable it.
+// Pass in `true` to enable fullscreen, or `false` to disable it.
 func (p *Player) SetFullScreen(fullscreen bool) error {
 	if err := p.assertInit(); err != nil {
 		return err
 	}
 
 	C.libvlc_set_fullscreen(p.player, C.int(boolToInt(fullscreen)))
-	return getError()
+	return nil
 }
 
 // ToggleFullScreen toggles the fullscreen status of the player,
@@ -280,7 +279,7 @@ func (p *Player) ToggleFullScreen() error {
 	}
 
 	C.libvlc_toggle_fullscreen(p.player)
-	return getError()
+	return nil
 }
 
 // IsFullScreen returns the fullscreen status of the player.
@@ -289,7 +288,7 @@ func (p *Player) IsFullScreen() (bool, error) {
 		return false, err
 	}
 
-	return C.libvlc_get_fullscreen(p.player) != C.int(0), getError()
+	return C.libvlc_get_fullscreen(p.player) != C.int(0), nil
 }
 
 // Volume returns the volume of the player.
@@ -298,7 +297,7 @@ func (p *Player) Volume() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_audio_get_volume(p.player)), getError()
+	return int(C.libvlc_audio_get_volume(p.player)), nil
 }
 
 // SetVolume sets the volume of the player.
@@ -308,7 +307,7 @@ func (p *Player) SetVolume(volume int) error {
 	}
 
 	C.libvlc_audio_set_volume(p.player, C.int(volume))
-	return getError()
+	return nil
 }
 
 // IsMuted returns a boolean value that specifies whether the audio
@@ -318,7 +317,7 @@ func (p *Player) IsMuted() (bool, error) {
 		return false, err
 	}
 
-	return C.libvlc_audio_get_mute(p.player) > C.int(0), getError()
+	return C.libvlc_audio_get_mute(p.player) > C.int(0), nil
 }
 
 // SetMute mutes or unmutes the audio output of the player.
@@ -332,7 +331,7 @@ func (p *Player) SetMute(mute bool) error {
 	}
 
 	C.libvlc_audio_set_mute(p.player, C.int(boolToInt(mute)))
-	return getError()
+	return nil
 }
 
 // ToggleMute mutes or unmutes the audio output of the player, depending on
@@ -347,7 +346,7 @@ func (p *Player) ToggleMute() error {
 	}
 
 	C.libvlc_audio_toggle_mute(p.player)
-	return getError()
+	return nil
 }
 
 // Media returns the current media of the player, if one exists.
@@ -489,7 +488,7 @@ func (p *Player) StereoMode() (StereoMode, error) {
 		return StereoModeError, err
 	}
 
-	return StereoMode(C.libvlc_audio_get_channel(p.player)), getError()
+	return StereoMode(C.libvlc_audio_get_channel(p.player)), nil
 }
 
 // SetStereoMode sets the stereo mode of the audio output used by the player.
@@ -583,7 +582,7 @@ func (p *Player) Scale() (float64, error) {
 		return 0, err
 	}
 
-	return float64(C.libvlc_video_get_scale(p.player)), getError()
+	return float64(C.libvlc_video_get_scale(p.player)), nil
 }
 
 // SetScale sets the scaling factor of the current video. The scaling factor
@@ -597,7 +596,7 @@ func (p *Player) SetScale(scale float64) error {
 	}
 
 	C.libvlc_video_set_scale(p.player, C.float(scale))
-	return getError()
+	return nil
 }
 
 // AspectRatio returns the aspect ratio of the current video.
@@ -612,7 +611,7 @@ func (p *Player) AspectRatio() (string, error) {
 	}
 	defer C.free(unsafe.Pointer(aspectRatio))
 
-	return C.GoString(aspectRatio), getError()
+	return C.GoString(aspectRatio), nil
 }
 
 // SetAspectRatio sets the aspect ratio of the current video (e.g. `16:9`).
@@ -780,7 +779,7 @@ func (p *Player) AudioDelay() (time.Duration, error) {
 	}
 
 	delay := C.libvlc_audio_get_delay(p.player)
-	return time.Duration(delay) * time.Microsecond, getError()
+	return time.Duration(delay) * time.Microsecond, nil
 }
 
 // SetAudioDelay delays the current audio track according to the
@@ -808,7 +807,7 @@ func (p *Player) SubtitleDelay() (time.Duration, error) {
 	}
 
 	delay := C.libvlc_video_get_spu_delay(p.player)
-	return time.Duration(delay) * time.Microsecond, getError()
+	return time.Duration(delay) * time.Microsecond, nil
 }
 
 // SetSubtitleDelay delays the current subtitle track according to the

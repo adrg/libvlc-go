@@ -118,7 +118,7 @@ func (rd *RendererDiscoverer) Release() error {
 	C.libvlc_renderer_discoverer_release(rd.discoverer)
 	rd.discoverer = nil
 
-	return getError()
+	return nil
 }
 
 // Start starts the renderer discovery service and reports discovery

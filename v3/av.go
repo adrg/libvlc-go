@@ -40,6 +40,26 @@ const (
 	PositionBottomRight
 )
 
+// DeinterlaceMode defines deinterlacing modes which can be used when
+// rendering videos.
+//   For more information see https://wiki.videolan.org/Deinterlacing.
+type DeinterlaceMode string
+
+// Deinterlace modes.
+const (
+	DeinterlaceModeDisable  DeinterlaceMode = ""
+	DeinterlaceModeDiscard  DeinterlaceMode = "discard"
+	DeinterlaceModeBlend    DeinterlaceMode = "blend"
+	DeinterlaceModeMean     DeinterlaceMode = "mean"
+	DeinterlaceModeBob      DeinterlaceMode = "bob"
+	DeinterlaceModeLinear   DeinterlaceMode = "linear"
+	DeinterlaceModeX        DeinterlaceMode = "x"
+	DeinterlaceModeYadif    DeinterlaceMode = "yadif"
+	DeinterlaceModeYadif2x  DeinterlaceMode = "yadif2x"
+	DeinterlaceModePhosphor DeinterlaceMode = "phosphor"
+	DeinterlaceModeIVTC     DeinterlaceMode = "ivtc"
+)
+
 // AudioOutput contains information regarding an audio output.
 type AudioOutput struct {
 	Name        string
@@ -68,7 +88,7 @@ func AudioOutputList() ([]*AudioOutput, error) {
 	}
 
 	C.libvlc_audio_output_list_release(cOutputs)
-	return outputs, getError()
+	return outputs, nil
 }
 
 // AudioOutputDevice contains information regarding an audio output device.
@@ -109,7 +129,7 @@ func parseAudioOutputDeviceList(cDevices *C.libvlc_audio_output_device_t) ([]*Au
 	}
 
 	C.libvlc_audio_output_device_list_release(cDevices)
-	return devices, getError()
+	return devices, nil
 }
 
 // ModuleDescription contains information about a libVLC module.
@@ -154,5 +174,5 @@ func parseFilterList(cFilters *C.libvlc_module_description_t) ([]*ModuleDescript
 	}
 
 	C.libvlc_module_description_list_release(cFilters)
-	return filters, getError()
+	return filters, nil
 }

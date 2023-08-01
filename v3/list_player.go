@@ -1,3 +1,4 @@
+//go:build !legacy
 // +build !legacy
 
 package vlc
@@ -45,8 +46,7 @@ func (lp *ListPlayer) Release() error {
 
 	C.libvlc_media_list_player_release(lp.player)
 	lp.player = nil
-
-	return getError()
+	return nil
 }
 
 // Player returns the underlying Player instance of the list player.
@@ -57,7 +57,7 @@ func (lp *ListPlayer) Player() (*Player, error) {
 
 	player := C.libvlc_media_list_player_get_media_player(lp.player)
 	if player == nil {
-		return nil, getError()
+		return nil, errOrDefault(getError(), ErrPlayerNotInitialized)
 	}
 
 	// This call will not release the player. Instead, it will decrement the
@@ -172,7 +172,7 @@ func (lp *ListPlayer) Stop() error {
 }
 
 // SetPause sets the pause state of the list player.
-// Pass in true to pause the current media, or false to resume it.
+// Pass in `true` to pause the current media, or `false` to resume it.
 func (lp *ListPlayer) SetPause(pause bool) error {
 	if err := lp.assertInit(); err != nil {
 		return err
@@ -202,7 +202,7 @@ func (lp *ListPlayer) SetPlaybackMode(mode PlaybackMode) error {
 
 	m := C.libvlc_playback_mode_t(mode)
 	C.libvlc_media_list_player_set_playback_mode(lp.player, m)
-	return getError()
+	return nil
 }
 
 // MediaState returns the state of the current media.
