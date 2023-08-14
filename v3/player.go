@@ -1339,6 +1339,11 @@ func (p *Player) Marquee() *Marquee {
 	return newMarquee(p)
 }
 
+// Logo returns the logo of the player.
+func (p *Player) Logo() *Logo {
+	return newLogo(p)
+}
+
 // XWindow returns the identifier of the X window the media player is
 // configured to render its video output to, or 0 if no window is set.
 // The window can be set using the SetXWindow method.

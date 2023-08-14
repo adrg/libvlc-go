@@ -2,6 +2,11 @@ package vlc
 
 import "errors"
 
+// Generic errors.
+var (
+	ErrInvalid = errors.New("the provided value is not valid")
+)
+
 // Module errors.
 var (
 	ErrModuleInitialize     = errors.New("could not initialize module")
