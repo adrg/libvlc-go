@@ -48,6 +48,7 @@ var (
 	ErrMissingMediaDimensions  = errors.New("could not get media dimensions")
 	ErrMediaMetaSave           = errors.New("could not save media metadata")
 	ErrMediaParse              = errors.New("could not parse media")
+	ErrMediaNotParsed          = errors.New("media is not parsed")
 )
 
 // Media track errors.

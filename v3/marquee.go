@@ -233,7 +233,7 @@ func (m *Marquee) getString(option C.uint) (string, error) {
 
 	cVal := C.libvlc_video_get_marquee_string(m.player.player, option)
 	if cVal == nil {
-		return "", getError()
+		return "", errOrDefault(getError(), ErrInvalid)
 	}
 	defer C.free(unsafe.Pointer(cVal))
 

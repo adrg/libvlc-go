@@ -371,7 +371,7 @@ func (m *Media) Type() (MediaType, error) {
 		return 0, err
 	}
 
-	return MediaType(C.libvlc_media_get_type(m.media)), getError()
+	return MediaType(C.libvlc_media_get_type(m.media)), nil
 }
 
 // State returns the current state of the media instance.
@@ -380,7 +380,7 @@ func (m *Media) State() (MediaState, error) {
 		return 0, err
 	}
 
-	return MediaState(C.libvlc_media_get_state(m.media)), getError()
+	return MediaState(C.libvlc_media_get_state(m.media)), nil
 }
 
 // Stats returns playback statistics for the media.
@@ -422,7 +422,11 @@ func (m *Media) Duration() (time.Duration, error) {
 	}
 
 	duration := C.libvlc_media_get_duration(m.media)
-	return time.Duration(duration) * time.Millisecond, getError()
+	if duration < 0 {
+		return 0, errOrDefault(getError(), ErrMediaNotParsed)
+	}
+
+	return time.Duration(duration) * time.Millisecond, nil
 }
 
 // Meta reads the value of the specified media metadata key.
@@ -499,8 +503,8 @@ func (m *Media) ParseWithOptions(timeout int, opts ...MediaParseOption) error {
 		timeout = -1
 	}
 
-	if int(C.libvlc_media_parse_with_options(m.media,
-		C.libvlc_media_parse_flag_t(flags), C.int(timeout))) != 0 {
+	if C.libvlc_media_parse_with_options(m.media,
+		C.libvlc_media_parse_flag_t(flags), C.int(timeout)) != 0 {
 		return errOrDefault(getError(), ErrMediaParse)
 	}
 
@@ -515,7 +519,7 @@ func (m *Media) Parse() error {
 	}
 
 	C.libvlc_media_parse(m.media)
-	return getError()
+	return nil
 }
 
 // ParseAsync fetches local art, metadata and track information asynchronously.
@@ -529,7 +533,7 @@ func (m *Media) ParseAsync() error {
 	}
 
 	C.libvlc_media_parse_async(m.media)
-	return getError()
+	return nil
 }
 
 // StopParse stops the parsing of the media. When the media parsing is
@@ -541,7 +545,7 @@ func (m *Media) StopParse() error {
 	}
 
 	C.libvlc_media_parse_stop(m.media)
-	return getError()
+	return nil
 }
 
 // ParseStatus returns the parsing status of the media.
@@ -550,7 +554,7 @@ func (m *Media) ParseStatus() (MediaParseStatus, error) {
 		return MediaParseUnstarted, err
 	}
 
-	return MediaParseStatus(C.libvlc_media_get_parsed_status(m.media)), getError()
+	return MediaParseStatus(C.libvlc_media_get_parsed_status(m.media)), nil
 }
 
 // IsParsed returns true if the media was parsed.
@@ -560,7 +564,7 @@ func (m *Media) IsParsed() (bool, error) {
 		return false, err
 	}
 
-	return C.libvlc_media_is_parsed(m.media) != 0, getError()
+	return C.libvlc_media_is_parsed(m.media) != 0, nil
 }
 
 // SubItems returns a media list containing the sub-items of the current
@@ -676,7 +680,7 @@ func (m *Media) addOption(option string) error {
 	defer C.free(unsafe.Pointer(cOption))
 
 	C.libvlc_media_add_option(m.media, cOption)
-	return getError()
+	return nil
 }
 
 func (m *Media) getUserData() (objectID, *mediaData) {
