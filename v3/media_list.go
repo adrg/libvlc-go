@@ -41,18 +41,27 @@ func (ml *MediaList) AddMedia(m *Media) error {
 		return err
 	}
 
+	// Check if media list is read-only.
+	isReadOnly, err := ml.IsReadOnly()
+	if err != nil {
+		return err
+	}
+	if isReadOnly {
+		return ErrMediaListReadOnly
+	}
+
+	// Lock media list.
 	if err := ml.Lock(); err != nil {
 		return err
 	}
+	defer ml.Unlock()
 
 	// Add the media to the list.
-	C.libvlc_media_list_add_media(ml.list, m.media)
-
-	if err := ml.Unlock(); err != nil {
-		return err
+	if C.libvlc_media_list_add_media(ml.list, m.media) < 0 {
+		return errOrDefault(getError(), ErrMediaListActionFailed)
 	}
 
-	return getError()
+	return nil
 }
 
 // AddMediaFromPath loads the media file at the specified path and adds it at
@@ -63,6 +72,7 @@ func (ml *MediaList) AddMediaFromPath(path string) error {
 		return err
 	}
 
+	// Add the media to the list.
 	if err := ml.AddMedia(media); err != nil {
 		media.release()
 		return err
@@ -110,18 +120,27 @@ func (ml *MediaList) InsertMedia(m *Media, index uint) error {
 		return err
 	}
 
+	// Check if media list is read-only.
+	isReadOnly, err := ml.IsReadOnly()
+	if err != nil {
+		return err
+	}
+	if isReadOnly {
+		return ErrMediaListReadOnly
+	}
+
+	// Lock media list.
 	if err := ml.Lock(); err != nil {
 		return err
 	}
+	defer ml.Unlock()
 
 	// Insert the media in the list.
-	C.libvlc_media_list_insert_media(ml.list, m.media, C.int(index))
-
-	if err := ml.Unlock(); err != nil {
-		return err
+	if C.libvlc_media_list_insert_media(ml.list, m.media, C.int(index)) < 0 {
+		return errOrDefault(getError(), ErrMediaListActionFailed)
 	}
 
-	return getError()
+	return nil
 }
 
 // InsertMediaFromPath loads the media file at the provided path and inserts
@@ -175,39 +194,46 @@ func (ml *MediaList) InsertMediaFromReadSeeker(r io.ReadSeeker, index uint) erro
 // RemoveMediaAtIndex removes the media item at the specified index
 // from the list.
 func (ml *MediaList) RemoveMediaAtIndex(index uint) error {
+	// Check if media list is read-only.
+	isReadOnly, err := ml.IsReadOnly()
+	if err != nil {
+		return err
+	}
+	if isReadOnly {
+		return ErrMediaListReadOnly
+	}
+
+	// Lock media list.
 	if err := ml.Lock(); err != nil {
 		return err
 	}
+	defer ml.Unlock()
 
 	// Remove the media from the list.
-	C.libvlc_media_list_remove_index(ml.list, C.int(index))
-
-	if err := ml.Unlock(); err != nil {
-		return err
+	if C.libvlc_media_list_remove_index(ml.list, C.int(index)) < 0 {
+		return errOrDefault(getError(), ErrMediaListActionFailed)
 	}
 
-	return getError()
+	return nil
 }
 
 // MediaAtIndex returns the media item at the specified index from the list.
 func (ml *MediaList) MediaAtIndex(index uint) (*Media, error) {
+	// Lock media list.
 	if err := ml.Lock(); err != nil {
 		return nil, err
 	}
+	defer ml.Unlock()
 
 	// Retrieve the media at the specified index.
 	media := C.libvlc_media_list_item_at_index(ml.list, C.int(index))
 	if media == nil {
-		return nil, getError()
+		return nil, errOrDefault(getError(), ErrMediaListActionFailed)
 	}
 
 	// This call will not release the media. Instead, it will decrement
 	// the reference count increased by libvlc_media_list_item_at_index.
 	C.libvlc_media_release(media)
-
-	if err := ml.Unlock(); err != nil {
-		return nil, err
-	}
 
 	return &Media{media}, nil
 }
@@ -223,6 +249,7 @@ func (ml *MediaList) IndexOfMedia(m *Media) (int, error) {
 	if err := ml.Lock(); err != nil {
 		return 0, err
 	}
+	defer ml.Unlock()
 
 	// Retrieve the index of the media.
 	idx := int(C.libvlc_media_list_index_of_item(ml.list, m.media))
@@ -230,27 +257,19 @@ func (ml *MediaList) IndexOfMedia(m *Media) (int, error) {
 		return 0, errOrDefault(getError(), ErrMediaNotFound)
 	}
 
-	if err := ml.Unlock(); err != nil {
-		return 0, err
-	}
-
 	return idx, nil
 }
 
 // Count returns the number of media items in the list.
 func (ml *MediaList) Count() (int, error) {
+	// Lock media list.
 	if err := ml.Lock(); err != nil {
 		return 0, err
 	}
+	defer ml.Unlock()
 
 	// Retrieve media count.
-	count := int(C.libvlc_media_list_count(ml.list))
-
-	if err := ml.Unlock(); err != nil {
-		return 0, err
-	}
-
-	return count, getError()
+	return int(C.libvlc_media_list_count(ml.list)), nil
 }
 
 // IsReadOnly specifies if the media list can be modified.
@@ -259,7 +278,7 @@ func (ml *MediaList) IsReadOnly() (bool, error) {
 		return false, err
 	}
 
-	return (C.libvlc_media_list_is_readonly(ml.list) != C.int(0)), getError()
+	return C.libvlc_media_list_is_readonly(ml.list) != C.int(0), nil
 }
 
 // AssociatedMedia returns the media instance associated with the list,
@@ -305,7 +324,7 @@ func (ml *MediaList) Lock() error {
 	}
 
 	C.libvlc_media_list_lock(ml.list)
-	return getError()
+	return nil
 }
 
 // Unlock releases ownership of the media list.
@@ -315,7 +334,7 @@ func (ml *MediaList) Unlock() error {
 	}
 
 	C.libvlc_media_list_unlock(ml.list)
-	return getError()
+	return nil
 }
 
 // EventManager returns the event manager responsible for the media list.

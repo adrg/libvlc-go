@@ -40,6 +40,8 @@ var (
 	ErrMediaListCreate         = errors.New("could not create media list")
 	ErrMediaListNotFound       = errors.New("could not find media list")
 	ErrMediaListNotInitialized = errors.New("media list not initialized")
+	ErrMediaListReadOnly       = errors.New("media list is read-only")
+	ErrMediaListActionFailed   = errors.New("could not perform media list action")
 	ErrMissingMediaStats       = errors.New("could not get media statistics")
 	ErrInvalidMediaStats       = errors.New("invalid media statistics")
 	ErrMissingMediaLocation    = errors.New("could not get media location")
