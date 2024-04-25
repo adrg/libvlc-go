@@ -1355,3 +1355,77 @@ func (p *Player) assertInit() error {
 
 	return nil
 }
+
+type VideoLogoIntOption uint
+type VideoLogoStringOption uint
+
+const (
+	VideoLogoEnable   VideoLogoIntOption    = C.libvlc_logo_enable
+	VideoLogoFile     VideoLogoStringOption = C.libvlc_logo_file
+	VideoLogoX        VideoLogoIntOption    = C.libvlc_logo_x
+	VideoLogoY        VideoLogoIntOption    = C.libvlc_logo_y
+	VideoLogoDelay    VideoLogoIntOption    = C.libvlc_logo_delay
+	VideoLogoRepeat   VideoLogoIntOption    = C.libvlc_logo_repeat
+	VideoLogoOpacity  VideoLogoIntOption    = C.libvlc_logo_opacity
+	VideoLogoPosition VideoLogoIntOption    = C.libvlc_logo_position
+)
+
+type VideoMarqueeIntOption uint
+type VideoMarqueeStringOption uint
+
+const (
+	VideoMaqueeEnable    VideoMarqueeIntOption    = C.libvlc_marquee_Enable
+	VideoMarqueeText     VideoMarqueeStringOption = C.libvlc_marquee_Text
+	VideoMarqueeColor    VideoMarqueeIntOption    = C.libvlc_marquee_Color
+	VideoMarqueeOpacity  VideoMarqueeIntOption    = C.libvlc_marquee_Opacity
+	VideoMarqueePosition VideoMarqueeIntOption    = C.libvlc_marquee_Position
+	VideoMarqueeRefresh  VideoMarqueeIntOption    = C.libvlc_marquee_Refresh
+	VideoMarqueeSize     VideoMarqueeIntOption    = C.libvlc_marquee_Size
+	VideoMarqueeTimeout  VideoMarqueeIntOption    = C.libvlc_marquee_Timeout
+	VideoMarqueeX        VideoMarqueeIntOption    = C.libvlc_marquee_X
+	VideoMarqueeY        VideoMarqueeIntOption    = C.libvlc_marquee_Y
+)
+
+func (p *Player) SetVideoLogoInt(option VideoLogoIntOption, value int) {
+	if err := p.assertInit(); err != nil {
+		return
+	}
+	C.libvlc_video_set_logo_int(p.player, C.uint(option), C.int(value))
+}
+
+func (p *Player) GetVideoLogoInt(option VideoLogoIntOption) int {
+	return int(C.libvlc_video_get_logo_int(p.player, C.uint(option)))
+}
+
+func (p *Player) SetVideoLogoString(option VideoLogoStringOption, value string) {
+	if err := p.assertInit(); err != nil {
+		return
+	}
+	cs := C.CString(value)
+	C.libvlc_video_set_logo_string(p.player, C.uint(option), (*C.char)(cs))
+	C.free(unsafe.Pointer(cs))
+}
+
+func (p *Player) SetVideoMarqueeInt(option VideoMarqueeIntOption, value int) {
+	if err := p.assertInit(); err != nil {
+		return
+	}
+	C.libvlc_video_set_marquee_int(p.player, C.uint(option), C.int(value))
+}
+
+func (p *Player) GetVideoMarqueeInt(option VideoMarqueeIntOption) int {
+        return int(C.libvlc_video_get_marquee_int(p.player, C.uint(option)))
+}
+
+func (p *Player) SetVideoMarqueeString(option VideoMarqueeStringOption, value string) {
+	if err := p.assertInit(); err != nil {
+		return
+	}
+	cs := C.CString(value)
+	C.libvlc_video_set_marquee_string(p.player, C.uint(option), (*C.char)(cs))
+	C.free(unsafe.Pointer(cs))
+}
+
+func (p *Player) GetVideoMarqueeString(option VideoMarqueeStringOption) (string) {
+	return C.GoString(C.libvlc_video_get_marquee_string(p.player, C.uint(option)))
+}
