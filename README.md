@@ -4,7 +4,7 @@
   </div>
 </h1>
 
-<h3 align="center">Go bindings for libVLC and high-level media player interface.</h3>
+<h3 align="center">Handcrafted Go bindings for libVLC and high-level media player interface</h3>
 
 <p align="center">
     <a href="https://github.com/adrg/libvlc-go/actions/workflows/ci.yml">

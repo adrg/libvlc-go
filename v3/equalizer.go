@@ -95,8 +95,7 @@ func (e *Equalizer) Release() error {
 
 	C.libvlc_audio_equalizer_release(e.equalizer)
 	e.equalizer = nil
-
-	return getError()
+	return nil
 }
 
 // PreampValue returns the pre-amplification value of the equalizer in Hz.
@@ -106,7 +105,7 @@ func (e *Equalizer) PreampValue() (float64, error) {
 	}
 
 	value := C.libvlc_audio_equalizer_get_preamp(e.equalizer)
-	return float64(value), getError()
+	return float64(value), nil
 }
 
 // SetPreampValue sets the pre-amplification value of the equalizer.
@@ -132,7 +131,7 @@ func (e *Equalizer) AmpValueAtIndex(index uint) (float64, error) {
 	}
 
 	value := C.libvlc_audio_equalizer_get_amp_at_index(e.equalizer, C.uint(index))
-	return float64(value), getError()
+	return float64(value), nil
 }
 
 // SetAmpValueAtIndex sets the amplification value for the equalizer frequency

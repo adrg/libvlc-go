@@ -98,7 +98,7 @@ const (
 // Validate checks if the media metadata key is valid.
 func (mt MediaMetaKey) Validate() error {
 	if mt > MediaDiscTotal {
-		return fmt.Errorf("invalid media meta key: %d", mt)
+		return ErrInvalid
 	}
 
 	return nil
@@ -201,7 +201,7 @@ type MediaScreenOptions struct {
 	// Screen capture frame rate. Default: 0.
 	FPS float64
 
-	// Follow the mouse when capturing a subscreen. Default value: false.
+	// Follow the mouse when capturing a subscreen. Default: false.
 	FollowMouse bool
 
 	// Mouse cursor image to use. If specified, the cursor will be overlayed
@@ -268,9 +268,10 @@ func NewMediaFromReadSeeker(r io.ReadSeeker) (*Media, error) {
 
 // NewMediaFromScreen creates a media instance from the current computer
 // screen, using the specified options.
-//   NOTE: This functionality requires the VLC screen module to be installed.
-//   See installation instructions at https://github.com/adrg/libvlc-go/wiki.
-//   See https://wiki.videolan.org/Documentation:Modules/screen.
+//
+//	NOTE: This functionality requires the VLC screen module to be installed.
+//	See installation instructions at https://github.com/adrg/libvlc-go/wiki.
+//	See https://wiki.videolan.org/Documentation:Modules/screen.
 func NewMediaFromScreen(opts *MediaScreenOptions) (*Media, error) {
 	media, err := newMedia("screen://", false)
 	if err != nil {
@@ -320,12 +321,13 @@ func (m *Media) Release() error {
 	}
 
 	m.release()
-	return getError()
+	return nil
 }
 
 // Duplicate duplicates the current media instance.
-//   NOTE: Call the Release method on the returned media in order to
-//   free the allocated resources.
+//
+//	NOTE: Call the Release method on the returned media in order to
+//	free the allocated resources.
 func (m *Media) Duplicate() (*Media, error) {
 	if err := m.assertInit(); err != nil {
 		return nil, err
@@ -371,7 +373,7 @@ func (m *Media) Type() (MediaType, error) {
 		return 0, err
 	}
 
-	return MediaType(C.libvlc_media_get_type(m.media)), getError()
+	return MediaType(C.libvlc_media_get_type(m.media)), nil
 }
 
 // State returns the current state of the media instance.
@@ -380,7 +382,7 @@ func (m *Media) State() (MediaState, error) {
 		return 0, err
 	}
 
-	return MediaState(C.libvlc_media_get_state(m.media)), getError()
+	return MediaState(C.libvlc_media_get_state(m.media)), nil
 }
 
 // Stats returns playback statistics for the media.
@@ -414,15 +416,20 @@ func (m *Media) Location() (string, error) {
 }
 
 // Duration returns the media duration in milliseconds.
-//   NOTE: The duration can only be obtained for parsed media instances.
-//   Either play the media once or call one of the parsing methods first.
+//
+//	NOTE: The duration can only be obtained for parsed media instances.
+//	Either play the media once or call one of the parsing methods first.
 func (m *Media) Duration() (time.Duration, error) {
 	if err := m.assertInit(); err != nil {
 		return 0, err
 	}
 
 	duration := C.libvlc_media_get_duration(m.media)
-	return time.Duration(duration) * time.Millisecond, getError()
+	if duration < 0 {
+		return 0, errOrDefault(getError(), ErrMediaNotParsed)
+	}
+
+	return time.Duration(duration) * time.Millisecond, nil
 }
 
 // Meta reads the value of the specified media metadata key.
@@ -479,10 +486,11 @@ func (m *Media) SaveMeta() error {
 // If no option is provided, the media is parsed only if it is a local file.
 // The timeout parameter specifies the maximum amount of time allowed to
 // preparse the media, in milliseconds.
-//   // Timeout values:
-//   timeout <  0: use default preparse time.
-//   timeout == 0: wait indefinitely.
-//   timeout >  0: wait the specified number of milliseconds.
+//
+//	// Timeout values:
+//	timeout <  0: use default preparse time.
+//	timeout == 0: wait indefinitely.
+//	timeout >  0: wait the specified number of milliseconds.
 func (m *Media) ParseWithOptions(timeout int, opts ...MediaParseOption) error {
 	var flags MediaParseOption
 	for _, opt := range opts {
@@ -499,8 +507,8 @@ func (m *Media) ParseWithOptions(timeout int, opts ...MediaParseOption) error {
 		timeout = -1
 	}
 
-	if int(C.libvlc_media_parse_with_options(m.media,
-		C.libvlc_media_parse_flag_t(flags), C.int(timeout))) != 0 {
+	if C.libvlc_media_parse_with_options(m.media,
+		C.libvlc_media_parse_flag_t(flags), C.int(timeout)) != 0 {
 		return errOrDefault(getError(), ErrMediaParse)
 	}
 
@@ -508,7 +516,8 @@ func (m *Media) ParseWithOptions(timeout int, opts ...MediaParseOption) error {
 }
 
 // Parse fetches local art, metadata and track information synchronously.
-//   NOTE: Deprecated in libVLC v3.0.0+. Use ParseWithOptions instead.
+//
+//	NOTE: Deprecated in libVLC v3.0.0+. Use ParseWithOptions instead.
 func (m *Media) Parse() error {
 	if err := m.assertInit(); err != nil {
 		return err
@@ -522,7 +531,8 @@ func (m *Media) Parse() error {
 // Listen to the MediaParsedChanged event on the media event manager the track
 // when the parsing has finished. However, if the media was already parsed,
 // the event is not sent.
-//   NOTE: Deprecated in libVLC v3.0.0+. Use ParseWithOptions instead.
+//
+//	NOTE: Deprecated in libVLC v3.0.0+. Use ParseWithOptions instead.
 func (m *Media) ParseAsync() error {
 	if err := m.assertInit(); err != nil {
 		return err
@@ -550,24 +560,26 @@ func (m *Media) ParseStatus() (MediaParseStatus, error) {
 		return MediaParseUnstarted, err
 	}
 
-	return MediaParseStatus(C.libvlc_media_get_parsed_status(m.media)), getError()
+	return MediaParseStatus(C.libvlc_media_get_parsed_status(m.media)), nil
 }
 
 // IsParsed returns true if the media was parsed.
-//   NOTE: Deprecated in libVLC v3.0.0+. Use ParseStatus instead.
+//
+//	NOTE: Deprecated in libVLC v3.0.0+. Use ParseStatus instead.
 func (m *Media) IsParsed() (bool, error) {
 	if err := m.assertInit(); err != nil {
 		return false, err
 	}
 
-	return C.libvlc_media_is_parsed(m.media) != 0, getError()
+	return C.libvlc_media_is_parsed(m.media) != 0, nil
 }
 
 // SubItems returns a media list containing the sub-items of the current
 // media instance. If the media does not have any sub-items, an empty media
 // list is returned.
-//   NOTE: Call the Release method on the returned media list in order to
-//   free the allocated resources.
+//
+//	NOTE: Call the Release method on the returned media list in order to
+//	free the allocated resources.
 func (m *Media) SubItems() (*MediaList, error) {
 	if err := m.assertInit(); err != nil {
 		return nil, err
@@ -582,8 +594,9 @@ func (m *Media) SubItems() (*MediaList, error) {
 }
 
 // Tracks returns the tracks (audio, video, subtitle) of the current media.
-//   NOTE: The tracks can only be obtained for parsed media instances.
-//   Either play the media once or call one of the parsing methods first.
+//
+//	NOTE: The tracks can only be obtained for parsed media instances.
+//	Either play the media once or call one of the parsing methods first.
 func (m *Media) Tracks() ([]*MediaTrack, error) {
 	if err := m.assertInit(); err != nil {
 		return nil, err
@@ -621,7 +634,8 @@ func (m *Media) Tracks() ([]*MediaTrack, error) {
 }
 
 // UserData returns the user data associated with the media instance.
-//   NOTE: The method returns `nil` if no user data is found.
+//
+//	NOTE: The method returns `nil` if no user data is found.
 func (m *Media) UserData() (interface{}, error) {
 	if err := m.assertInit(); err != nil {
 		return nil, err

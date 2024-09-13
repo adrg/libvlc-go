@@ -1,3 +1,4 @@
+//go:build !legacy
 // +build !legacy
 
 package vlc
@@ -16,6 +17,15 @@ const (
 	Loop
 	Repeat
 )
+
+// Validate checks if the playback mode valid.
+func (pm PlaybackMode) Validate() error {
+	if pm > Repeat {
+		return ErrInvalid
+	}
+
+	return nil
+}
 
 // ListPlayer is an enhanced media player used to play media lists.
 type ListPlayer struct {
@@ -46,7 +56,7 @@ func (lp *ListPlayer) Release() error {
 	C.libvlc_media_list_player_release(lp.player)
 	lp.player = nil
 
-	return getError()
+	return nil
 }
 
 // Player returns the underlying Player instance of the list player.
@@ -57,7 +67,7 @@ func (lp *ListPlayer) Player() (*Player, error) {
 
 	player := C.libvlc_media_list_player_get_media_player(lp.player)
 	if player == nil {
-		return nil, getError()
+		return nil, errOrDefault(getError(), ErrPlayerNotInitialized)
 	}
 
 	// This call will not release the player. Instead, it will decrement the
@@ -77,7 +87,7 @@ func (lp *ListPlayer) SetPlayer(player *Player) error {
 	}
 
 	C.libvlc_media_list_player_set_media_player(lp.player, player.player)
-	return getError()
+	return nil
 }
 
 // Play plays the current media list.
@@ -100,7 +110,7 @@ func (lp *ListPlayer) PlayNext() error {
 	}
 
 	if C.libvlc_media_list_player_next(lp.player) < 0 {
-		return getError()
+		return errOrDefault(getError(), ErrPlayerPlay)
 	}
 
 	return nil
@@ -113,7 +123,7 @@ func (lp *ListPlayer) PlayPrevious() error {
 	}
 
 	if C.libvlc_media_list_player_previous(lp.player) < 0 {
-		return getError()
+		return errOrDefault(getError(), ErrPlayerPlay)
 	}
 
 	return nil
@@ -128,7 +138,7 @@ func (lp *ListPlayer) PlayAtIndex(index uint) error {
 
 	idx := C.int(index)
 	if C.libvlc_media_list_player_play_item_at_index(lp.player, idx) < 0 {
-		return getError()
+		return errOrDefault(getError(), ErrPlayerPlay)
 	}
 
 	return nil
@@ -188,20 +198,24 @@ func (lp *ListPlayer) SetPlaybackMode(mode PlaybackMode) error {
 	if err := lp.assertInit(); err != nil {
 		return err
 	}
+	if err := mode.Validate(); err != nil {
+		return err
+	}
 
-	m := C.libvlc_playback_mode_t(mode)
-	C.libvlc_media_list_player_set_playback_mode(lp.player, m)
-	return getError()
+	C.libvlc_media_list_player_set_playback_mode(
+		lp.player,
+		C.libvlc_playback_mode_t(mode),
+	)
+	return nil
 }
 
 // MediaState returns the state of the current media.
 func (lp *ListPlayer) MediaState() (MediaState, error) {
 	if err := lp.assertInit(); err != nil {
-		return 0, err
+		return MediaNothingSpecial, err
 	}
 
-	state := int(C.libvlc_media_list_player_get_state(lp.player))
-	return MediaState(state), getError()
+	return MediaState(C.libvlc_media_list_player_get_state(lp.player)), nil
 }
 
 // MediaList returns the current media list of the player, if one exists.
@@ -221,7 +235,7 @@ func (lp *ListPlayer) SetMediaList(ml *MediaList) error {
 	lp.list = ml
 	C.libvlc_media_list_player_set_media_list(lp.player, ml.list)
 
-	return getError()
+	return nil
 }
 
 // EventManager returns the event manager responsible for the list player.

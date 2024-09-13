@@ -1,9 +1,10 @@
 /*
 Package vlc provides Golang bindings for libVLC version 3.X.
 
-Usage
+# Usage
 
 Initialization
+
 	// Initialize libVLC. Additional command line arguments can be passed in
 	// to libVLC by specifying them in the Init function.
 	if err := vlc.Init("--no-video", "--quiet"); err != nil {
@@ -12,6 +13,7 @@ Initialization
 	defer vlc.Release()
 
 Player example
+
 	// Create a new player.
 	player, err := vlc.NewPlayer()
 	if err != nil {
@@ -58,6 +60,7 @@ Player example
 	<-quit
 
 List player example
+
 	// Create a new list player.
 	player, err := vlc.NewListPlayer()
 	if err != nil {
@@ -123,6 +126,7 @@ List player example
 	<-quit
 
 Handling multiple events example
+
 	// Create a new player.
 	player, err := vlc.NewPlayer()
 	if err != nil {

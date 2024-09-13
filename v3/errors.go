@@ -2,17 +2,24 @@ package vlc
 
 import "errors"
 
+// Generic errors.
+var (
+	ErrInvalid = errors.New("the provided value is not valid")
+)
+
 // Module errors.
 var (
 	ErrModuleInitialize     = errors.New("could not initialize module")
-	ErrModuleNotInitialized = errors.New("module not initialized")
+	ErrModuleNotInitialized = errors.New("module is not initialized")
 	ErrUserInterfaceStart   = errors.New("could not start user interface")
 )
 
 // Player errors.
 var (
 	ErrPlayerCreate                = errors.New("could not create player")
-	ErrPlayerNotInitialized        = errors.New("player not initialized")
+	ErrPlayerNotInitialized        = errors.New("player is not initialized")
+	ErrPlayerPlay                  = errors.New("cannot play the requested media")
+	ErrPlayerSetVolume             = errors.New("could not set player volume")
 	ErrPlayerSetRenderer           = errors.New("could not set player renderer")
 	ErrPlayerSetEqualizer          = errors.New("could not set player equalizer")
 	ErrPlayerInvalidRole           = errors.New("invalid player role")
@@ -30,21 +37,24 @@ var (
 var (
 	ErrMediaCreate             = errors.New("could not create media")
 	ErrMediaNotFound           = errors.New("could not find media")
-	ErrMediaNotInitialized     = errors.New("media not initialized")
+	ErrMediaNotInitialized     = errors.New("media is not initialized")
 	ErrMediaListCreate         = errors.New("could not create media list")
 	ErrMediaListNotFound       = errors.New("could not find media list")
-	ErrMediaListNotInitialized = errors.New("media list not initialized")
+	ErrMediaListNotInitialized = errors.New("media list is not initialized")
+	ErrMediaListReadOnly       = errors.New("media list is read-only")
+	ErrMediaListActionFailed   = errors.New("could not perform media list action")
 	ErrMissingMediaStats       = errors.New("could not get media statistics")
 	ErrInvalidMediaStats       = errors.New("invalid media statistics")
 	ErrMissingMediaLocation    = errors.New("could not get media location")
 	ErrMissingMediaDimensions  = errors.New("could not get media dimensions")
 	ErrMediaMetaSave           = errors.New("could not save media metadata")
 	ErrMediaParse              = errors.New("could not parse media")
+	ErrMediaNotParsed          = errors.New("media is not parsed")
 )
 
 // Media track errors.
 var (
-	ErrMediaTrackNotInitialized = errors.New("media track not initialized")
+	ErrMediaTrackNotInitialized = errors.New("media track is not initialized")
 	ErrMediaTrackNotFound       = errors.New("could not find media track")
 	ErrInvalidMediaTrack        = errors.New("invalid media track")
 )
@@ -53,6 +63,7 @@ var (
 var (
 	ErrMissingEventManager  = errors.New("could not get event manager instance")
 	ErrInvalidEventCallback = errors.New("invalid event callback")
+	ErrEventAttach          = errors.New("could not attach event")
 )
 
 // Audio/Video errors.

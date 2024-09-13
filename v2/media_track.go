@@ -158,5 +158,5 @@ func parseMediaTrackDescriptorList(cDescriptors *C.libvlc_track_description_t) (
 	}
 
 	C.libvlc_track_description_list_release(cDescriptors)
-	return descriptors, getError()
+	return descriptors, nil
 }

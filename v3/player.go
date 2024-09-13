@@ -1,8 +1,10 @@
 package vlc
 
-// #cgo LDFLAGS: -lvlc
-// #include <vlc/vlc.h>
-// #include <stdlib.h>
+/*
+#cgo LDFLAGS: -lvlc
+#include <vlc/vlc.h>
+#include <stdlib.h>
+*/
 import "C"
 import (
 	"io"
@@ -128,8 +130,7 @@ func (p *Player) Release() error {
 
 	C.libvlc_media_player_release(p.player)
 	p.player = nil
-
-	return getError()
+	return nil
 }
 
 // Play plays the current media.
@@ -142,7 +143,7 @@ func (p *Player) Play() error {
 	}
 
 	if C.libvlc_media_player_play(p.player) < 0 {
-		return getError()
+		return errOrDefault(getError(), ErrPlayerPlay)
 	}
 
 	return nil
@@ -179,7 +180,7 @@ func (p *Player) Stop() error {
 }
 
 // SetPause sets the pause state of the media player.
-// Pass in true to pause the current media, or false to resume it.
+// Pass in `true` to pause the current media, or `false` to resume it.
 func (p *Player) SetPause(pause bool) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -237,8 +238,9 @@ func (p *Player) IsScrambled() bool {
 }
 
 // PlaybackRate returns the playback rate of the media player.
-//   NOTE: Depending on the underlying media, the returned rate may be
-//   different from the real playback rate.
+//
+//	NOTE: Depending on the underlying media, the returned rate may be
+//	different from the real playback rate.
 func (p *Player) PlaybackRate() float32 {
 	if err := p.assertInit(); err != nil {
 		return 0
@@ -248,8 +250,9 @@ func (p *Player) PlaybackRate() float32 {
 }
 
 // SetPlaybackRate sets the playback rate of the media player.
-//   NOTE: Depending on the underlying media, changing the playback rate
-//   might not be supported.
+//
+//	NOTE: Depending on the underlying media, changing the playback rate
+//	might not be supported.
 func (p *Player) SetPlaybackRate(rate float32) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -260,7 +263,7 @@ func (p *Player) SetPlaybackRate(rate float32) error {
 }
 
 // SetFullScreen sets the fullscreen state of the media player.
-// Pass in true to enable fullscreen, or false to disable it.
+// Pass in `true` to enable fullscreen, or `false` to disable it.
 func (p *Player) SetFullScreen(fullscreen bool) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -287,7 +290,7 @@ func (p *Player) IsFullScreen() (bool, error) {
 		return false, err
 	}
 
-	return C.libvlc_get_fullscreen(p.player) != C.int(0), getError()
+	return C.libvlc_get_fullscreen(p.player) != C.int(0), nil
 }
 
 // Volume returns the volume of the player.
@@ -296,7 +299,7 @@ func (p *Player) Volume() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_audio_get_volume(p.player)), getError()
+	return int(C.libvlc_audio_get_volume(p.player)), nil
 }
 
 // SetVolume sets the volume of the player.
@@ -304,9 +307,15 @@ func (p *Player) SetVolume(volume int) error {
 	if err := p.assertInit(); err != nil {
 		return err
 	}
+	if volume < 0 {
+		return ErrInvalid
+	}
 
-	C.libvlc_audio_set_volume(p.player, C.int(volume))
-	return getError()
+	if C.libvlc_audio_set_volume(p.player, C.int(volume)) < 0 {
+		return errOrDefault(getError(), ErrPlayerSetVolume)
+	}
+
+	return nil
 }
 
 // IsMuted returns a boolean value that specifies whether the audio
@@ -316,36 +325,38 @@ func (p *Player) IsMuted() (bool, error) {
 		return false, err
 	}
 
-	return C.libvlc_audio_get_mute(p.player) > C.int(0), getError()
+	return C.libvlc_audio_get_mute(p.player) > C.int(0), nil
 }
 
 // SetMute mutes or unmutes the audio output of the player.
-//   NOTE: If there is no active audio playback stream, the mute status might
-//   not be available. If digital pass-through (S/PDIF, HDMI, etc.) is in use,
-//   muting may not be applicable.
-//   Some audio output plugins do not support muting.
+//
+//	NOTE: If there is no active audio playback stream, the mute status might
+//	not be available. If digital pass-through (S/PDIF, HDMI, etc.) is in use,
+//	muting may not be applicable.
+//	Some audio output plugins do not support muting.
 func (p *Player) SetMute(mute bool) error {
 	if err := p.assertInit(); err != nil {
 		return err
 	}
 
 	C.libvlc_audio_set_mute(p.player, C.int(boolToInt(mute)))
-	return getError()
+	return nil
 }
 
 // ToggleMute mutes or unmutes the audio output of the player, depending on
 // the current status.
-//   NOTE: If there is no active audio playback stream, the mute status might
-//   not be available. If digital pass-through (S/PDIF, HDMI, etc.) is in use,
-//   muting may not be applicable.
-//   Some audio output plugins do not support muting.
+//
+//	NOTE: If there is no active audio playback stream, the mute status might
+//	not be available. If digital pass-through (S/PDIF, HDMI, etc.) is in use,
+//	muting may not be applicable.
+//	Some audio output plugins do not support muting.
 func (p *Player) ToggleMute() error {
 	if err := p.assertInit(); err != nil {
 		return err
 	}
 
 	C.libvlc_audio_toggle_mute(p.player)
-	return getError()
+	return nil
 }
 
 // Media returns the current media of the player, if one exists.
@@ -419,10 +430,11 @@ func (p *Player) SetAudioOutput(output string) error {
 
 // AudioOutputDevices returns the list of available devices for the
 // audio output used by the media player.
-//   NOTE: Not all audio outputs support this. An empty list of devices does
-//   not imply that the audio output used by the player does not work.
-//   Some audio output devices in the list might not work in some circumstances.
-//   By default, it is recommended to not specify any explicit audio device.
+//
+//	NOTE: Not all audio outputs support this. An empty list of devices does
+//	not imply that the audio output used by the player does not work.
+//	Some audio output devices in the list might not work in some circumstances.
+//	By default, it is recommended to not specify any explicit audio device.
 func (p *Player) AudioOutputDevices() ([]*AudioOutputDevice, error) {
 	if err := p.assertInit(); err != nil {
 		return nil, err
@@ -433,12 +445,13 @@ func (p *Player) AudioOutputDevices() ([]*AudioOutputDevice, error) {
 
 // AudioOutputDevice returns the name of the current audio output device
 // used by the media player.
-//   NOTE: The initial value for the current audio output device identifier
-//   may not be set or may be an unknown value. Applications should compare
-//   the returned value against the known device identifiers to find the
-//   current audio output device. It is possible for the audio output device
-//   to be changed externally. That may make the method unsuitable to use for
-//   applications which are attempting to track audio device changes.
+//
+//	NOTE: The initial value for the current audio output device identifier
+//	may not be set or may be an unknown value. Applications should compare
+//	the returned value against the known device identifiers to find the
+//	current audio output device. It is possible for the audio output device
+//	to be changed externally. That may make the method unsuitable to use for
+//	applications which are attempting to track audio device changes.
 func (p *Player) AudioOutputDevice() (string, error) {
 	if err := p.assertInit(); err != nil {
 		return "", err
@@ -458,11 +471,12 @@ func (p *Player) AudioOutputDevice() (string, error) {
 // Player.AudioOutputDevices method. Pass in an empty string as the `output`
 // parameter in order to move the current audio output to the specified
 // device immediately. This is the recommended usage.
-//   NOTE: The syntax for the `device` parameter depends on the audio output.
-//   Some audio output modules require further parameters.
-//   Due to a design bug in libVLC, the method does not return an error if the
-//   passed in device cannot be set. Use the Player.AudioOutputDevice method
-//   to check if the device has been set.
+//
+//	NOTE: The syntax for the `device` parameter depends on the audio output.
+//	Some audio output modules require further parameters.
+//	Due to a design bug in libVLC, the method does not return an error if the
+//	passed in device cannot be set. Use the Player.AudioOutputDevice method
+//	to check if the device has been set.
 func (p *Player) SetAudioOutputDevice(device, output string) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -487,11 +501,12 @@ func (p *Player) StereoMode() (StereoMode, error) {
 		return StereoModeError, err
 	}
 
-	return StereoMode(C.libvlc_audio_get_channel(p.player)), getError()
+	return StereoMode(C.libvlc_audio_get_channel(p.player)), nil
 }
 
 // SetStereoMode sets the stereo mode of the audio output used by the player.
-//   NOTE: The audio output might not support all stereo modes.
+//
+//	NOTE: The audio output might not support all stereo modes.
 func (p *Player) SetStereoMode(mode StereoMode) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -510,17 +525,17 @@ func (p *Player) MediaLength() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_length(p.player)), getError()
+	return int(C.libvlc_media_player_get_length(p.player)), nil
 }
 
 // MediaState returns the state of the current media.
 func (p *Player) MediaState() (MediaState, error) {
 	if err := p.assertInit(); err != nil {
-		return 0, err
+		return MediaNothingSpecial, err
 	}
 
 	state := int(C.libvlc_media_player_get_state(p.player))
-	return MediaState(state), getError()
+	return MediaState(state), nil
 }
 
 // MediaPosition returns media position as a
@@ -530,7 +545,12 @@ func (p *Player) MediaPosition() (float32, error) {
 		return 0, err
 	}
 
-	return float32(C.libvlc_media_player_get_position(p.player)), getError()
+	position := float32(C.libvlc_media_player_get_position(p.player))
+	if position < 0 {
+		return 0, errOrDefault(getError(), ErrMediaNotFound)
+	}
+
+	return position, nil
 }
 
 // SetMediaPosition sets media position as percentage between 0.0 and 1.0.
@@ -550,7 +570,7 @@ func (p *Player) MediaTime() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_time(p.player)), getError()
+	return int(C.libvlc_media_player_get_time(p.player)), nil
 }
 
 // SetMediaTime sets the media time in milliseconds. Some formats and
@@ -581,14 +601,15 @@ func (p *Player) Scale() (float64, error) {
 		return 0, err
 	}
 
-	return float64(C.libvlc_video_get_scale(p.player)), getError()
+	return float64(C.libvlc_video_get_scale(p.player)), nil
 }
 
 // SetScale sets the scaling factor of the current video. The scaling factor
 // is the ratio of the number of pixels displayed on the screen to the number
 // of pixels in the original decoded video. A scaling factor of zero adjusts
 // the video to fit in the available space.
-//   NOTE: Not all video outputs support scaling.
+//
+//	NOTE: Not all video outputs support scaling.
 func (p *Player) SetScale(scale float64) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -610,11 +631,12 @@ func (p *Player) AspectRatio() (string, error) {
 	}
 	defer C.free(unsafe.Pointer(aspectRatio))
 
-	return C.GoString(aspectRatio), getError()
+	return C.GoString(aspectRatio), nil
 }
 
 // SetAspectRatio sets the aspect ratio of the current video (e.g. `16:9`).
-//   NOTE: Invalid aspect ratios are ignored.
+//
+//	NOTE: Invalid aspect ratios are ignored.
 func (p *Player) SetAspectRatio(aspectRatio string) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -626,6 +648,166 @@ func (p *Player) SetAspectRatio(aspectRatio string) error {
 	return getError()
 }
 
+// SetDeinterlaceMode sets the deinterlace mode to use when rendering videos.
+//
+//	NOTE: pass in `vlc.DeinterlaceModeDisable` to disable deinterlacing.
+func (p *Player) SetDeinterlaceMode(mode DeinterlaceMode) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	cMode := C.CString(string(mode))
+	C.libvlc_video_set_deinterlace(p.player, cMode)
+	C.free(unsafe.Pointer(cMode))
+	return nil
+}
+
+// VideoAdjustmentsEnabled returns true if video adjustments are enabled.
+// By default, video adjustments are not enabled.
+func (p *Player) VideoAdjustmentsEnabled(enable bool) (bool, error) {
+	if err := p.assertInit(); err != nil {
+		return false, err
+	}
+
+	return C.libvlc_video_get_adjust_int(p.player, C.libvlc_adjust_Enable) != 0, nil
+}
+
+// EnableVideoAdjustments enables or disables video adjustments. By default,
+// video adjustments are not enabled.
+func (p *Player) EnableVideoAdjustments(enable bool) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_int(p.player, C.libvlc_adjust_Enable, C.int(boolToInt(enable)))
+	return nil
+}
+
+// Contrast returns the contrast set to be used when rendering videos.
+// The returned contrast is a value between 0.0 and 2.0.
+// Default: 1.0.
+func (p *Player) Contrast() (float64, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return float64(C.libvlc_video_get_adjust_float(p.player, C.libvlc_adjust_Contrast)), nil
+}
+
+// SetContrast sets the contrast to be used when rendering videos. The specified
+// contrast must be a value between 0.0 and 2.0.
+//
+//	NOTE: this method has no effect if video adjustments are not enabled. The
+//	adjustments can be enabled using the Player.EnableVideoAdjustments method.
+func (p *Player) SetContrast(contrast float64) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_float(p.player, C.libvlc_adjust_Contrast, C.float(contrast))
+	return nil
+}
+
+// Brightness returns the brightness set to be used when rendering videos.
+// The returned brightness is a value between 0.0 and 2.0.
+// Default: 1.0.
+func (p *Player) Brightness() (float64, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return float64(C.libvlc_video_get_adjust_float(p.player, C.libvlc_adjust_Brightness)), nil
+}
+
+// SetBrightness sets the brightness to be used when rendering videos. The
+// specified brightness must be a value between 0.0 and 2.0.
+//
+//	NOTE: this method has no effect if video adjustments are not enabled. The
+//	adjustments can be enabled using the Player.EnableVideoAdjustments method.
+func (p *Player) SetBrightness(brightness float64) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_float(p.player, C.libvlc_adjust_Brightness, C.float(brightness))
+	return nil
+}
+
+// Hue returns the hue set to be used when rendering videos.
+// The returned hue is a value between -180.0 and 180.0.
+// Default: 0.0.
+func (p *Player) Hue() (float64, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return float64(C.libvlc_video_get_adjust_float(p.player, C.libvlc_adjust_Hue)), nil
+}
+
+// SetHue sets the hue to be used when rendering videos. The specified hue
+// must be a value between -180.0 and 180.0.
+//
+//	NOTE: this method has no effect if video adjustments are not enabled. The
+//	adjustments can be enabled using the Player.EnableVideoAdjustments method.
+func (p *Player) SetHue(hue float64) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_float(p.player, C.libvlc_adjust_Hue, C.float(hue))
+	return nil
+}
+
+// Saturation returns the saturation set to be used when rendering videos.
+// The returned saturation is a value between 0.0 and 3.0.
+// Default: 1.0.
+func (p *Player) Saturation() (float64, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return float64(C.libvlc_video_get_adjust_float(p.player, C.libvlc_adjust_Saturation)), nil
+}
+
+// SetSaturation sets the saturation to be used when rendering videos. The
+// specified saturation must be a value between 0.0 and 3.0.
+//
+//	NOTE: this method has no effect if video adjustments are not enabled. The
+//	adjustments can be enabled using the Player.EnableVideoAdjustments method.
+func (p *Player) SetSaturation(saturation float64) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_float(p.player, C.libvlc_adjust_Saturation, C.float(saturation))
+	return nil
+}
+
+// Gamma returns the gamma set to be used when rendering videos.
+// The returned gamma is a value between 0.01 and 10.0.
+// Default: 1.0.
+func (p *Player) Gamma() (float64, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return float64(C.libvlc_video_get_adjust_float(p.player, C.libvlc_adjust_Gamma)), nil
+}
+
+// SetGamma sets the gamma to be used when rendering videos. The specified
+// gamma must be a value between 0.01 and 10.0.
+//
+//	NOTE: this method has no effect if video adjustments are not enabled. The
+//	adjustments can be enabled using the Player.EnableVideoAdjustments method.
+func (p *Player) SetGamma(gamma float64) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_float(p.player, C.libvlc_adjust_Gamma, C.float(gamma))
+	return nil
+}
+
 // AudioDelay returns the delay of the current audio track,
 // with microsecond precision.
 func (p *Player) AudioDelay() (time.Duration, error) {
@@ -634,14 +816,15 @@ func (p *Player) AudioDelay() (time.Duration, error) {
 	}
 
 	delay := C.libvlc_audio_get_delay(p.player)
-	return time.Duration(delay) * time.Microsecond, getError()
+	return time.Duration(delay) * time.Microsecond, nil
 }
 
 // SetAudioDelay delays the current audio track according to the
 // specified duration, with microsecond precision.
 // The delay can be either positive (the audio track is played later) or
 // negative (the audio track is played earlier), and it defaults to zero.
-//   NOTE: The audio delay is set to zero each time the player media changes.
+//
+//	NOTE: The audio delay is set to zero each time the player media changes.
 func (p *Player) SetAudioDelay(d time.Duration) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -662,14 +845,15 @@ func (p *Player) SubtitleDelay() (time.Duration, error) {
 	}
 
 	delay := C.libvlc_video_get_spu_delay(p.player)
-	return time.Duration(delay) * time.Microsecond, getError()
+	return time.Duration(delay) * time.Microsecond, nil
 }
 
 // SetSubtitleDelay delays the current subtitle track according to the
 // specified duration, with microsecond precision.
 // The delay can be either positive (the subtitle track is displayed later) or
 // negative (the subtitle track is displayed earlier), and it defaults to zero.
-//   NOTE: The subtitle delay is set to zero each time the player media changes.
+//
+//	NOTE: The subtitle delay is set to zero each time the player media changes.
 func (p *Player) SetSubtitleDelay(d time.Duration) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -709,7 +893,8 @@ func (p *Player) VideoTrackDescriptors() ([]*MediaTrackDescriptor, error) {
 }
 
 // VideoTrackID returns the ID of the current video track of the player.
-//   NOTE: The method returns -1 if there is no active video track.
+//
+//	NOTE: The method returns -1 if there is no active video track.
 func (p *Player) VideoTrackID() (int, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
@@ -759,7 +944,8 @@ func (p *Player) AudioTrackDescriptors() ([]*MediaTrackDescriptor, error) {
 }
 
 // AudioTrackID returns the ID of the current audio track of the player.
-//   NOTE: The method returns -1 if there is no active audio track.
+//
+//	NOTE: The method returns -1 if there is no active audio track.
 func (p *Player) AudioTrackID() (int, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
@@ -809,7 +995,8 @@ func (p *Player) SubtitleTrackDescriptors() ([]*MediaTrackDescriptor, error) {
 }
 
 // SubtitleTrackID returns the ID of the current subtitle track of the player.
-//   NOTE: The method returns -1 if there is no active subtitle track.
+//
+//	NOTE: The method returns -1 if there is no active subtitle track.
 func (p *Player) SubtitleTrackID() (int, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
@@ -833,8 +1020,9 @@ func (p *Player) SetSubtitleTrack(trackID int) error {
 }
 
 // SetRenderer sets a renderer for the player media (e.g. Chromecast).
-//   NOTE: This method must be called before starting media playback in order
-// to take effect.
+//
+//	NOTE: This method must be called before starting media playback in order
+//	to take effect.
 func (p *Player) SetRenderer(r *Renderer) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -898,8 +1086,9 @@ func (p *Player) SetRole(role PlayerRole) error {
 
 // VideoDimensions returns the width and height of the current media of
 // the player, in pixels.
-//   NOTE: The dimensions can only be obtained for parsed media instances.
-//   Either play the media or call one of the media parsing methods first.
+//
+//	NOTE: The dimensions can only be obtained for parsed media instances.
+//	Either play the media or call one of the media parsing methods first.
 func (p *Player) VideoDimensions() (uint, uint, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, 0, err
@@ -917,7 +1106,8 @@ func (p *Player) VideoDimensions() (uint, uint, error) {
 // player. This method only works with 360° videos. If `absolute` is true,
 // the passed in viewpoint replaces the current one. Otherwise, the current
 // viewpoint is updated using the specified viewpoint values.
-//   NOTE: It is safe to call this method before media playback is started.
+//
+//	NOTE: It is safe to call this method before media playback is started.
 func (p *Player) UpdateVideoViewpoint(vp *VideoViewpoint, absolute bool) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -949,13 +1139,14 @@ func (p *Player) UpdateVideoViewpoint(vp *VideoViewpoint, absolute bool) error {
 
 // CursorPosition returns the X and Y coordinates of the mouse cursor
 // relative to the rendered area of the currently playing video.
-//   NOTE: The coordinates are expressed in terms of the decoded video
-//   resolution, not in terms of pixels on the screen. Either coordinate may
-//   be negative or larger than the corresponding dimension of the video, if
-//   the cursor is outside the rendering area.
-//   The coordinates may be out of date if the pointer is not located on the
-//   video rendering area. libVLC does not track the pointer if it is outside
-//   of the video widget. Also, libVLC does not support multiple cursors.
+//
+//	NOTE: The coordinates are expressed in terms of the decoded video
+//	resolution, not in terms of pixels on the screen. Either coordinate may
+//	be negative or larger than the corresponding dimension of the video, if
+//	the cursor is outside the rendering area.
+//	The coordinates may be out of date if the pointer is not located on the
+//	video rendering area. libVLC does not track the pointer if it is outside
+//	of the video widget. Also, libVLC does not support multiple cursors.
 func (p *Player) CursorPosition() (int, int, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, 0, err
@@ -1030,28 +1221,31 @@ func (p *Player) Titles() ([]*TitleInfo, error) {
 }
 
 // TitleCount returns the number of titles in the currently playing media.
-//   NOTE: The method returns -1 if the player does not have a media instance.
+//
+//	NOTE: The method returns -1 if the player does not have a media instance.
 func (p *Player) TitleCount() (int, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_title_count(p.player)), getError()
+	return int(C.libvlc_media_player_get_title_count(p.player)), nil
 }
 
 // TitleIndex returns the index of the currently playing media title.
-//   NOTE: The method returns -1 if the player does not have a media instance.
+//
+//	NOTE: The method returns -1 if the player does not have a media instance.
 func (p *Player) TitleIndex() (int, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_title(p.player)), getError()
+	return int(C.libvlc_media_player_get_title(p.player)), nil
 }
 
 // SetTitle sets the title with the specified index to be played,
 // if applicable to the current player media instance.
-//   NOTE: The method has no effect if the current player media has no titles.
+//
+//	NOTE: The method has no effect if the current player media has no titles.
 func (p *Player) SetTitle(titleIndex int) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -1062,28 +1256,31 @@ func (p *Player) SetTitle(titleIndex int) error {
 }
 
 // ChapterIndex returns the index of the currently playing media chapter.
-//   NOTE: The method returns -1 if the player does not have a media instance.
+//
+//	NOTE: The method returns -1 if the player does not have a media instance.
 func (p *Player) ChapterIndex() (int, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_chapter(p.player)), getError()
+	return int(C.libvlc_media_player_get_chapter(p.player)), nil
 }
 
 // ChapterCount returns the number of chapters in the currently playing media.
-//   NOTE: The method returns -1 if the player does not have a media instance.
+//
+//	NOTE: The method returns -1 if the player does not have a media instance.
 func (p *Player) ChapterCount() (int, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_chapter_count(p.player)), getError()
+	return int(C.libvlc_media_player_get_chapter_count(p.player)), nil
 }
 
 // SetChapter sets the chapter with the specified index to be played,
 // if applicable to the current player media instance.
-//   NOTE: The method has no effect if the current player media has no chapters.
+//
+//	NOTE: The method has no effect if the current player media has no chapters.
 func (p *Player) SetChapter(chapterIndex int) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -1095,7 +1292,8 @@ func (p *Player) SetChapter(chapterIndex int) error {
 
 // NextChapter sets the next chapter to be played, if applicable to the
 // current player media instance.
-//   NOTE: The method has no effect if the current player media has no chapters.
+//
+//	NOTE: The method has no effect if the current player media has no chapters.
 func (p *Player) NextChapter() error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -1107,7 +1305,8 @@ func (p *Player) NextChapter() error {
 
 // PreviousChapter sets the previous chapter to be played, if applicable to
 // the current player media instance.
-//   NOTE: The method has no effect if the current player media has no chapters.
+//
+//	NOTE: The method has no effect if the current player media has no chapters.
 func (p *Player) PreviousChapter() error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -1119,18 +1318,20 @@ func (p *Player) PreviousChapter() error {
 
 // TitleChapterCount returns the number of chapters available within the media
 // title with the specified index.
-//   NOTE: The method returns -1 if the player does not have a media instance.
+//
+//	NOTE: The method returns -1 if the player does not have a media instance.
 func (p *Player) TitleChapterCount(titleIndex int) (int, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_chapter_count_for_title(p.player, C.int(titleIndex))), getError()
+	return int(C.libvlc_media_player_get_chapter_count_for_title(p.player, C.int(titleIndex))), nil
 }
 
 // TitleChapters returns the list of chapters available within the media title
 // with the specified index.
-//   NOTE: The method returns -1 if the player does not have a media instance.
+//
+//	NOTE: The method returns -1 if the player does not have a media instance.
 func (p *Player) TitleChapters(titleIndex int) ([]*ChapterInfo, error) {
 	if err := p.assertInit(); err != nil {
 		return nil, err
@@ -1189,11 +1390,22 @@ func (p *Player) SetTitleDisplayMode(position Position, timeout time.Duration) e
 	return getError()
 }
 
+// Marquee returns the marquee of the player.
+func (p *Player) Marquee() *Marquee {
+	return newMarquee(p)
+}
+
+// Logo returns the logo of the player.
+func (p *Player) Logo() *Logo {
+	return newLogo(p)
+}
+
 // XWindow returns the identifier of the X window the media player is
 // configured to render its video output to, or 0 if no window is set.
 // The window can be set using the SetXWindow method.
-//   NOTE: The window identifier is returned even if the player is not
-//   currently using it (for instance if it is playing an audio-only input).
+//
+//	NOTE: The window identifier is returned even if the player is not
+//	currently using it (for instance if it is playing an audio-only input).
 func (p *Player) XWindow() (uint32, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
@@ -1207,10 +1419,11 @@ func (p *Player) XWindow() (uint32, error) {
 // If it is already started, it might need to be stopped before changes apply.
 // If libVLC was built without X11 output support, calling this method has no
 // effect.
-//   NOTE: By default, libVLC captures input events on the video rendering area.
-//   Use the SetMouseInput and SetKeyInput methods if you want to handle input
-//   events in your application. By design, the X11 protocol delivers input
-//   events to only one recipient.
+//
+//	NOTE: By default, libVLC captures input events on the video rendering area.
+//	Use the SetMouseInput and SetKeyInput methods if you want to handle input
+//	events in your application. By design, the X11 protocol delivers input
+//	events to only one recipient.
 func (p *Player) SetXWindow(windowID uint32) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -1223,8 +1436,9 @@ func (p *Player) SetXWindow(windowID uint32) error {
 // HWND returns the handle of the Windows API window the media player is
 // configured to render its video output to, or 0 if no window is set.
 // The window can be set using the SetHWND method.
-//   NOTE: The window handle is returned even if the player is not currently
-//   using it (for instance if it is playing an audio-only input).
+//
+//	NOTE: The window handle is returned even if the player is not currently
+//	using it (for instance if it is playing an audio-only input).
 func (p *Player) HWND() (uintptr, error) {
 	if err := p.assertInit(); err != nil {
 		return 0, err
@@ -1236,9 +1450,10 @@ func (p *Player) HWND() (uintptr, error) {
 // SetHWND sets a Windows API window handle where the media player can render
 // its video output. If libVLC was built without Win32/Win64 API output
 // support, calling this method has no effect.
-//   NOTE: By default, libVLC captures input events on the video rendering area.
-//   Use the SetMouseInput and SetKeyInput methods if you want to handle input
-//   events in your application.
+//
+//	NOTE: By default, libVLC captures input events on the video rendering area.
+//	Use the SetMouseInput and SetKeyInput methods if you want to handle input
+//	events in your application.
 func (p *Player) SetHWND(hwnd uintptr) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -1261,10 +1476,11 @@ func (p *Player) NSObject() (uintptr, error) {
 // SetNSObject sets a NSObject handler where the media player can render
 // its video output. Use the vout called "macosx". The object can be a NSView
 // or a NSObject following the VLCVideoViewEmbedding protocol.
-//   @protocol VLCVideoViewEmbedding <NSObject>
-//   - (void)addVoutSubview:(NSView *)view;
-//   - (void)removeVoutSubview:(NSView *)view;
-//   @end
+//
+//	@protocol VLCVideoViewEmbedding <NSObject>
+//	- (void)addVoutSubview:(NSView *)view;
+//	- (void)removeVoutSubview:(NSView *)view;
+//	@end
 func (p *Player) SetNSObject(drawable uintptr) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -1277,11 +1493,12 @@ func (p *Player) SetNSObject(drawable uintptr) error {
 // SetKeyInput enables or disables key press event handling, according to the
 // libVLC hotkeys configuration. By default, keyboard events are handled by
 // the libVLC video widget.
-//   NOTE: This method works only for X11 and Win32 at the moment.
-//   NOTE: On X11, there can be only one subscriber for key press and mouse
-//   click events per window. If your application has subscribed to these
-//   events for the X window ID of the video widget, then libVLC will not be
-//   able to handle key presses and mouse clicks.
+//
+//	NOTE: This method works only for X11 and Win32 at the moment.
+//	NOTE: On X11, there can be only one subscriber for key press and mouse
+//	click events per window. If your application has subscribed to these
+//	events for the X window ID of the video widget, then libVLC will not be
+//	able to handle key presses and mouse clicks.
 func (p *Player) SetKeyInput(enable bool) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -1294,11 +1511,12 @@ func (p *Player) SetKeyInput(enable bool) error {
 // SetMouseInput enables or disables mouse click event handling. By default,
 // mouse events are handled by the libVLC video widget. This is needed for DVD
 // menus to work, as well as for a few video filters, such as "puzzle".
-//   NOTE: This method works only for X11 and Win32 at the moment.
-//   NOTE: On X11, there can be only one subscriber for key press and mouse
-//   click events per window. If your application has subscribed to these
-//   events for the X window ID of the video widget, then libVLC will not be
-//   able to handle key presses and mouse clicks.
+//
+//	NOTE: This method works only for X11 and Win32 at the moment.
+//	NOTE: On X11, there can be only one subscriber for key press and mouse
+//	click events per window. If your application has subscribed to these
+//	events for the X window ID of the video widget, then libVLC will not be
+//	able to handle key presses and mouse clicks.
 func (p *Player) SetMouseInput(enable bool) error {
 	if err := p.assertInit(); err != nil {
 		return err

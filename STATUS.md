@@ -68,6 +68,7 @@ Reference: [libVLC core](https://www.videolan.org/developers/vlc/doc/doxygen/htm
 | ☒ | libvlc_media_player_navigate                      | Player.Navigate            | `v2`, `v3` |
 | ☒ | libvlc_media_player_set_video_title_display       | Player.SetTitleDisplayMode | `v2`, `v3` |
 | ☐ | libvlc_media_player_add_slave                     |                            | `v2`, `v3` |
+| ☒ | libvlc_video_set_deinterlace                      | Player.SetDeinterlaceMode  | `v3`       |
 
 Reference: [libVLC media player](https://www.videolan.org/developers/vlc/doc/doxygen/html/group__libvlc__media__player.html).
 
@@ -115,47 +116,48 @@ Reference: [libVLC audio controls](https://www.videolan.org/developers/vlc/doc/d
 
 ## Video controls
 
-| ☐ | Binding                                           | Implementation                  | Versions   |
-|---|:--------------------------------------------------|:--------------------------------|:-----------|
-| ☒ | libvlc_video_filter_list_get                      | vlc.ListVideoFilters            | `v2`, `v3` |
-| ☒ | libvlc_toggle_fullscreen                          | Player.ToggleFullScreen         | `v2`, `v3` |
-| ☒ | libvlc_set_fullscreen                             | Player.SetFullScreen            | `v2`, `v3` |
-| ☒ | libvlc_get_fullscreen                             | Player.IsFullScreen             | `v2`, `v3` |
-| ☒ | libvlc_video_set_key_input                        | Player.SetKeyInput              | `v2`, `v3` |
-| ☒ | libvlc_video_set_mouse_input                      | Player.SetMouseInput            | `v2`, `v3` |
-| ☒ | libvlc_video_get_size                             | Player.VideoDimensions          | `v2`, `v3` |
-| ☒ | libvlc_video_get_cursor                           | Player.CursorPosition           | `v2`, `v3` |
-| ☒ | libvlc_video_get_scale                            | Player.Scale                    | `v2`, `v3` |
-| ☒ | libvlc_video_set_scale                            | Player.SetScale                 | `v2`, `v3` |
-| ☒ | libvlc_video_get_aspect_ratio                     | Player.AspectRatio              | `v2`, `v3` |
-| ☒ | libvlc_video_set_aspect_ratio                     | Player.SetAspectRatio           | `v2`, `v3` |
-| ☒ | libvlc_video_update_viewpoint                     | Player.UpdateVideoViewpoint     | `v3`       |
-| ☒ | libvlc_video_get_spu                              | Player.SubtitleTrackID          | `v2`, `v3` |
-| ☒ | libvlc_video_get_spu_count                        | Player.SubtitleTrackCount       | `v2`, `v3` |
-| ☒ | libvlc_video_get_spu_description                  | Player.SubtitleTrackDescriptors | `v2`, `v3` |
-| ☒ | libvlc_video_set_spu                              | Player.SetSubtitleTrack         | `v2`, `v3` |
-| ☒ | libvlc_video_get_spu_delay                        | Player.SubtitleDelay            | `v2`, `v3` |
-| ☒ | libvlc_video_set_spu_delay                        | Player.SetSubtitleDelay         | `v2`, `v3` |
-| ☐ | libvlc_video_get_teletext                         |                                 | `v2`, `v3` |
-| ☐ | libvlc_video_set_teletext                         |                                 | `v2`, `v3` |
-| ☒ | libvlc_video_get_track_count                      | Player.VideoTrackCount          | `v2`, `v3` |
-| ☒ | libvlc_video_get_track_description                | Player.VideoTrackDescriptors    | `v2`, `v3` |
-| ☒ | libvlc_video_get_track                            | Player.VideoTrackID             | `v2`, `v3` |
-| ☒ | libvlc_video_set_track                            | Player.SetVideoTrack            | `v2`, `v3` |
-| ☒ | libvlc_video_take_snapshot                        | Player.TakeSnapshot             | `v2`, `v3` |
-| ☐ | libvlc_video_get_marquee_int                      |                                 | `v2`, `v3` |
-| ☐ | libvlc_video_set_marquee_int                      |                                 | `v2`, `v3` |
-| ☐ | libvlc_video_set_marquee_string                   |                                 | `v2`, `v3` |
-| ☐ | libvlc_video_get_logo_int                         |                                 | `v2`, `v3` |
-| ☐ | libvlc_video_set_logo_int                         |                                 | `v2`, `v3` |
-| ☐ | libvlc_video_set_logo_string                      |                                 | `v2`, `v3` |
-| ☐ | libvlc_video_get_adjust_int                       |                                 | `v2`, `v3` |
-| ☐ | libvlc_video_set_adjust_int                       |                                 | `v2`, `v3` |
-| ☐ | libvlc_video_get_adjust_float                     |                                 | `v2`, `v3` |
-| ☐ | libvlc_video_set_adjust_float                     |                                 | `v2`, `v3` |
-| ☐ | libvlc_video_set_callbacks                        |                                 | `v2`, `v3` |
-| ☐ | libvlc_video_set_format                           |                                 | `v2`, `v3` |
-| ☐ | libvlc_video_set_format_callbacks                 |                                 | `v2`, `v3` |
+| ☐ | Binding                                           | Implementation                                                                                                                                                                                         | Versions   |
+|---|:--------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------|
+| ☒ | libvlc_video_filter_list_get                      | vlc.ListVideoFilters                                                                                                                                                                                   | `v2`, `v3` |
+| ☒ | libvlc_toggle_fullscreen                          | Player.ToggleFullScreen                                                                                                                                                                                | `v2`, `v3` |
+| ☒ | libvlc_set_fullscreen                             | Player.SetFullScreen                                                                                                                                                                                   | `v2`, `v3` |
+| ☒ | libvlc_get_fullscreen                             | Player.IsFullScreen                                                                                                                                                                                    | `v2`, `v3` |
+| ☒ | libvlc_video_set_key_input                        | Player.SetKeyInput                                                                                                                                                                                     | `v2`, `v3` |
+| ☒ | libvlc_video_set_mouse_input                      | Player.SetMouseInput                                                                                                                                                                                   | `v2`, `v3` |
+| ☒ | libvlc_video_get_size                             | Player.VideoDimensions                                                                                                                                                                                 | `v2`, `v3` |
+| ☒ | libvlc_video_get_cursor                           | Player.CursorPosition                                                                                                                                                                                  | `v2`, `v3` |
+| ☒ | libvlc_video_get_scale                            | Player.Scale                                                                                                                                                                                           | `v2`, `v3` |
+| ☒ | libvlc_video_set_scale                            | Player.SetScale                                                                                                                                                                                        | `v2`, `v3` |
+| ☒ | libvlc_video_get_aspect_ratio                     | Player.AspectRatio                                                                                                                                                                                     | `v2`, `v3` |
+| ☒ | libvlc_video_set_aspect_ratio                     | Player.SetAspectRatio                                                                                                                                                                                  | `v2`, `v3` |
+| ☒ | libvlc_video_update_viewpoint                     | Player.UpdateVideoViewpoint                                                                                                                                                                            | `v3`       |
+| ☒ | libvlc_video_get_spu                              | Player.SubtitleTrackID                                                                                                                                                                                 | `v2`, `v3` |
+| ☒ | libvlc_video_get_spu_count                        | Player.SubtitleTrackCount                                                                                                                                                                              | `v2`, `v3` |
+| ☒ | libvlc_video_get_spu_description                  | Player.SubtitleTrackDescriptors                                                                                                                                                                        | `v2`, `v3` |
+| ☒ | libvlc_video_set_spu                              | Player.SetSubtitleTrack                                                                                                                                                                                | `v2`, `v3` |
+| ☒ | libvlc_video_get_spu_delay                        | Player.SubtitleDelay                                                                                                                                                                                   | `v2`, `v3` |
+| ☒ | libvlc_video_set_spu_delay                        | Player.SetSubtitleDelay                                                                                                                                                                                | `v2`, `v3` |
+| ☐ | libvlc_video_get_teletext                         |                                                                                                                                                                                                        | `v2`, `v3` |
+| ☐ | libvlc_video_set_teletext                         |                                                                                                                                                                                                        | `v2`, `v3` |
+| ☒ | libvlc_video_get_track_count                      | Player.VideoTrackCount                                                                                                                                                                                 | `v2`, `v3` |
+| ☒ | libvlc_video_get_track_description                | Player.VideoTrackDescriptors                                                                                                                                                                           | `v2`, `v3` |
+| ☒ | libvlc_video_get_track                            | Player.VideoTrackID                                                                                                                                                                                    | `v2`, `v3` |
+| ☒ | libvlc_video_set_track                            | Player.SetVideoTrack                                                                                                                                                                                   | `v2`, `v3` |
+| ☒ | libvlc_video_take_snapshot                        | Player.TakeSnapshot                                                                                                                                                                                    | `v2`, `v3` |
+| ☒ | libvlc_video_get_marquee_int                      | Marquee.Color<br/>Marquee.Opacity<br/>Marquee.Position<br/>Marquee.X<br/>Marquee.Y<br/>Marquee.Size<br/>Marquee.RefreshInterval<br/>Marquee.DisplayDuration                                            | `v2`, `v3` |
+| ☒ | libvlc_video_set_marquee_int                      | Marquee.Enable<br/>Marquee.SetColor<br/>Marquee.SetOpacity<br/>Marquee.SetPosition<br/>Marquee.SetX<br/>Marquee.SetY<br/>Marquee.SetSize<br/>Marquee.SetRefreshInterval<br/>Marquee.SetDisplayDuration | `v2`, `v3` |
+| ☒ | libvlc_video_get_marquee_string                   | Marquee.Text                                                                                                                                                                                           | `v2`, `v3` |
+| ☒ | libvlc_video_set_marquee_string                   | Marquee.SetText                                                                                                                                                                                        | `v2`, `v3` |
+| ☒ | libvlc_video_get_logo_int                         | Logo.Position<br/>Logo.X<br/>Logo.Y<br/>Logo.Opacity<br/>Logo.DisplayDuration<br/>Logo.RepeatCount                                                                                                     | `v2`, `v3` |
+| ☒ | libvlc_video_set_logo_int                         | Logo.Enable<br/>Logo.SetPosition<br/>Logo.SetX<br/>Logo.SetY<br/>Logo.SetOpacity<br/>Logo.SetDisplayDuration<br/>Logo.SetRepeatCount                                                                   | `v2`, `v3` |
+| ☒ | libvlc_video_set_logo_string                      | Logo.SetFiles                                                                                                                                                                                          | `v2`, `v3` |
+| ☒ | libvlc_video_get_adjust_int                       | Player.VideoAdjustmentsEnabled                                                                                                                                                                         | `v2`, `v3` |
+| ☒ | libvlc_video_set_adjust_int                       | Player.EnableVideoAdjustments                                                                                                                                                                          | `v2`, `v3` |
+| ☒ | libvlc_video_get_adjust_float                     | Player.Contrast<br/>Player.Brightness<br/>Player.Hue<br/>Player.Saturation<br/>Player.Gamma                                                                                                            | `v2`, `v3` |
+| ☒ | libvlc_video_set_adjust_float                     | Player.SetContrast<br/>Player.SetBrightness<br/>Player.SetHue<br/>Player.SetSaturation<br/>Player.SetGamma                                                                                             | `v2`, `v3` |
+| ☐ | libvlc_video_set_callbacks                        |                                                                                                                                                                                                        | `v2`, `v3` |
+| ☐ | libvlc_video_set_format                           |                                                                                                                                                                                                        | `v2`, `v3` |
+| ☐ | libvlc_video_set_format_callbacks                 |                                                                                                                                                                                                        | `v2`, `v3` |
 
 Reference: [libVLC video controls](https://www.videolan.org/developers/vlc/doc/doxygen/html/group__libvlc__video.html).
 
