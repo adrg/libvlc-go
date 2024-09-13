@@ -1,0 +1,41 @@
+name: Lint V2
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    strategy:
+      matrix:
+        go: [stable]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Setup
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ matrix.go }}
+        cache: true
+
+    - name: Prerequisites
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install libvlc-dev vlc-plugin-base vlc-plugin-video-output vlc-plugin-access-extra
+
+    - name: Prepare checkout
+      run: git config --global core.autocrlf false
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Lint
+      working-directory: ./v2
+      uses: golangci/golangci-lint-action@v6.1.0
+      with:
+        version: latest
+        args: --timeout=5m

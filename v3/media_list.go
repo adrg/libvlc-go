@@ -54,7 +54,7 @@ func (ml *MediaList) AddMedia(m *Media) error {
 	if err := ml.Lock(); err != nil {
 		return err
 	}
-	defer ml.Unlock()
+	defer ml.unlock()
 
 	// Add the media to the list.
 	if C.libvlc_media_list_add_media(ml.list, m.media) < 0 {
@@ -133,7 +133,7 @@ func (ml *MediaList) InsertMedia(m *Media, index uint) error {
 	if err := ml.Lock(); err != nil {
 		return err
 	}
-	defer ml.Unlock()
+	defer ml.unlock()
 
 	// Insert the media in the list.
 	if C.libvlc_media_list_insert_media(ml.list, m.media, C.int(index)) < 0 {
@@ -207,7 +207,7 @@ func (ml *MediaList) RemoveMediaAtIndex(index uint) error {
 	if err := ml.Lock(); err != nil {
 		return err
 	}
-	defer ml.Unlock()
+	defer ml.unlock()
 
 	// Remove the media from the list.
 	if C.libvlc_media_list_remove_index(ml.list, C.int(index)) < 0 {
@@ -223,7 +223,7 @@ func (ml *MediaList) MediaAtIndex(index uint) (*Media, error) {
 	if err := ml.Lock(); err != nil {
 		return nil, err
 	}
-	defer ml.Unlock()
+	defer ml.unlock()
 
 	// Retrieve the media at the specified index.
 	media := C.libvlc_media_list_item_at_index(ml.list, C.int(index))
@@ -239,8 +239,9 @@ func (ml *MediaList) MediaAtIndex(index uint) (*Media, error) {
 }
 
 // IndexOfMedia returns the index of the specified media item in the list.
-//   NOTE: The same instance of a media item can be present multiple times
-//   in the list. The method returns the first matched index.
+//
+//	NOTE: The same instance of a media item can be present multiple times
+//	in the list. The method returns the first matched index.
 func (ml *MediaList) IndexOfMedia(m *Media) (int, error) {
 	if err := m.assertInit(); err != nil {
 		return 0, err
@@ -249,7 +250,7 @@ func (ml *MediaList) IndexOfMedia(m *Media) (int, error) {
 	if err := ml.Lock(); err != nil {
 		return 0, err
 	}
-	defer ml.Unlock()
+	defer ml.unlock()
 
 	// Retrieve the index of the media.
 	idx := int(C.libvlc_media_list_index_of_item(ml.list, m.media))
@@ -266,7 +267,7 @@ func (ml *MediaList) Count() (int, error) {
 	if err := ml.Lock(); err != nil {
 		return 0, err
 	}
-	defer ml.Unlock()
+	defer ml.unlock()
 
 	// Retrieve media count.
 	return int(C.libvlc_media_list_count(ml.list)), nil
@@ -284,7 +285,8 @@ func (ml *MediaList) IsReadOnly() (bool, error) {
 // AssociatedMedia returns the media instance associated with the list,
 // if one exists. A media instance is automatically associated with the
 // list of its sub-items.
-//   NOTE: Do not call Release on the returned media instance.
+//
+//	NOTE: Do not call Release on the returned media instance.
 func (ml *MediaList) AssociatedMedia() (*Media, error) {
 	if err := ml.assertInit(); err != nil {
 		return nil, err
@@ -303,8 +305,9 @@ func (ml *MediaList) AssociatedMedia() (*Media, error) {
 }
 
 // AssociateMedia associates the specified media with the media list instance.
-//   NOTE: If another media instance is already associated with the list,
-//   it will be released.
+//
+//	NOTE: If another media instance is already associated with the list,
+//	it will be released.
 func (ml *MediaList) AssociateMedia(m *Media) error {
 	if err := ml.assertInit(); err != nil {
 		return err
@@ -333,7 +336,7 @@ func (ml *MediaList) Unlock() error {
 		return err
 	}
 
-	C.libvlc_media_list_unlock(ml.list)
+	ml.unlock()
 	return nil
 }
 
@@ -357,4 +360,8 @@ func (ml *MediaList) assertInit() error {
 	}
 
 	return nil
+}
+
+func (ml *MediaList) unlock() {
+	C.libvlc_media_list_unlock(ml.list)
 }
