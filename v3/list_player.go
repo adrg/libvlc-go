@@ -225,8 +225,7 @@ func (lp *ListPlayer) MediaState() (MediaState, error) {
 		return MediaNothingSpecial, err
 	}
 
-	state := int(C.libvlc_media_list_player_get_state(lp.player))
-	return MediaState(state), nil
+	return MediaState(C.libvlc_media_list_player_get_state(lp.player)), nil
 }
 
 // MediaList returns the current media list of the player, if one exists.

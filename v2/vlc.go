@@ -68,7 +68,7 @@ func Release() error {
 	C.libvlc_release(inst.handle)
 	inst = nil
 
-	return getError()
+	return nil
 }
 
 // Version returns details regarding the version of the libVLC module.

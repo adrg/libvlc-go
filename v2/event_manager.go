@@ -48,7 +48,7 @@ func (em *EventManager) attach(event Event, externalCallback EventCallback,
 
 	id := inst.events.add(event, externalCallback, internalCallback, userData)
 	if C.eventAttach(em.manager, C.libvlc_event_type_t(event), C.ulong(id)) != 0 {
-		return 0, getError()
+		return 0, errOrDefault(getError(), ErrEventAttach)
 	}
 
 	return id, nil

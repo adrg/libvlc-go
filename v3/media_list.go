@@ -151,6 +151,7 @@ func (ml *MediaList) InsertMediaFromPath(path string, index uint) error {
 		return err
 	}
 
+	// Insert the media in the list.
 	if err := ml.InsertMedia(media, index); err != nil {
 		media.release()
 		return err
@@ -167,6 +168,7 @@ func (ml *MediaList) InsertMediaFromURL(url string, index uint) error {
 		return err
 	}
 
+	// Insert the media in the list.
 	if err := ml.InsertMedia(media, index); err != nil {
 		media.release()
 		return err
@@ -183,6 +185,7 @@ func (ml *MediaList) InsertMediaFromReadSeeker(r io.ReadSeeker, index uint) erro
 		return err
 	}
 
+	// Insert the media in the list.
 	if err := ml.InsertMedia(media, index); err != nil {
 		media.release()
 		return err

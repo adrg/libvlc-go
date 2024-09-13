@@ -59,7 +59,7 @@ func (p *Player) Release() error {
 	C.libvlc_media_player_release(p.player)
 	p.player = nil
 
-	return getError()
+	return nil
 }
 
 // Play plays the current media.
@@ -72,7 +72,7 @@ func (p *Player) Play() error {
 	}
 
 	if C.libvlc_media_player_play(p.player) < 0 {
-		return getError()
+		return errOrDefault(getError(), ErrPlayerPlay)
 	}
 
 	return nil
@@ -109,7 +109,7 @@ func (p *Player) Stop() error {
 }
 
 // SetPause sets the pause state of the media player.
-// Pass in true to pause the current media, or false to resume it.
+// Pass in `true` to pause the current media, or `false` to resume it.
 func (p *Player) SetPause(pause bool) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -192,7 +192,7 @@ func (p *Player) SetPlaybackRate(rate float32) error {
 }
 
 // SetFullScreen sets the fullscreen state of the media player.
-// Pass in true to enable fullscreen, or false to disable it.
+// Pass in `true` to enable fullscreen, or `false` to disable it.
 func (p *Player) SetFullScreen(fullscreen bool) error {
 	if err := p.assertInit(); err != nil {
 		return err
@@ -219,7 +219,7 @@ func (p *Player) IsFullScreen() (bool, error) {
 		return false, err
 	}
 
-	return C.libvlc_get_fullscreen(p.player) != C.int(0), getError()
+	return C.libvlc_get_fullscreen(p.player) != C.int(0), nil
 }
 
 // Volume returns the volume of the player.
@@ -228,7 +228,7 @@ func (p *Player) Volume() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_audio_get_volume(p.player)), getError()
+	return int(C.libvlc_audio_get_volume(p.player)), nil
 }
 
 // SetVolume sets the volume of the player.
@@ -236,9 +236,15 @@ func (p *Player) SetVolume(volume int) error {
 	if err := p.assertInit(); err != nil {
 		return err
 	}
+	if volume < 0 {
+		return ErrInvalid
+	}
 
-	C.libvlc_audio_set_volume(p.player, C.int(volume))
-	return getError()
+	if C.libvlc_audio_set_volume(p.player, C.int(volume)) < 0 {
+		return errOrDefault(getError(), ErrPlayerSetVolume)
+	}
+
+	return nil
 }
 
 // IsMuted returns a boolean value that specifies whether the audio
@@ -248,7 +254,7 @@ func (p *Player) IsMuted() (bool, error) {
 		return false, err
 	}
 
-	return C.libvlc_audio_get_mute(p.player) > C.int(0), getError()
+	return C.libvlc_audio_get_mute(p.player) > C.int(0), nil
 }
 
 // SetMute mutes or unmutes the audio output of the player.
@@ -263,7 +269,7 @@ func (p *Player) SetMute(mute bool) error {
 	}
 
 	C.libvlc_audio_set_mute(p.player, C.int(boolToInt(mute)))
-	return getError()
+	return nil
 }
 
 // ToggleMute mutes or unmutes the audio output of the player, depending on
@@ -279,7 +285,7 @@ func (p *Player) ToggleMute() error {
 	}
 
 	C.libvlc_audio_toggle_mute(p.player)
-	return getError()
+	return nil
 }
 
 // Media returns the current media of the player, if one exists.
@@ -386,7 +392,7 @@ func (p *Player) StereoMode() (StereoMode, error) {
 		return StereoModeError, err
 	}
 
-	return StereoMode(C.libvlc_audio_get_channel(p.player)), getError()
+	return StereoMode(C.libvlc_audio_get_channel(p.player)), nil
 }
 
 // SetStereoMode sets the stereo mode of the audio output used by the player.
@@ -410,17 +416,17 @@ func (p *Player) MediaLength() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_length(p.player)), getError()
+	return int(C.libvlc_media_player_get_length(p.player)), nil
 }
 
 // MediaState returns the state of the current media.
 func (p *Player) MediaState() (MediaState, error) {
 	if err := p.assertInit(); err != nil {
-		return 0, err
+		return MediaNothingSpecial, err
 	}
 
 	state := int(C.libvlc_media_player_get_state(p.player))
-	return MediaState(state), getError()
+	return MediaState(state), nil
 }
 
 // MediaPosition returns media position as a
@@ -430,7 +436,12 @@ func (p *Player) MediaPosition() (float32, error) {
 		return 0, err
 	}
 
-	return float32(C.libvlc_media_player_get_position(p.player)), getError()
+	position := float32(C.libvlc_media_player_get_position(p.player))
+	if position < 0 {
+		return 0, errOrDefault(getError(), ErrMediaNotFound)
+	}
+
+	return position, nil
 }
 
 // SetMediaPosition sets media position as percentage between 0.0 and 1.0.
@@ -450,7 +461,7 @@ func (p *Player) MediaTime() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_time(p.player)), getError()
+	return int(C.libvlc_media_player_get_time(p.player)), nil
 }
 
 // SetMediaTime sets the media time in milliseconds. Some formats and
@@ -481,7 +492,7 @@ func (p *Player) Scale() (float64, error) {
 		return 0, err
 	}
 
-	return float64(C.libvlc_video_get_scale(p.player)), getError()
+	return float64(C.libvlc_video_get_scale(p.player)), nil
 }
 
 // SetScale sets the scaling factor of the current video. The scaling factor
@@ -511,7 +522,7 @@ func (p *Player) AspectRatio() (string, error) {
 	}
 	defer C.free(unsafe.Pointer(aspectRatio))
 
-	return C.GoString(aspectRatio), getError()
+	return C.GoString(aspectRatio), nil
 }
 
 // SetAspectRatio sets the aspect ratio of the current video (e.g. `16:9`).
@@ -528,6 +539,166 @@ func (p *Player) SetAspectRatio(aspectRatio string) error {
 	return getError()
 }
 
+// SetDeinterlaceMode sets the deinterlace mode to use when rendering videos.
+//
+//	NOTE: pass in `vlc.DeinterlaceModeDisable` to disable deinterlacing.
+func (p *Player) SetDeinterlaceMode(mode DeinterlaceMode) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	cMode := C.CString(string(mode))
+	C.libvlc_video_set_deinterlace(p.player, cMode)
+	C.free(unsafe.Pointer(cMode))
+	return nil
+}
+
+// VideoAdjustmentsEnabled returns true if video adjustments are enabled.
+// By default, video adjustments are not enabled.
+func (p *Player) VideoAdjustmentsEnabled(enable bool) (bool, error) {
+	if err := p.assertInit(); err != nil {
+		return false, err
+	}
+
+	return C.libvlc_video_get_adjust_int(p.player, C.libvlc_adjust_Enable) != 0, nil
+}
+
+// EnableVideoAdjustments enables or disables video adjustments. By default,
+// video adjustments are not enabled.
+func (p *Player) EnableVideoAdjustments(enable bool) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_int(p.player, C.libvlc_adjust_Enable, C.int(boolToInt(enable)))
+	return nil
+}
+
+// Contrast returns the contrast set to be used when rendering videos.
+// The returned contrast is a value between 0.0 and 2.0.
+// Default: 1.0.
+func (p *Player) Contrast() (float64, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return float64(C.libvlc_video_get_adjust_float(p.player, C.libvlc_adjust_Contrast)), nil
+}
+
+// SetContrast sets the contrast to be used when rendering videos. The specified
+// contrast must be a value between 0.0 and 2.0.
+//
+//	NOTE: this method has no effect if video adjustments are not enabled. The
+//	adjustments can be enabled using the Player.EnableVideoAdjustments method.
+func (p *Player) SetContrast(contrast float64) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_float(p.player, C.libvlc_adjust_Contrast, C.float(contrast))
+	return nil
+}
+
+// Brightness returns the brightness set to be used when rendering videos.
+// The returned brightness is a value between 0.0 and 2.0.
+// Default: 1.0.
+func (p *Player) Brightness() (float64, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return float64(C.libvlc_video_get_adjust_float(p.player, C.libvlc_adjust_Brightness)), nil
+}
+
+// SetBrightness sets the brightness to be used when rendering videos. The
+// specified brightness must be a value between 0.0 and 2.0.
+//
+//	NOTE: this method has no effect if video adjustments are not enabled. The
+//	adjustments can be enabled using the Player.EnableVideoAdjustments method.
+func (p *Player) SetBrightness(brightness float64) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_float(p.player, C.libvlc_adjust_Brightness, C.float(brightness))
+	return nil
+}
+
+// Hue returns the hue set to be used when rendering videos.
+// The returned hue is a value between -180.0 and 180.0.
+// Default: 0.0.
+func (p *Player) Hue() (float64, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return float64(C.libvlc_video_get_adjust_float(p.player, C.libvlc_adjust_Hue)), nil
+}
+
+// SetHue sets the hue to be used when rendering videos. The specified hue
+// must be a value between -180.0 and 180.0.
+//
+//	NOTE: this method has no effect if video adjustments are not enabled. The
+//	adjustments can be enabled using the Player.EnableVideoAdjustments method.
+func (p *Player) SetHue(hue float64) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_float(p.player, C.libvlc_adjust_Hue, C.float(hue))
+	return nil
+}
+
+// Saturation returns the saturation set to be used when rendering videos.
+// The returned saturation is a value between 0.0 and 3.0.
+// Default: 1.0.
+func (p *Player) Saturation() (float64, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return float64(C.libvlc_video_get_adjust_float(p.player, C.libvlc_adjust_Saturation)), nil
+}
+
+// SetSaturation sets the saturation to be used when rendering videos. The
+// specified saturation must be a value between 0.0 and 3.0.
+//
+//	NOTE: this method has no effect if video adjustments are not enabled. The
+//	adjustments can be enabled using the Player.EnableVideoAdjustments method.
+func (p *Player) SetSaturation(saturation float64) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_float(p.player, C.libvlc_adjust_Saturation, C.float(saturation))
+	return nil
+}
+
+// Gamma returns the gamma set to be used when rendering videos.
+// The returned gamma is a value between 0.01 and 10.0.
+// Default: 1.0.
+func (p *Player) Gamma() (float64, error) {
+	if err := p.assertInit(); err != nil {
+		return 0, err
+	}
+
+	return float64(C.libvlc_video_get_adjust_float(p.player, C.libvlc_adjust_Gamma)), nil
+}
+
+// SetGamma sets the gamma to be used when rendering videos. The specified
+// gamma must be a value between 0.01 and 10.0.
+//
+//	NOTE: this method has no effect if video adjustments are not enabled. The
+//	adjustments can be enabled using the Player.EnableVideoAdjustments method.
+func (p *Player) SetGamma(gamma float64) error {
+	if err := p.assertInit(); err != nil {
+		return err
+	}
+
+	C.libvlc_video_set_adjust_float(p.player, C.libvlc_adjust_Gamma, C.float(gamma))
+	return nil
+}
+
 // AudioDelay returns the delay of the current audio track,
 // with microsecond precision.
 func (p *Player) AudioDelay() (time.Duration, error) {
@@ -536,7 +707,7 @@ func (p *Player) AudioDelay() (time.Duration, error) {
 	}
 
 	delay := C.libvlc_audio_get_delay(p.player)
-	return time.Duration(delay) * time.Microsecond, getError()
+	return time.Duration(delay) * time.Microsecond, nil
 }
 
 // SetAudioDelay delays the current audio track according to the
@@ -565,7 +736,7 @@ func (p *Player) SubtitleDelay() (time.Duration, error) {
 	}
 
 	delay := C.libvlc_video_get_spu_delay(p.player)
-	return time.Duration(delay) * time.Microsecond, getError()
+	return time.Duration(delay) * time.Microsecond, nil
 }
 
 // SetSubtitleDelay delays the current subtitle track according to the
@@ -829,7 +1000,7 @@ func (p *Player) TitleCount() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_title_count(p.player)), getError()
+	return int(C.libvlc_media_player_get_title_count(p.player)), nil
 }
 
 // TitleIndex returns the index of the currently playing media title.
@@ -840,7 +1011,7 @@ func (p *Player) TitleIndex() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_title(p.player)), getError()
+	return int(C.libvlc_media_player_get_title(p.player)), nil
 }
 
 // SetTitle sets the title with the specified index to be played,
@@ -864,7 +1035,7 @@ func (p *Player) ChapterIndex() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_chapter(p.player)), getError()
+	return int(C.libvlc_media_player_get_chapter(p.player)), nil
 }
 
 // ChapterCount returns the number of chapters in the currently playing media.
@@ -875,7 +1046,7 @@ func (p *Player) ChapterCount() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_chapter_count(p.player)), getError()
+	return int(C.libvlc_media_player_get_chapter_count(p.player)), nil
 }
 
 // SetChapter sets the chapter with the specified index to be played,
@@ -926,7 +1097,7 @@ func (p *Player) TitleChapterCount(titleIndex int) (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_chapter_count_for_title(p.player, C.int(titleIndex))), getError()
+	return int(C.libvlc_media_player_get_chapter_count_for_title(p.player, C.int(titleIndex))), nil
 }
 
 // Navigate executes the specified action in order to navigate
@@ -950,6 +1121,16 @@ func (p *Player) SetTitleDisplayMode(position Position, timeout time.Duration) e
 
 	C.libvlc_media_player_set_video_title_display(p.player, C.libvlc_position_t(position), C.uint(timeout.Milliseconds()))
 	return getError()
+}
+
+// Marquee returns the marquee of the player.
+func (p *Player) Marquee() *Marquee {
+	return newMarquee(p)
+}
+
+// Logo returns the logo of the player.
+func (p *Player) Logo() *Logo {
+	return newLogo(p)
 }
 
 // XWindow returns the identifier of the X window the media player is

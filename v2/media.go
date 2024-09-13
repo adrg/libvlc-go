@@ -62,7 +62,7 @@ const (
 // Validate checks if the media metadata key is valid.
 func (mt MediaMetaKey) Validate() error {
 	if mt > MediaDiscTotal {
-		return fmt.Errorf("invalid media meta key: %d", mt)
+		return ErrInvalid
 	}
 
 	return nil
@@ -131,7 +131,7 @@ type MediaScreenOptions struct {
 	// Screen capture frame rate. Default: 0.
 	FPS float64
 
-	// Follow the mouse when capturing a subscreen. Default value: false.
+	// Follow the mouse when capturing a subscreen. Default: false.
 	FollowMouse bool
 
 	// Mouse cursor image to use. If specified, the cursor will be overlayed
@@ -221,7 +221,7 @@ func (m *Media) Release() error {
 	}
 
 	m.release()
-	return getError()
+	return nil
 }
 
 // Duplicate duplicates the current media instance.
@@ -272,7 +272,7 @@ func (m *Media) State() (MediaState, error) {
 		return 0, err
 	}
 
-	return MediaState(C.libvlc_media_get_state(m.media)), getError()
+	return MediaState(C.libvlc_media_get_state(m.media)), nil
 }
 
 // Stats returns playback statistics for the media.
@@ -315,7 +315,11 @@ func (m *Media) Duration() (time.Duration, error) {
 	}
 
 	duration := C.libvlc_media_get_duration(m.media)
-	return time.Duration(duration) * time.Millisecond, getError()
+	if duration < 0 {
+		return 0, errOrDefault(getError(), ErrMediaNotParsed)
+	}
+
+	return time.Duration(duration) * time.Millisecond, nil
 }
 
 // Meta reads the value of the specified media metadata key.
@@ -394,7 +398,7 @@ func (m *Media) IsParsed() (bool, error) {
 		return false, err
 	}
 
-	return C.libvlc_media_is_parsed(m.media) != 0, getError()
+	return C.libvlc_media_is_parsed(m.media) != 0, nil
 }
 
 // SubItems returns a media list containing the sub-items of the current
