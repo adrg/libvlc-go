@@ -32,6 +32,7 @@ func (ml *MediaList) Release() error {
 
 	C.libvlc_media_list_release(ml.list)
 	ml.list = nil
+
 	return nil
 }
 

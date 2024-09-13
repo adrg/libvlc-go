@@ -55,6 +55,7 @@ func (lp *ListPlayer) Release() error {
 
 	C.libvlc_media_list_player_release(lp.player)
 	lp.player = nil
+
 	return nil
 }
 
