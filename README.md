@@ -7,8 +7,8 @@
 <h3 align="center">Handcrafted Go bindings for libVLC and high-level media player interface</h3>
 
 <p align="center">
-    <a href="https://github.com/adrg/libvlc-go/actions/workflows/ci.yml">
-        <img alt="Build status" src="https://github.com/adrg/libvlc-go/actions/workflows/ci.yml/badge.svg">
+    <a href="https://github.com/adrg/libvlc-go/actions/workflows/lint-v3.yml">
+        <img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/adrg/libvlc-go/lint-v3.yml">
     </a>
     <a href="https://pkg.go.dev/github.com/adrg/libvlc-go/v3">
         <img alt="pkg.go.dev documentation" src="https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white">
@@ -212,7 +212,8 @@ See [CONTRIBUTING.MD](CONTRIBUTING.md).
 [tarrsalah](https://github.com/tarrsalah),
 [danielpellon](https://github.com/danielpellon),
 [patknight](https://github.com/patknight),
-[sndnvaps](https://github.com/sndnvaps).
+[sndnvaps](https://github.com/sndnvaps),
+[karlpip](https://github.com/karlpip).
 
 ## Discord server
 
