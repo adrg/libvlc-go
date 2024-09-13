@@ -4,7 +4,8 @@ package vlc
 #cgo LDFLAGS: -lvlc
 #include <vlc/vlc.h>
 
-extern void eventDispatch(libvlc_event_t*, void*);
+typedef const libvlc_event_t constev;
+extern void eventDispatch(constev*, void*);
 
 static inline int eventAttach(libvlc_event_manager_t* em, libvlc_event_type_t et, unsigned long userData) {
     return libvlc_event_attach(em, et, eventDispatch, (void*)userData);
@@ -72,7 +73,7 @@ func (em *EventManager) Detach(eventIDs ...EventID) {
 }
 
 //export eventDispatch
-func eventDispatch(event *C.libvlc_event_t, userData unsafe.Pointer) {
+func eventDispatch(event *C.constev, userData unsafe.Pointer) {
 	if err := inst.assertInit(); err != nil {
 		return
 	}
