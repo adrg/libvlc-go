@@ -525,7 +525,7 @@ func (p *Player) MediaLength() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_length(p.player)), getError()
+	return int(C.libvlc_media_player_get_length(p.player)), nil
 }
 
 // MediaState returns the state of the current media.
@@ -570,7 +570,7 @@ func (p *Player) MediaTime() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_time(p.player)), getError()
+	return int(C.libvlc_media_player_get_time(p.player)), nil
 }
 
 // SetMediaTime sets the media time in milliseconds. Some formats and
@@ -660,6 +660,16 @@ func (p *Player) SetDeinterlaceMode(mode DeinterlaceMode) error {
 	C.libvlc_video_set_deinterlace(p.player, cMode)
 	C.free(unsafe.Pointer(cMode))
 	return nil
+}
+
+// VideoAdjustmentsEnabled returns true if video adjustments are enabled.
+// By default, video adjustments are not enabled.
+func (p *Player) VideoAdjustmentsEnabled(enable bool) (bool, error) {
+	if err := p.assertInit(); err != nil {
+		return false, err
+	}
+
+	return C.libvlc_video_get_adjust_int(p.player, C.libvlc_adjust_Enable) != 0, nil
 }
 
 // EnableVideoAdjustments enables or disables video adjustments. By default,
@@ -1218,7 +1228,7 @@ func (p *Player) TitleCount() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_title_count(p.player)), getError()
+	return int(C.libvlc_media_player_get_title_count(p.player)), nil
 }
 
 // TitleIndex returns the index of the currently playing media title.
@@ -1229,7 +1239,7 @@ func (p *Player) TitleIndex() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_title(p.player)), getError()
+	return int(C.libvlc_media_player_get_title(p.player)), nil
 }
 
 // SetTitle sets the title with the specified index to be played,
@@ -1253,7 +1263,7 @@ func (p *Player) ChapterIndex() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_chapter(p.player)), getError()
+	return int(C.libvlc_media_player_get_chapter(p.player)), nil
 }
 
 // ChapterCount returns the number of chapters in the currently playing media.
@@ -1264,7 +1274,7 @@ func (p *Player) ChapterCount() (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_chapter_count(p.player)), getError()
+	return int(C.libvlc_media_player_get_chapter_count(p.player)), nil
 }
 
 // SetChapter sets the chapter with the specified index to be played,
@@ -1315,7 +1325,7 @@ func (p *Player) TitleChapterCount(titleIndex int) (int, error) {
 		return 0, err
 	}
 
-	return int(C.libvlc_media_player_get_chapter_count_for_title(p.player, C.int(titleIndex))), getError()
+	return int(C.libvlc_media_player_get_chapter_count_for_title(p.player, C.int(titleIndex))), nil
 }
 
 // TitleChapters returns the list of chapters available within the media title
