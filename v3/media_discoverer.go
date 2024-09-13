@@ -100,8 +100,9 @@ type MediaDiscoverer struct {
 // NewMediaDiscoverer instantiates the media discovery service identified
 // by the specified name. Use the ListMediaDiscoverers method to obtain the
 // list of available discovery service descriptors.
-//   NOTE: Call the Release method on the discovery service instance in
-//   order to free the allocated resources.
+//
+//	NOTE: Call the Release method on the discovery service instance in
+//	order to free the allocated resources.
 func NewMediaDiscoverer(name string) (*MediaDiscoverer, error) {
 	if err := inst.assertInit(); err != nil {
 		return nil, err
@@ -139,8 +140,9 @@ func (md *MediaDiscoverer) Release() error {
 
 // Start starts the media discovery service and reports discovery
 // events through the specified callback function.
-//   NOTE: The Stop and Release methods should not be called from the callback
-//   function. Doing so will result in undefined behavior.
+//
+//	NOTE: The Stop and Release methods should not be called from the callback
+//	function. Doing so will result in undefined behavior.
 func (md *MediaDiscoverer) Start(cb MediaDiscoveryCallback) error {
 	if cb == nil {
 		return ErrInvalidEventCallback
@@ -254,7 +256,8 @@ func (md *MediaDiscoverer) IsRunning() bool {
 
 // MediaList returns the media list associated with the discovery service,
 // which contains the found media instances.
-//   NOTE: The returned media list is read-only.
+//
+//	NOTE: The returned media list is read-only.
 func (md *MediaDiscoverer) MediaList() (*MediaList, error) {
 	if err := md.assertInit(); err != nil {
 		return nil, err

@@ -42,7 +42,8 @@ const (
 
 // DeinterlaceMode defines deinterlacing modes which can be used when
 // rendering videos.
-//   For more information see https://wiki.videolan.org/Deinterlacing.
+//
+//	For more information see https://wiki.videolan.org/Deinterlacing.
 type DeinterlaceMode string
 
 // Deinterlace modes.
@@ -101,10 +102,11 @@ type AudioOutputDevice struct {
 // specified audio output. Use the AudioOutputList method in order to obtain
 // the list of available audio outputs. In order to change the audio output
 // device of a media player instance, use Player.SetAudioOutputDevice.
-//   NOTE: Not all audio outputs support this. An empty list of devices does
-//   not imply that the specified audio output does not work.
-//   Some audio output devices in the list might not work in some circumstances.
-//   By default, it is recommended to not specify any explicit audio device.
+//
+//	NOTE: Not all audio outputs support this. An empty list of devices does
+//	not imply that the specified audio output does not work.
+//	Some audio output devices in the list might not work in some circumstances.
+//	By default, it is recommended to not specify any explicit audio device.
 func ListAudioOutputDevices(output string) ([]*AudioOutputDevice, error) {
 	if err := inst.assertInit(); err != nil {
 		return nil, err

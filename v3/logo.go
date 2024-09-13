@@ -76,7 +76,8 @@ func NewLogoFileFromImage(img image.Image, displayDuration time.Duration, opacit
 }
 
 // Logo represents a logo that can be displayed over a media instance.
-//   For more information see https://wiki.videolan.org/Documentation:Modules/logo.
+//
+//	For more information see https://wiki.videolan.org/Documentation:Modules/logo.
 type Logo struct {
 	player *Player
 }
@@ -161,8 +162,9 @@ func (l *Logo) X() (int, error) {
 // SetX sets the X coordinate of the logo. The value is specified
 // relative to the position of the logo inside its container, i.e. the
 // position set using the `Logo.SetPosition` method.
-//   NOTE: the method has no effect if the position of the logo is set to
-//   `vlc.PositionCenter`, `vlc.PositionTop` or `vlc.PositionBottom`.
+//
+//	NOTE: the method has no effect if the position of the logo is set to
+//	`vlc.PositionCenter`, `vlc.PositionTop` or `vlc.PositionBottom`.
 func (l *Logo) SetX(x int) error {
 	return l.setInt(C.libvlc_logo_x, x)
 }
@@ -177,8 +179,9 @@ func (l *Logo) Y() (int, error) {
 
 // SetY sets the Y coordinate of the logo. The value is specified
 // relative to the position of the logo inside its container.
-//   NOTE: the method has no effect if the position of the logo is set to
-//   `vlc.PositionCenter`, `vlc.PositionLeft` or `vlc.PositionRight`.
+//
+//	NOTE: the method has no effect if the position of the logo is set to
+//	`vlc.PositionCenter`, `vlc.PositionLeft` or `vlc.PositionRight`.
 func (l *Logo) SetY(y int) error {
 	return l.setInt(C.libvlc_logo_y, y)
 }

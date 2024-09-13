@@ -14,7 +14,8 @@ import (
 
 // Marquee represents a marquee text than can be displayed over a media
 // instance, along with its visual properties.
-//   For more information see https://wiki.videolan.org/Documentation:Modules/marq.
+//
+//	For more information see https://wiki.videolan.org/Documentation:Modules/marq.
 type Marquee struct {
 	player *Player
 }
@@ -40,9 +41,10 @@ func (m *Marquee) Text() (string, error) {
 // The specified text can contain time format string sequences which are
 // converted to the requested time values at runtime. Most of the time
 // conversion specifiers supported by the `strftime` C function can be used.
-//   Common time format string sequences:
-//   %Y = year, %m = month, %d = day, %H = hour, %M = minute, %S = second.
-//   For more information see https://en.cppreference.com/w/c/chrono/strftime.
+//
+//	Common time format string sequences:
+//	%Y = year, %m = month, %d = day, %H = hour, %M = minute, %S = second.
+//	For more information see https://en.cppreference.com/w/c/chrono/strftime.
 func (m *Marquee) SetText(text string) error {
 	return m.setString(C.libvlc_marquee_Text, text)
 }
@@ -149,8 +151,9 @@ func (m *Marquee) X() (int, error) {
 
 // SetX sets the X coordinate of the marquee text. The value is specified
 // relative to the position of the marquee inside its container.
-//   NOTE: the method has no effect if the position of the marquee is set to
-//   `vlc.PositionCenter`, `vlc.PositionTop` or `vlc.PositionBottom`.
+//
+//	NOTE: the method has no effect if the position of the marquee is set to
+//	`vlc.PositionCenter`, `vlc.PositionTop` or `vlc.PositionBottom`.
 func (m *Marquee) SetX(x int) error {
 	return m.setInt(C.libvlc_marquee_X, x)
 }
@@ -165,8 +168,9 @@ func (m *Marquee) Y() (int, error) {
 
 // SetY sets the Y coordinate of the marquee text. The value is specified
 // relative to the position of the marquee inside its container.
-//   NOTE: the method has no effect if the position of the marquee is set to
-//   `vlc.PositionCenter`, `vlc.PositionLeft` or `vlc.PositionRight`.
+//
+//	NOTE: the method has no effect if the position of the marquee is set to
+//	`vlc.PositionCenter`, `vlc.PositionLeft` or `vlc.PositionRight`.
 func (m *Marquee) SetY(y int) error {
 	return m.setInt(C.libvlc_marquee_Y, y)
 }

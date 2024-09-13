@@ -21,8 +21,9 @@ func (v VersionInfo) String() string {
 
 // Runtime returns the runtime version of libVLC, usually including
 // the codename of the build.
-//   NOTE: Due to binary backward compatibility, the runtime version may be
-//   more recent than the build version.
+//
+//	NOTE: Due to binary backward compatibility, the runtime version may be
+//	more recent than the build version.
 func (v VersionInfo) Runtime() string {
 	return C.GoString(C.libvlc_get_version())
 }

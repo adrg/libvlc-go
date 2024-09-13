@@ -1,3 +1,4 @@
+//go:build !legacy
 // +build !legacy
 
 package vlc
