@@ -1194,7 +1194,7 @@ func (p *Player) SetHWND(hwnd uintptr) error {
 		return err
 	}
 
-	C.libvlc_media_player_set_hwnd(p.player, unsafe.Pointer(hwnd))
+	C.libvlc_media_player_set_hwnd(p.player, unsafe.Pointer(hwnd)) //nolint:govet
 	return getError()
 }
 
@@ -1221,7 +1221,7 @@ func (p *Player) SetNSObject(drawable uintptr) error {
 		return err
 	}
 
-	C.libvlc_media_player_set_nsobject(p.player, unsafe.Pointer(drawable))
+	C.libvlc_media_player_set_nsobject(p.player, unsafe.Pointer(drawable)) //nolint:govet
 	return getError()
 }
 
