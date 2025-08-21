@@ -1,7 +1,6 @@
 package vlc
 
 /*
-#cgo LDFLAGS: -lvlc
 #include <vlc/vlc.h>
 
 typedef const libvlc_event_t constev;
