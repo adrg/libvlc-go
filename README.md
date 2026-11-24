@@ -23,9 +23,6 @@
         <img alt="Buy me a coffee" src="https://img.shields.io/static/v1.svg?label=%20&message=Buy%20me%20a%20coffee&color=579fbf&logo=buy%20me%20a%20coffee&logoColor=white"/>
     </a>
     <br />
-    <a href="https://goreportcard.com/report/github.com/adrg/libvlc-go">
-        <img alt="Go report card" src="https://goreportcard.com/badge/github.com/adrg/libvlc-go" />
-    </a>
     <a href="https://github.com/adrg/libvlc-go/graphs/contributors">
         <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/adrg/libvlc-go" />
     </a>
